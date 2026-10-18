@@ -418,4 +418,4 @@ A rule of thumb for deciding whether a new service deserves its own interface:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

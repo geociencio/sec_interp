@@ -401,4 +401,4 @@ self.drillhole_service = SafeLoader.lazy_load(
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

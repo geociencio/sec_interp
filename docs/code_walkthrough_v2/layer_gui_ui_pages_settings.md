@@ -154,4 +154,4 @@ operativo; la fachada reconcilia ambos sin exponerlos a los tabs.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

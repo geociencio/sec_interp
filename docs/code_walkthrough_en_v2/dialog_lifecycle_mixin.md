@@ -53,7 +53,6 @@ graph TD
     IM2["interpretation_manager"]
     PM2["preview_manager"]
     SM2["signal_manager"]
-    LG["legend_widget"]
     RND["preview_renderer<br/>(plugin_instance)"]
 
     DLG --> LC
@@ -62,7 +61,6 @@ graph TD
     LC --> IM2
     LC --> PM2
     LC --> SM2
-    LC --> LG
     LC --> RND
 ```
 
@@ -104,7 +102,7 @@ logger = get_logger(__name__)
 | `_cleanup_resources()` | Orchestrator: 4 phases in fixed order |
 | `_cleanup_map_tools()` | `measure_tool.cleanup_finalized()` + `interpretation_tool.reset()` |
 | `_cleanup_managers()` | `interpretation_manager.save_interpretations()` + `preview_manager.cleanup()` |
-| `_cleanup_signals_and_components()` | `signal_manager.disconnect_all()` + `legend_widget.cleanup()` |
+| `_cleanup_signals_and_components()` | `signal_manager.disconnect_all()` |
 | `_cleanup_preview_renderer()` | `plugin_instance.preview_renderer.cleanup()` (memory layers) |
 
 ---
@@ -117,7 +115,7 @@ logger = get_logger(__name__)
 | `gui/dialog_facade_mixin.py` | `reject_handler` clears `_save_on_close`; `accept_handler` calls `_cleanup_preview_renderer` |
 | `gui/dialog_tool_manager.py` | `NavigationManager.handle_wheel_event`, `ToolManager` holding `measure_tool`/`interpretation_tool` |
 | `gui/dialog_signal_manager.py` | `disconnect_all()` — counterpart of `connect_all()` |
-| `gui/legend_widget.py` | `LegendWidget.cleanup()` unmounts the legend from the canvas |
+| `gui/preview_side_panel.py` | Preview legend panel (no `cleanup()` of its own) |
 
 ---
 
@@ -212,16 +210,12 @@ def _cleanup_signals_and_components(self) -> None:
     if hasattr(self, "signal_manager"):
         self.signal_manager.disconnect_all()
     logger.debug("Signals disconnected")
-    if hasattr(self, "legend_widget") and self.legend_widget:
-        with contextlib.suppress(Exception):
-            self.legend_widget.cleanup()
 ```
 
 Total signal disconnection — the mandatory counterpart of `connect_all()` and a
-GUI-guide requirement ("every connected signal must be disconnected"). The legend
-is cleaned separately under suppress because its `cleanup()` touches the canvas,
-which may not exist in headless tests. See [[dialog_signal_manager]] and
-[[legend_widget]].
+GUI-guide requirement ("every connected signal must be disconnected"). See
+[[dialog_signal_manager]]. The legend no longer lives in the dialog (it moved to the
+preview side panel, see [[preview_side_panel]]), so there is nothing to clean up here.
 
 ### `_cleanup_preview_renderer`
 
@@ -283,7 +277,7 @@ The whole module philosophy is **closing never fails**:
 
 - `suppress(AttributeError, RuntimeError, TypeError)` on `super().closeEvent`: covers destroyed Qt objects and MROs without `closeEvent` (e.g. in mocks).
 - `suppress(Exception)` on cosmetic or I/O phases: a broken rubber band or an unwritable JSON never blocks destruction.
-- `hasattr` before `tool_manager`, `signal_manager`, `legend_widget`: closing may arrive with an incomplete `__init__` when construction raised.
+- `hasattr` before `tool_manager`, `signal_manager`: closing may arrive with an incomplete `__init__` when construction raised.
 - `getattr(plugin_instance, "preview_renderer", None)`: headless dialog without plugin.
 
 ---
@@ -332,10 +326,10 @@ honest coverage:
 - [[dialog_signal_manager]] — `connect_all`/`disconnect_all`
 - [[dialog_tool_manager]] — `NavigationManager` and the tools cleaned here
 - [[dialog_interpretation_manager]] — `save_interpretations` in phase 2
-- [[legend_widget]] — phase-3 `cleanup()`
+- [[preview_side_panel]] — legend panel (no longer cleaned by this mixin)
 - [[preview_renderer]] — phase-4 memory-layer `cleanup()`
 - [[measure_tool]] / [[interpretation_tool]] — tools disarmed
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

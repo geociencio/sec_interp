@@ -17,10 +17,10 @@ cssclass: secinterp-note
 # `gui/ui/pages/settings/` — Tabs de ajustes (default, advanced, info)
 
 > [!abstract] Resumen en una línea
-> Package `gui/ui/pages/settings/` (5 files): namespace de los ajustes — `DefaultTab` (qué se exporta), `AdvancedTab` (toggles 3D), `build_info_tab` (metadatos de solo lectura vía `read_plugin_metadata`) y `settings_persistence` (`load_settings`/`save_settings`) — que `SettingsPage` agrega en un `QTabWidget`.
+> Package `gui/ui/pages/settings/` (7 files): namespace de los ajustes — `DefaultTab` (qué se exporta), `AdvancedTab` (toggles 3D), `build_info_tab` (metadatos de solo lectura vía `read_plugin_metadata`), `settings_persistence` (`load_settings`/`save_settings`) y el editor de estilos **Symbology** (`SymbologyTab` + `UnitsEditorMixin`) — que `SettingsPage` agrega en un `QTabWidget`.
 
-**Ruta**: `gui/ui/pages/settings/` (5 archivos, ~416 líneas)
-**Símbolos principales**: `DefaultTab`, `AdvancedTab`, `build_info_tab`, `load_settings`, `save_settings`
+**Ruta**: `gui/ui/pages/settings/` (7 archivos, ~909 líneas)
+**Símbolos principales**: `DefaultTab`, `AdvancedTab`, `build_info_tab`, `load_settings`, `save_settings`, `SymbologyTab`, `UnitsEditorMixin`
 **Capa**: GUI (QGIS · formularios + persistencia en `QgsSettings`/`ConfigService`)
 **Tags**: #secinterp #gui #pages
 
@@ -38,6 +38,7 @@ en tabs independientes con persistencia desacoplada:
 | Activar funciones 3D / trazas de sondaje sin mezclar con exports | `AdvancedTab`: `chk_enable_3d` + 4 toggles `chk_3d_*` |
 | Mostrar versión, autor y documentación sin permitir edición | `build_info_tab()`: función que construye un `QWidget` de solo lectura |
 | Leer/escribir ajustes sin acoplar los tabs al store | `settings_persistence`: `load_settings` / `save_settings` funcionales |
+| Editar estilos del preview, leyenda y unidades en vivo | `SymbologyTab` + `UnitsEditorMixin` (v3.11.0) |
 | `SettingsPage` no debe importar 4 módulos sueltos | `__init__.py` re-exporta las 3 piezas con `__all__` explícito |
 
 > [!important] Nota arquitectónica
@@ -171,6 +172,8 @@ from sec_interp.logger_config import get_logger
 | [[#AdvancedTab\|advanced_tab.py]] | 106 | Toggles 3D y de trazas de sondaje |
 | [[#build_info_tab\|info_tab.py]] | 48 | Función que construye el tab informativo de solo lectura |
 | [[#Persistencia\|settings_persistence.py]] | 75 | `load_settings` / `save_settings` funcionales |
+| [[symbology_tab\|symbology_tab.py]] | 354 | Tab de estilos en vivo + opciones de leyenda |
+| [[symbology_units\|symbology_units.py]] | 139 | Mixin del editor por unidad (alias/color/orden) |
 
 ---
 
@@ -439,4 +442,4 @@ PYTHONPATH=.. uv run python3 -m unittest tests.gui.test_dialog_settings_persiste
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

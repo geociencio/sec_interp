@@ -412,4 +412,4 @@ Real coverage in `tests/gui/test_dialog_state_manager.py` (mocked dialog):
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

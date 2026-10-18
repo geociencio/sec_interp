@@ -459,4 +459,4 @@ contract, guards and `get_setting`, applicable to all 4 classes):
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

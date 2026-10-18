@@ -13,7 +13,7 @@ cssclass: secinterp-note
 # `gui/ui/pages/settings_page.py`
 
 > [!abstract] One-line summary
-> Settings coordinator page: Default/Advanced/Info tab container delegating to `DefaultTab` and `AdvancedTab`, re-exposing their widgets for compatibility and persisting via `QgsSettings` + `ConfigService`.
+> Settings coordinator page: Default/Advanced/Symbology/Info tab container delegating to `DefaultTab`, `AdvancedTab` and `SymbologyTab`, re-exposing their widgets for compatibility and persisting via `QgsSettings` + `ConfigService`.
 
 **Path**: `gui/ui/pages/settings_page.py` (124 lines)
 **Main class**: `SettingsPage(BasePage)`
@@ -30,7 +30,7 @@ have to know all three and merge their reading and persistence.
 
 | Problem | Solution |
 |---------|----------|
-| Two forms (default export + advanced 3D) plus info in a single page | `SettingsPage` hosts them in a `QTabWidget` and merges `get_data` |
+| Three forms (default export, advanced 3D and symbology) plus info in a single page | `SettingsPage` hosts them in a `QTabWidget` and merges `get_data` |
 | Legacy code reaches `page.chk_exp_topo`, `page.combo_format`, etc. | `_expose_tab_widgets()` re-exposes widgets as own attributes |
 | Settings must survive QGIS restarts | `load_settings` at build + `save_settings` on every `changed` |
 
@@ -94,6 +94,7 @@ from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
 from .settings import AdvancedTab, DefaultTab, build_info_tab
+from .settings.symbology_tab import SymbologyTab
 from .settings.settings_persistence import load_settings, save_settings
 ```
 
@@ -131,6 +132,7 @@ Construction:
 |-----------|--------|-----|----------|
 | `default_tab` | `DefaultTab` | Default | `chk_exp_*` (5), `combo_format`, `txt_naming`, `btn_reset_export` |
 | `advanced_tab` | `AdvancedTab` | Advanced | `chk_enable_3d`, `chk_3d_traces/intervals/original/projected` |
+| `symbology_tab` | `SymbologyTab` | Symbology | live styles, legend and per-unit editor (see [[symbology_tab]]) |
 | `info_tab` | `build_info_tab(self.tr)` | Plugin Information | read-only (version, author, links) |
 
 ---
@@ -171,6 +173,9 @@ def _setup_ui(self) -> None:
 
     self.advanced_tab = AdvancedTab()
     self.tab_widget.addTab(self.advanced_tab, self.tr("Advanced"))
+
+    self.symbology_tab = SymbologyTab()
+    self.tab_widget.addTab(self.symbology_tab, self.tr("Symbology"))
 
     self.info_tab = build_info_tab(self.tr)
     self.tab_widget.addTab(self.info_tab, self.tr("Plugin Information"))
@@ -418,4 +423,4 @@ Indirect coverage:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

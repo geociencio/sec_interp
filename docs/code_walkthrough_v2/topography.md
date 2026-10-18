@@ -16,7 +16,7 @@ cssclass: secinterp-note
 > [!abstract] Resumen en una línea
 > Handler de exportación de **topografía**: vuelca el perfil topográfico a CSV (dist, elev) y a una capa vectorial de línea de perfil, como primer paso del pipeline de exportación.
 
-**Ruta**: `core/services/export/handlers/topography.py` (63 líneas)
+**Ruta**: `core/services/export/handlers/topography.py` (114 líneas)
 **Función principal**: `export_topography`
 **Capa**: Core (QGIS-agnóstico)
 **Tags**: #secinterp #core #export #handlers
@@ -79,6 +79,7 @@ from typing import Any
 
 from sec_interp.core.exceptions import DataMissingError, ExportError
 from sec_interp.core.services.export.path_resolver import get_profile_name, resolve_export_path
+from sec_interp.core.utils.sampling import smooth_profile_by_distance
 from sec_interp.logger_config import get_logger
 ```
 
@@ -93,20 +94,26 @@ from sec_interp.exporters import ProfileLineVectorExporter
 | ② | `data: list[tuple]` es el tipo más "concreto" del paquete: pares `(dist, elev)`. |
 | ③ | `ProfileLineVectorExporter` import diferido, tras el guard lógico del orquestador. |
 | ④ | `csv_exporter` inyectado (compartido entre handlers por el orquestador). |
+| ⑤ | `smooth_profile_by_distance` es **matemática pura** de core (media móvil por distancia). |
+| ⑥ | El módulo no importa `QgsGeometry` ni `QgsCoordinateReferenceSystem`: `crs` es opaco. |
 
 ---
 
 ## 🏗️ Inventario de estructura
 
 **Funciones/Métodos:**
-- `export_topography(folder, data, crs, csv_exporter, msg, controller, settings, ext) -> None`
+- `export_topography(folder, data, crs, csv_exporter, msg, controller, settings, ext, options=None) -> None`
+- `_export_profile_pair(folder, profile_name, pattern, stems, payloads, csv_exporter, vector_exporter, msg, ext) -> None`
+- `_smoothed_topography(data, options) -> list[tuple] | None`
+- `_record_written(msg, path, folder) -> None`
 
 **Dependencias de dominio:**
 - `ProfileData` (`list[tuple[float, float]]`) — pares distancia/elevación.
 - `ProfileLineVectorExporter` (de `sec_interp.exporters`)
+- `smooth_profile_by_distance` (de `sec_interp.core.utils.sampling`)
 
-Una función pública. La firma es la más simple del paquete: sin `raster_layer`, sin
-`options`, sin `line_layer`, sin `access_control`.
+Una función pública + tres helpers privados. Desde v3.9.1 la firma incorpora `options`
+(con `smooth` y `smooth_window`) para emitir opcionalmente el par suavizado.
 
 ---
 
@@ -139,51 +146,93 @@ data`). La garantía de que `data` no esté vacío vive en el orquestador, que l
     try:
         profile_name = get_profile_name(controller)
         pattern = getattr(settings, "naming_pattern", None) if settings else None
-
-        csv_path, csv_layer = resolve_export_path(
-            folder, "topo_profile", profile_name, pattern, ".csv"
-        )
-        csv_ok = csv_exporter.export(
-            csv_path,
-            {"headers": ["dist", "elev"], "rows": data},
-            layer_name=csv_layer,
-        )
-        if csv_ok:
-            msg.append(f"  - {csv_path.relative_to(folder)}")
-        else:
-            logger.warning(f"Failed to write CSV topography to {csv_path}")
-```
-
-**CSV**: el payload usa `data` directamente como `rows` (sin transformación, porque ya
-son pares `(dist, elev)`). Headers `["dist", "elev"]`, extensión `.csv`.
-
-```python
-        vec_path, vec_layer = resolve_export_path(
-            folder, "profile_line", profile_name, pattern, ext
-        )
         vector_exporter = ProfileLineVectorExporter({})
-        vec_ok = vector_exporter.export(
-            vec_path, {"profile_data": data, "crs": crs}, layer_name=vec_layer
+
+        _export_profile_pair(
+            folder, profile_name, pattern,
+            ("topo_profile", "profile_line"),
+            ({"headers": ["dist", "elev"], "rows": data},
+             {"profile_data": data, "crs": crs}),
+            csv_exporter, vector_exporter, msg, ext,
         )
-        if vec_ok:
-            msg.append(f"  - {vec_path.relative_to(folder)}")
-        else:
-            logger.warning(f"Failed to write vector topography to {vec_path}")
+
+        smoothed = _smoothed_topography(data, options or {})
+        if smoothed:
+            _export_profile_pair(
+                folder, profile_name, pattern,
+                ("topo_profile_smoothed", "profile_line_smoothed"),
+                ({"headers": ["dist", "elev"], "rows": smoothed},
+                 {"profile_data": smoothed, "crs": crs}),
+                csv_exporter, vector_exporter, msg, ext,
+            )
 ```
 
-**Vectorial**: `base_name="profile_line"` (la línea de perfil), payload
-`{"profile_data": data, "crs": crs}`.
+El cuerpo público quedó reducido a **dos llamadas al mismo helper**: una con los datos
+crudos y otra (opcional) con el perfil suavizado. Eso eliminó la duplicación de la lógica
+"resolver ruta → exportar → registrar mensaje" que antes estaba escrita dos veces.
+
+### `_export_profile_pair` — un CSV + un vectorial
 
 ```python
-    except (OSError, ValueError, TypeError, DataMissingError) as e:
-        logger.exception(f"Topography export failed: {e}")
-        raise ExportError(f"Topography export failed: {e!s}") from e
-    except Exception as e:
-        logger.exception("Unexpected system error during topography export")
-        raise ExportError(f"Critical error exporting topography: {e}") from e
+csv_path, csv_layer = resolve_export_path(folder, csv_stem, profile_name, pattern, ".csv")
+if csv_exporter.export(csv_path, csv_payload, layer_name=csv_layer):
+    _record_written(msg, csv_path, folder)
+else:
+    logger.warning(f"Failed to write CSV topography to {csv_path}")
+
+vec_path, vec_layer = resolve_export_path(folder, vec_stem, profile_name, pattern, ext)
+if vector_exporter.export(vec_path, vec_payload, layer_name=vec_layer):
+    _record_written(msg, vec_path, folder)
+else:
+    logger.warning(f"Failed to write vector topography to {vec_path}")
 ```
 
-**Normalización**: doble `except` estándar → `ExportError` con causa.
+Recibe `stems` y `payloads` como tuplas de dos elementos: el orden es siempre
+`(CSV, vectorial)`. Un fallo de escritura **no lanza**: se registra un `warning` y se
+continúa con el otro archivo (la exportación es best-effort por archivo; el error duro solo
+llega si se rompe el flujo completo).
+
+### `_smoothed_topography` — decidir la segunda pasada
+
+```python
+window = float(options.get("smooth_window", 0) or 0)
+if options.get("smooth") and window > 0 and data:
+    return smooth_profile_by_distance(data, window)
+return None
+```
+
+| `smooth` | `smooth_window` | `data` | Resultado |
+|---|---|---|---|
+| `False` | cualquiera | cualquiera | `None` (sin segunda pasada) |
+| `True` | `0` | no vacío | `None` (ventana inválida) |
+| `True` | `> 0` | vacío | `None` |
+| `True` | `> 0` | no vacío | lista suavizada |
+
+La función es pura: no toca disco ni QGIS. `smooth_profile_by_distance` aplica una media
+móvil por distancia (no por índice), de modo que un muestreo irregular no sesga el resultado.
+
+### `_record_written` — una línea por archivo
+
+```python
+msg.append(f"  - {path.relative_to(folder)}")
+```
+
+El resumen que ve el usuario enumera rutas **relativas** a la carpeta de salida, para que el
+mensaje no dependa de dónde se exportó.
+
+### Archivos generados
+
+| Condición | CSV | Vectorial |
+|---|---|---|
+| Siempre | `topo_profile.csv` | `profile_line.<ext>` |
+| `smooth` + ventana > 0 | `topo_profile_smoothed.csv` | `profile_line_smoothed.<ext>` |
+
+El sufijo y el patrón de nombres los resuelve `resolve_export_path` con
+`get_profile_name(controller)` y `settings.naming_pattern`.
+
+**Normalización**: doble `except` estándar → `ExportError` con causa: primero los errores
+esperables (`OSError`, `ValueError`, `TypeError`, `DataMissingError`), después cualquier
+`Exception` como "Critical error".
 
 ---
 
@@ -191,8 +240,9 @@ son pares `(dist, elev)`). Headers `["dist", "elev"]`, extensión `.csv`.
 
 | Fase | Entrada | Transformación | Salida |
 |------|---------|----------------|--------|
-| CSV | `data` (pares dist/elev) | passthrough como `rows` | `topo_profile.csv` + `msg` |
-| Vector | `data`, `crs` | `ProfileLineVectorExporter.export` | línea de perfil + `msg` |
+| CSV crudo | `data` (pares dist/elev) | passthrough como `rows` | `topo_profile.csv` + `msg` |
+| Vector crudo | `data`, `crs` | `ProfileLineVectorExporter.export` | `profile_line.<ext>` + `msg` |
+| Suavizado (opcional) | `data` + `options` | `smooth_profile_by_distance` | `topo_profile_smoothed.csv` / `profile_line_smoothed.<ext>` |
 | Errores | excepción cruda | `except → ExportError` | excepción de dominio |
 
 ---
@@ -203,7 +253,9 @@ son pares `(dist, elev)`). Headers `["dist", "elev"]`, extensión `.csv`.
 |--------|-------|-----------|
 | **Lazy import (deferred)** | `ProfileLineVectorExporter` | ahorrar carga sin necesidad |
 | **Dependency injection** | `csv_exporter` como parámetro | compartir el exporter |
-| **Facade** | función única | ocultar CSV + vectorial tras una firma |
+| **Facade** | `export_topography` | ocultar 2–4 archivos tras una firma |
+| **Extract helper** | `_export_profile_pair` | una sola copia del par CSV+vector |
+| **Pure function** | `_smoothed_topography` / `smooth_profile_by_distance` | testear el suavizado sin I/O |
 | **Exception translation** | `except → ExportError` | normalizar fallos |
 
 ---
@@ -212,14 +264,17 @@ son pares `(dist, elev)`). Headers `["dist", "elev"]`, extensión `.csv`.
 
 | Símbolo | Firma / Hereda | Uso típico |
 |---------|----------------|------------|
-| `export_topography` | `(folder, data, crs, csv_exporter, msg, controller, settings, ext) -> None` | Exportar perfil topográfico CSV + vectorial |
+| `export_topography` | `(folder, data, crs, csv_exporter, msg, controller, settings, ext, options=None) -> None` | Exportar perfil topográfico (crudo y opcionalmente suavizado) |
+| `_export_profile_pair` | `(folder, profile_name, pattern, stems, payloads, csv_exporter, vector_exporter, msg, ext) -> None` | Escribir un par CSV+vectorial |
+| `_smoothed_topography` | `(data, options) -> list[tuple] \| None` | Decidir y calcular el perfil suavizado |
+| `_record_written` | `(msg, path, folder) -> None` | Añadir una línea al resumen |
 | `ProfileLineVectorExporter` | `BaseExporter` (import diferido) | Escribir la línea de perfil |
 
 ---
 
 ## 📐 Contrato de firma del handler
 
-Ocho parámetros, con `csv_exporter` inyectado:
+Nueve parámetros (el último opcional), con `csv_exporter` inyectado:
 
 | Parámetro | Tipo | Rol |
 |-----------|------|-----|
@@ -231,6 +286,7 @@ Ocho parámetros, con `csv_exporter` inyectado:
 | `controller` | `Any \| None` | Fuente del nombre de perfil |
 | `settings` | `Any \| None` | Ajustes (`naming_pattern`) |
 | `ext` | `str` | Extensión de salida |
+| `options` | `dict \| None` | `smooth` y `smooth_window` (segunda pasada opcional) |
 
 > [!note] `data` no se transforma
 > A diferencia de `geology.py` (aplanado) o `structures.py` (extracción de campos), la
@@ -244,7 +300,7 @@ El orquestador agrupa topografía y ejes en un solo handler compuesto:
 def topo_handler(settings=export_settings, ext=format_ext) -> None:
     topo_h.export_topography(
         folder, profile_data, line_crs, csv_exporter, msg,
-        self.controller, settings, ext,
+        self.controller, settings, ext, options,
     )
     axes_h.export_axes(
         folder, profile_data, line_crs, msg,
@@ -290,19 +346,46 @@ el mismo `ProfileData` que consume `export_axes`.
 ## 👀 Observaciones y notas
 
 > [!success] Fortalezas
-> - Firma mínima y clara: el dataset topográfico no necesita opciones extra.
+> - Firma clara y estable: un dataset obligatorio + opciones de presentación.
 > - `data` se pasa tal cual al CSV (sin transformación), cero fricción.
+> - El suavizado es una función pura reutilizable y testeable.
 > - Contrato de errores uniforme con `ExportError`.
 
 > [!warning] Puntos de atención
 > - La ausencia de guard clause acopla el handler al contrato del orquestador (frágil si
 >   se llama directamente).
 > - `data: list[tuple]` no especifica la forma del par (debería ser `list[tuple[float, float]]`).
+> - Un fallo de escritura de un archivo solo deja un `warning`: el resumen puede listar un
+>   par incompleto sin marcar el error.
 
 > [!question] Preguntas abiertas
 > - ¿Añadir `if not data: return` defensivo por si el handler se reutiliza fuera del
 >   orquestador?
 > - ¿Tipar `data` como `ProfileData` (alias ya definido en `entities.py`)?
+
+---
+
+## 🧭 Ejemplo de resumen de exportación
+
+Con `smooth=True` y `smooth_window=25`, el `msg` acumulado queda así:
+
+```text
+  - topo_profile.csv
+  - profile_line.gpkg
+  - topo_profile_smoothed.csv
+  - profile_line_smoothed.gpkg
+```
+
+Sin suavizado solo aparecen las dos primeras líneas. El orden refleja el de las llamadas:
+primero el par crudo y después el suavizado, que es también el orden en que el usuario los
+verá en el resumen del diálogo.
+
+| Situación | `msg` |
+|---|---|
+| Exportación completa | 2 líneas (o 4 con suavizado) |
+| CSV falla, vector OK | 1 línea (o 3) + `warning` en el log |
+| Vector falla, CSV OK | 1 línea (o 3) + `warning` en el log |
+| Excepción de flujo | `ExportError` (no se devuelve resumen parcial) |
 
 ---
 
@@ -318,4 +401,4 @@ el mismo `ProfileData` que consume `export_axes`.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

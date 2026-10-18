@@ -187,4 +187,4 @@ mixins, cablea servicios y extractores, y carga la traducción del locale.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

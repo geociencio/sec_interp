@@ -17,10 +17,10 @@ cssclass: secinterp-note
 # `gui/ui/pages/settings/` — Settings tabs (default, advanced, info)
 
 > [!abstract] One-line summary
-> Package `gui/ui/pages/settings/` (5 files): settings namespace — `DefaultTab` (what gets exported), `AdvancedTab` (3D toggles), `build_info_tab` (read-only metadata via `read_plugin_metadata`) and `settings_persistence` (`load_settings`/`save_settings`) — aggregated by `SettingsPage` in a `QTabWidget`.
+> Package `gui/ui/pages/settings/` (7 files): settings namespace — `DefaultTab` (what gets exported), `AdvancedTab` (3D toggles), `build_info_tab` (read-only metadata via `read_plugin_metadata`), `settings_persistence` (`load_settings`/`save_settings`) and the **Symbology** style editor (`SymbologyTab` + `UnitsEditorMixin`) — aggregated by `SettingsPage` in a `QTabWidget`.
 
-**Path**: `gui/ui/pages/settings/` (5 files, ~416 lines)
-**Main symbols**: `DefaultTab`, `AdvancedTab`, `build_info_tab`, `load_settings`, `save_settings`
+**Path**: `gui/ui/pages/settings/` (7 files, ~909 lines)
+**Main symbols**: `DefaultTab`, `AdvancedTab`, `build_info_tab`, `load_settings`, `save_settings`, `SymbologyTab`, `UnitsEditorMixin`
 **Layer**: GUI (QGIS · forms + persistence on `QgsSettings`/`ConfigService`)
 **Tags**: #secinterp #gui #pages
 
@@ -38,6 +38,7 @@ with decoupled persistence:
 | Enable 3D / drillhole-trace features without mixing with exports | `AdvancedTab`: `chk_enable_3d` + four `chk_3d_*` toggles |
 | Show version, author and docs without allowing edits | `build_info_tab()`: function building a read-only `QWidget` |
 | Read/write settings without coupling tabs to the store | `settings_persistence`: functional `load_settings` / `save_settings` |
+| Edit preview styles, legend and units live | `SymbologyTab` + `UnitsEditorMixin` (v3.11.0) |
 | `SettingsPage` should not import 4 loose modules | `__init__.py` re-exports the 3 pieces with explicit `__all__` |
 
 > [!important] Architectural note
@@ -171,6 +172,8 @@ from sec_interp.logger_config import get_logger
 | [[#AdvancedTab\|advanced_tab.py]] | 106 | 3D and drillhole-trace toggles |
 | [[#build_info_tab\|info_tab.py]] | 48 | Function building the read-only info tab |
 | [[#Persistence\|settings_persistence.py]] | 75 | Functional `load_settings` / `save_settings` |
+| [[symbology_tab\|symbology_tab.py]] | 354 | Live style tab + legend options |
+| [[symbology_units\|symbology_units.py]] | 139 | Per-unit editor mixin (alias/color/order) |
 
 ---
 
@@ -440,4 +443,4 @@ PYTHONPATH=.. uv run python3 -m unittest tests.gui.test_dialog_settings_persiste
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

@@ -226,7 +226,7 @@ def _calculate_dip_length(struct_data) -> float | None: ...
 | Exageración vertical | argumento explícito o `page_dem.vertexag_spin` |
 | Longitud de buzamiento | `resolución ráster × page_struct.scale_spin`, en unidades de mapa |
 | Dibujo | `preview_renderer.render(...)`; si devuelve `canvas=None`, aborta con `debug` |
-| Publicación | `dlg.render_state.update(canvas, layers)` + `legend_widget.update_legend(...)` |
+| Publicación | `dlg.render_state.update(canvas, layers)` + `preview_widget.side_panel.update_legend(...)` |
 
 Es el mixin más desacoplado: ni siquiera importa `qgis.*`.
 
@@ -398,4 +398,4 @@ Además conserva dos métodos propios fuera de los mixins:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

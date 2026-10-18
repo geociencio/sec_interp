@@ -361,6 +361,31 @@ píxel `1e-4` se marca; `(0, 0 : 200, 200)` se acepta.
 
 ---
 
+## 🧭 Matriz de decisión
+
+| `crs_is_geographic` | Extensión | Span / píxel | Veredicto |
+|---|---|---|---|
+| `True` | dentro de lon/lat | cualquiera | plausible |
+| `True` | fuera de lon/lat | cualquiera | **implausible** (proyectada declarada geográfica) |
+| `False` | fuera de lon/lat | span ≥ 1 y píxel ≥ 1 mm | plausible |
+| `False` | dentro de lon/lat | span < 1 o píxel < 1 mm | **implausible** (geográfica declarada proyectada) |
+| `False` | dentro de lon/lat | span/píxel mayores | plausible (UTM cerca del origen) |
+| `None` | cualquiera | — | sin señal (no decide) |
+
+**Cómo se combinan las señales**: el helper devuelve un motivo (string) o `None`; el
+validador lo convierte en error. La detección exige que las señales disponibles apunten a la
+contradicción: una extensión claramente proyectada con CRS geográfico bloquea, pero una
+extensión dentro de rango no se bloquea solo porque el píxel sea pequeño.
+
+**Ejemplo**: `crs_is_geographic=True` con extensión `(500000, 0)–(500100, 100)` →
+motivo *"extent looks projected"* → bloqueo con remedio *Assign Projection*.
+
+**Falsos positivos conocidos**: un CRS geográfico con datos en 0–360 (convención de algunos
+productos) puede caer fuera de −180..180 y disparar la rama proyectada; por eso el mensaje
+pide revisar la proyección, no reproyectar a ciegas.
+
+---
+
 ## 🔗 Notas relacionadas
 
 - [[Index]] — índice de la bóveda
@@ -372,4 +397,4 @@ píxel `1e-4` se marca; `(0, 0 : 200, 200)` se acepta.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

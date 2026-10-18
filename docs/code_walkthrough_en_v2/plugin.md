@@ -225,7 +225,7 @@ def _calculate_dip_length(struct_data) -> float | None: ...
 | Vertical exaggeration | explicit argument or `page_dem.vertexag_spin` |
 | Dip length | `raster resolution × page_struct.scale_spin`, in map units |
 | Drawing | `preview_renderer.render(...)`; on `canvas=None`, aborts with `debug` |
-| Publication | `dlg.render_state.update(canvas, layers)` + `legend_widget.update_legend(...)` |
+| Publication | `dlg.render_state.update(canvas, layers)` + `preview_widget.side_panel.update_legend(...)` |
 
 It is the most decoupled mixin: it does not even import `qgis.*`.
 
@@ -399,4 +399,4 @@ It also keeps two own methods outside the mixins:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

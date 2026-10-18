@@ -304,4 +304,4 @@ The mixin declares no `__init__`; everything it consumes must exist on the host:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

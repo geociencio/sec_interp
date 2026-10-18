@@ -101,7 +101,7 @@ graph TD
 | [[interpretation_inheritance_mixin]] | `gui/interpretation_inheritance_mixin.py` (190 líneas) | Hereda atributos desde el segmento o intervalo más cercano |
 | [[interpretation_persistence_mixin]] | `gui/interpretation_persistence_mixin.py` (177 líneas) | Persiste en JSON del proyecto o en capa vectorial externa |
 | [[layer_notification_manager]] | `gui/layer_notification_manager.py` (73 líneas) | Invalida buckets del `DataCache` ante `dataChanged` (nota real, no hub) |
-| [[legend_widget]] | `gui/legend_widget.py` (81 líneas) | Overlay de leyenda sobre el canvas, sin interceptar el ratón |
+| [[preview_side_panel]] | `gui/preview_side_panel.py` (341 líneas) | Panel lateral de leyenda: capas, unidades, litologías e interpretaciones editables |
 | [[main_dialog_utils]] | `gui/main_dialog_utils.py` (50 líneas) | Helpers estáticos de acceso a entidades QGIS para la fachada |
 | [[preview_axes_manager]] | `gui/preview_axes_manager.py` (204 líneas) | Rejilla y etiquetas del preview con intervalos "agradables" 1-2-5 |
 | [[preview_callbacks_mixin]] | `gui/preview_callbacks_mixin.py` (127 líneas) | Recibe las señales de los `QgsTask` async y re-renderiza |
@@ -163,7 +163,7 @@ Lo pesado corre en [[preview_task_orchestrator]] (`QgsTask`), cuyos resultados
 recoge [[preview_callbacks_mixin]]; el dibujado lo ejecutan
 [[preview_render_mixin]] + [[preview_renderer]] con capas de
 [[preview_layer_factory]], rejilla de [[preview_axes_manager]], leyenda de
-[[preview_legend_renderer]] / [[legend_widget]] e informe de
+[[preview_legend_renderer]] / [[preview_side_panel]] e informe de
 [[preview_reporter]]. El estado compartido vive en [[preview_state]].
 
 ### Interpretaciones y salidas
@@ -220,4 +220,4 @@ cruza al core ni a los hilos de fondo; solo viajan WKT, dicts y DTOs.
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

@@ -359,4 +359,4 @@ Sin tests dedicados (no existe `test_feature_fetcher.py` ni
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

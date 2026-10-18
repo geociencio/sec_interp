@@ -193,4 +193,4 @@ only the resulting DTOs travel to the [[layer_gui_tasks]] `QgsTask`s.
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

@@ -13,9 +13,11 @@ cssclass: secinterp-note
 # `gui/preview_legend_renderer.py`
 
 > [!abstract] Resumen en una línea
-> Dibuja la leyenda del preview sobre un `QPainter`: caja semitransparente arriba-derecha con línea azul de topografía, línea roja de estructuras y swatches por unidad geológica, con tamaño auto-calculado desde `fontMetrics`.
+> Dibuja la leyenda del preview sobre un `QPainter`: construye filas tipadas (capa, unidad,
+> cabecera o interpretación), las mide, las coloca en una de cuatro esquinas y las pinta con
+> tamaño de fuente y límite de ítems configurables.
 
-**Ruta**: `gui/preview_legend_renderer.py` (178 líneas)
+**Ruta**: `gui/preview_legend_renderer.py` (279 líneas)
 **Clase principal**: `PreviewLegendRenderer`
 **Capa**: GUI (Present · Renderer de leyenda)
 **Tags**: #secinterp #gui #renderers
@@ -30,7 +32,7 @@ El canvas muestra capas temporales fuera de la leyenda del proyecto (se registra
 | Problema | Solución |
 |----------|----------|
 | Las temporales no aparecen en la leyenda de QGIS | Leyenda pintada a mano con `QPainter` sobre el canvas |
-| El número de unidades varía por preview | `_calculate_legend_size` mide cada texto con `fontMetrics` |
+| El número de unidades varía por preview | `_measure` mide cada texto con `fontMetrics` |
 | Topografía y estructuras son opcionales | Flags `has_topography` / `has_structures` con salida temprana si todo vacío |
 | Los literales deben traducirse | `QCoreApplication.translate("PreviewLegendRenderer", ...)` |
 | El pintado debe aislarse del canvas | `painter.save()` / `restore()`: fuente y pens restaurados |
@@ -93,16 +95,25 @@ from sec_interp.logger_config import get_logger
 
 ## 🏗️ Inventario de estructura
 
-**Clase:** `class PreviewLegendRenderer` — 5 `staticmethods`
+**Clase:** `class PreviewLegendRenderer` — 10 `staticmethods`
 
-- `draw_legend(painter, rect, active_units, has_topography=False, has_structures=False)`
-- `_calculate_legend_size(painter, active_units, has_topo, has_struct, config)` → `(QRectF, max_text_width)`
+- `draw_legend(painter, rect, active_units, has_topography=False, ..., layout=None, layer_colors=None)` — entrada de alto nivel
+- `_build_rows(...)` — compone todas las filas
+- `_layer_rows(...)` / `_unit_rows(...)` / `_interpretation_rows(...)` — filas por familia
+- `draw_rows(painter, rect, rows, layout=None)` — layout + pintado
+- `_position(rect, size, position, margin)` → `(x, y)`
+- `_measure(painter, rows, config)` → `(QRectF, max_text_width)`
+- `_draw_row(painter, x, y, kind, label, color, max_width, config)` → siguiente `y`
 - `_draw_legend_background(painter, x, y, width, height)`
-- `_draw_line_item(painter, x, y, label, color, max_width, config)`
-- `_draw_geology_items(painter, x, y, units, max_width, config)`
 
-**Configuración de layout** (dict en `draw_legend`):
-- `padding = 6`, `item_height = 16`, `symbol_size = 10`, `line_width = 2`, `margin = 20`
+**Helpers de módulo:** `_translator()`, `_interpretation_label(interp)`,
+`_interpretation_color(interp)`.
+
+**Tipos de fila:** `_LINE` (línea), `_SWATCH` (cuadrado), `_HEADER` (cabecera en negrita).
+
+**Layout** (dict opcional):
+- `font_size` (6–16, default 8), `position` (`top-right`, `top-left`, `bottom-right`, `bottom-left`), `max_items` (0 = todos)
+- `config` derivada: `padding = 6`, `item_height = max(12, font_size + 6)`, `symbol_size = max(8, font_size + 2)`, `line_width = 2`, `margin = 20`
 
 ---
 
@@ -119,129 +130,153 @@ from sec_interp.logger_config import get_logger
 
 ## 📖 Recorrido método por método
 
-### `draw_legend` — composición vertical
+### `draw_legend` — construir filas y delegar
 
 ```python
-@staticmethod
-def draw_legend(painter, rect, active_units, has_topography=False, has_structures=False):
-    if not active_units and not has_topography and not has_structures:
-        return
-    config = {"padding": 6, "item_height": 16, "symbol_size": 10,
-              "line_width": 2, "margin": 20}
-    painter.save()
-    painter.setFont(QFont("Arial", 8))
-    legend_size, max_text_width = PreviewLegendRenderer._calculate_legend_size(
-        painter, active_units, has_topography, has_structures, config)
-    x = rect.width() - legend_size.width() - config["margin"]
-    y = config["margin"]
-    PreviewLegendRenderer._draw_legend_background(
-        painter, x, y, legend_size.width(), legend_size.height())
-    current_y = y + config["padding"]
-    if has_topography:
-        PreviewLegendRenderer._draw_line_item(
-            painter, x, current_y,
-            QCoreApplication.translate("PreviewLegendRenderer", "Topography"),
-            QColor(0, 102, 204), max_text_width, config)
-        current_y += config["item_height"]
-    if has_structures:
-        PreviewLegendRenderer._draw_line_item(
-            painter, x, current_y,
-            QCoreApplication.translate("PreviewLegendRenderer", "Structures"),
-            QColor(204, 0, 0), max_text_width, config)
-        current_y += config["item_height"]
-    PreviewLegendRenderer._draw_geology_items(
-        painter, x, current_y, active_units, max_text_width, config)
-    painter.restore()
+rows = PreviewLegendRenderer._build_rows(
+    active_units=active_units, has_topography=has_topography,
+    has_structures=has_structures, has_drillholes=has_drillholes,
+    labels=labels or {}, drill_units=drill_units or {},
+    interpretations=interpretations or [], layer_colors=layer_colors or {},
+)
+PreviewLegendRenderer.draw_rows(painter, rect, rows, layout)
 ```
 
-| Paso | Detalle |
-|------|---------|
-| Salida temprana | Sin filas → sin caja (el canvas queda limpio en previews vacíos) |
-| Posición | Arriba-derecha: `rect.width() - legend_width - margin`, `y = margin` |
-| Orden fijo | Topografía → estructuras → unidades (inserción del dict) |
-| Colores canónicos | Topo azul `(0,102,204)`, struct rojo `(204,0,0)` |
-| Cursor vertical | `current_y` avanza `item_height` por fila |
+La entrada pública ya no pinta: normaliza los opcionales (`or {}` / `or []`) y delega en
+`_build_rows` + `draw_rows`. Eso permite testear la composición de filas sin `QPainter`.
 
-### `_calculate_legend_size` — medir antes de pintar
+### `_build_rows` — composición por familias
 
 ```python
-@staticmethod
-def _calculate_legend_size(painter, active_units, has_topo, has_struct, config):
-    fm = painter.fontMetrics()
-    max_text_width = 0
-    items = []
-    if has_topo:
-        items.append(QCoreApplication.translate("PreviewLegendRenderer", "Topography"))
-    if has_struct:
-        items.append(QCoreApplication.translate("PreviewLegendRenderer", "Structures"))
-    items.extend(active_units.keys())
-    for item in items:
-        max_text_width = max(max_text_width, fm.boundingRect(item).width())
-    width = max_text_width + config["symbol_size"] + config["padding"] * 3
-    height = len(items) * config["item_height"] + config["padding"] * 2
-    return QRectF(0, 0, width, height), max_text_width
+rows.extend(self._layer_rows(has_topography, has_structures, has_drillholes,
+                             layer_colors, tr))
+rows.extend(self._unit_rows(active_units, drill_units, labels, tr))
+rows.extend(self._interpretation_rows(interpretations, tr))
 ```
 
-Mide con la fuente ya fijada (`Arial 8`) para que el ancho sea real, incluidas las
-cadenas traducidas (más largas en ES/FR que en EN). El `QRectF` vuelve en origen: el
-llamador lo coloca arriba-derecha. Si `items` está vacío esta función no se alcanza
-(la guarda de `draw_legend` retorna antes; si se llamara directa daría alto `2×padding`).
+| Familia | Helper | Filas |
+|---|---|---|
+| Capas | `_layer_rows` | Topography, Structures, Drillhole traces |
+| Unidades | `_unit_rows` | *Geology* + swatches, *Drillhole lithologies* + swatches |
+| Interpretaciones | `_interpretation_rows` | *Interpretations* + una fila por interpretación |
+
+Cada fila es una tupla `(kind, label, color)` con `kind` en `{_LINE, _SWATCH, _HEADER}`.
+
+### `_layer_rows` — las tres capas opcionales
+
+```python
+if has_topography:
+    color = layer_colors.get("topography") or QColor(0, 102, 204)
+    rows.append((_LINE, tr("Topography"), color))
+```
+
+| Capa | Color por defecto |
+|---|---|
+| Topography | `#0066cc` |
+| Structures | `#cc0000` |
+| Drillhole traces | `#323232` |
+
+`layer_colors` viene del estilo de Symbology, así que la leyenda usa el mismo color que las
+capas (y el que el usuario haya elegido).
+
+### `_unit_rows` — geología vs litologías de sondeo
+
+```python
+if not drill_units:
+    return swatches
+rows = [(_HEADER, tr("Geology"), None)]
+rows.extend(swatches)
+rows.append((_HEADER, tr("Drillhole lithologies"), None))
+rows.extend(...)
+```
+
+Sin sondeos no se añade cabecera: la lista de geología va directa. Con sondeos se separan en
+dos secciones con cabecera para que el usuario distinga ambas familias. Los alias salen de
+`labels.get(name, name)`.
+
+### `_interpretation_rows` — interpretaciones
+
+```python
+if not interpretations:
+    return []
+rows = [(_HEADER, tr("Interpretations"), None)]
+for interp in interpretations:
+    rows.append((_SWATCH, _interpretation_label(interp), _interpretation_color(interp)))
+```
+
+`_interpretation_label` usa `name`, luego `type`, luego `"?"`; `_interpretation_color` cae a
+`#FF0000` si el color no es válido. Las interpretaciones ocultas ya vienen filtradas por el
+llamador (`hidden_interp_ids`).
+
+### `draw_rows` — layout y pintado
+
+```python
+font_size = int(layout.get("font_size") or 8)
+position = layout.get("position") or "top-right"
+if position not in _VALID_POSITIONS:
+    position = "top-right"
+max_items = int(layout.get("max_items") or 0)
+```
+
+Pasos:
+
+1. **Normalizar layout**: fuente 6–16, posición válida (fallback `top-right`), máximo de ítems.
+2. **Recortar**: si `max_items > 0` y hay más filas, se conservan las primeras y se añade
+   `(_HEADER, "+N more", None)`.
+3. **Medir** con la fuente ya aplicada (`_measure`).
+4. **Posicionar** en la esquina pedida (`_position`).
+5. **Fondo** blanco alfa 200 + borde gris (`_draw_legend_background`).
+6. **Pintar** fila a fila con `_draw_row`, que devuelve el siguiente `y`.
+
+`save()`/`restore()` envuelven todo el pintado: la fuente y el pen del canvas no se fugan.
+
+### `_position` — cuatro esquinas
+
+```python
+x = rect.width() - size.width() - margin if position.endswith("right") else margin
+y = rect.height() - size.height() - margin if position.startswith("bottom") else margin
+```
+
+Deriva la esquina del string (`top-left`, `bottom-right`, …) sin un `match` de cuatro ramas:
+`endswith("right")` y `startswith("bottom")` cubren las cuatro combinaciones.
+
+### `_measure` — medir antes de pintar
+
+```python
+for _kind, label, _color in rows:
+    max_text_width = max(max_text_width, fm.boundingRect(label).width())
+width = max_text_width + config["symbol_size"] + config["padding"] * 3
+height = len(rows) * config["item_height"] + config["padding"] * 2
+```
+
+Mide con la fuente ya fijada para que el ancho sea real, incluidas las cadenas traducidas
+(más largas en ES/FR que en EN). El `QRectF` vuelve con origen `(0, 0)`.
+
+### `_draw_row` — tres tipos de fila
+
+| `kind` | Dibujo | Avance |
+|---|---|---|
+| `_HEADER` | Texto en negrita (fuente temporal) | `+ item_height` |
+| `_LINE` | `drawLine` de `symbol_size` con el color | `+ item_height` |
+| `_SWATCH` | Cuadrado `symbol_size × symbol_size` | `+ item_height` |
+
+El texto va en negro, alineado izquierda + centrado vertical, dentro de `max_text_width`.
+La negrita se activa y se desactiva en la misma llamada para no contaminar las filas
+siguientes.
 
 ### `_draw_legend_background` — caja semitransparente con borde
 
 ```python
-@staticmethod
-def _draw_legend_background(painter, x, y, width, height):
-    rect = QRectF(x, y, width, height)
-    painter.setBrush(QColor(255, 255, 255, 200))
-    painter.setPen(Qt.PenStyle.NoPen)
-    painter.drawRect(rect)
-    painter.setBrush(Qt.BrushStyle.NoBrush)
-    painter.setPen(QColor(100, 100, 100))
-    painter.drawRect(rect)
+painter.setBrush(QColor(255, 255, 255, 200))
+painter.setPen(Qt.PenStyle.NoPen)
+painter.drawRect(rect)
+painter.setBrush(Qt.BrushStyle.NoBrush)
+painter.setPen(QColor(100, 100, 100))
+painter.drawRect(rect)
 ```
 
-Doble pasada: relleno blanco alfa 200 sin borde + borde gris `(100,100,100)` sin
-relleno. La alfa deja ver el perfil bajo la caja.
-
-### `_draw_line_item` — fila con símbolo lineal
-
-```python
-@staticmethod
-def _draw_line_item(painter, x, y, label, color, max_width, config):
-    p, ih, ss = config["padding"], config["item_height"], config["symbol_size"]
-    painter.setPen(QPen(color, config["line_width"]))
-    painter.drawLine(int(x + p), int(y + ih / 2), int(x + p + ss), int(y + ih / 2))
-    painter.setPen(QColor(0, 0, 0))
-    text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
-    painter.drawText(text_rect,
-                     Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, label)
-```
-
-Línea centrada verticalmente en la fila (`y + ih/2`), coordenadas a `int` para trazo
-nítido; texto negro alineado izquierda + centrado vertical en `max_width` (columna de
-texto alineada entre filas).
-
-### `_draw_geology_items` — un swatch por unidad
-
-```python
-@staticmethod
-def _draw_geology_items(painter, x, y, units, max_width, config):
-    p, ih, ss = config["padding"], config["item_height"], config["symbol_size"]
-    for name, color in units.items():
-        painter.setBrush(color)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.drawRect(QRectF(x + p, y + (ih - ss) / 2, ss, ss))
-        painter.setPen(QColor(0, 0, 0))
-        text_rect = QRectF(x + p * 2 + ss, y, max_width, ih)
-        painter.drawText(text_rect,
-                         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter, name)
-        y += ih
-```
-
-Cuadrado `10×10` con el `QColor` del `ColorManager` (mismo que las capas: la leyenda no
-miente) y nombre de unidad **sin traducir** (dato, no UI). Itera en orden de inserción
-del dict: el orden de la leyenda es el de primer uso en el render.
+Doble pasada: relleno blanco alfa 200 sin borde + borde gris `(100,100,100)` sin relleno. La
+alfa deja ver el perfil bajo la caja.
 
 ---
 
@@ -249,10 +284,12 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 
 | Fase | Entrada | Transformación | Salida |
 |------|---------|----------------|--------|
-| Guarda | unidades + flags | todo vacío → `return` | sin pintado |
+| Guarda | filas | lista vacía → `return` | sin pintado |
+| Layout | `layout` | fuente, posición y `max_items` | config normalizada |
+| Recorte | filas + `max_items` | prefijo + `"+N more"` | filas visibles |
 | Medición | textos + `fontMetrics` | bounding rects | `(tamaño, max_text_width)` |
-| Fondo | tamaño + margen | doble `drawRect` | caja arriba-derecha |
-| Filas | flags + `active_units` | `_draw_line_item` / `_draw_geology_items` | 0–N filas |
+| Fondo | tamaño + posición | doble `drawRect` | caja en la esquina elegida |
+| Filas | `(kind, label, color)` | `_draw_row` | 0–N filas |
 | Restauración | `painter.restore()` | fuente/pens originales | canvas intacto |
 
 ---
@@ -262,7 +299,8 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 | Patrón | Dónde | Propósito |
 |--------|-------|-----------|
 | **Immediate-mode rendering** | todo `staticmethod` | Pintar sin escena ni items |
-| **Measure-then-layout** | `_calculate_legend_size` | Caja exacta, sin recortes |
+| **Row model** | `_build_rows` → tuplas `(kind, label, color)` | Composición testeable sin painter |
+| **Measure-then-layout** | `_measure` + `_position` | Caja exacta en cualquier esquina |
 | **Save/restore (RAII pictórico)** | `save()`/`restore()` | No fugar estado del painter |
 | **Canonical colors** | azul topo / rojo struct | Convención visual estable |
 
@@ -273,11 +311,13 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 | Símbolo | Firma | Uso típico |
 |---------|-------|------------|
 | `PreviewLegendRenderer` | sin estado | `PreviewRenderer.draw_legend` delega |
-| `draw_legend` | `(painter, rect, active_units, has_topography=False, has_structures=False)` | Entrada única |
-| `_calculate_legend_size` | `(painter, active_units, has_topo, has_struct, config)` | Layout |
+| `draw_legend` | `(painter, rect, active_units, has_*, labels, drill_units, interpretations, layout, layer_colors)` | Entrada de alto nivel |
+| `_build_rows` | `(...)` → `list[tuple]` | Composición de filas |
+| `draw_rows` | `(painter, rect, rows, layout)` | Layout + pintado |
+| `_position` | `(rect, size, position, margin)` → `(x, y)` | Esquina |
+| `_measure` | `(painter, rows, config)` → `(QRectF, width)` | Medición |
+| `_draw_row` | `(painter, x, y, kind, label, color, max_width, config)` | Una fila |
 | `_draw_legend_background` | `(painter, x, y, width, height)` | Caja |
-| `_draw_line_item` | `(painter, x, y, label, color, max_width, config)` | Filas topo/struct |
-| `_draw_geology_items` | `(painter, x, y, units, max_width, config)` | Filas de unidades |
 
 ---
 
@@ -285,9 +325,11 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 
 | Situación | Comportamiento |
 |-----------|----------------|
-| Leyenda vacía | retorno temprano, sin tocar el painter |
-| `active_units` vacío pero con flags | solo filas topo/struct |
-| Flags falsos con unidades | solo filas geológicas |
+| Leyenda vacía (`rows == []`) | retorno temprano, sin tocar el painter |
+| `active_units` vacío pero con flags | solo filas de capas |
+| Flags falsos con unidades | solo filas de unidades |
+| `position` desconocida | fallback `top-right` |
+| `max_items` mayor que las filas | no se recorta |
 | Painter ajeno | `save/restore` garantiza no dejar fuente ni pen cambiados |
 
 ---
@@ -308,14 +350,14 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 > - `save/restore` disciplinado en un hot path de pintado.
 
 > [!warning] Puntos de atención
-> - Fuente hardcodeada `Arial 8`: ignora la fuente del sistema/tema QGIS.
-> - Posición fija arriba-derecha sin colisiones: puede tapar el inicio del perfil.
+> - Familia de fuente hardcodeada (`Arial`): el tamaño sí es configurable (6–16).
+> - La posición se elige entre 4 esquinas, pero no detecta colisiones con el perfil.
 > - `logger` importado pero nunca usado (resto de un refactor).
-> - Sin límite de filas: decenas de unidades alargan la caja más allá del canvas.
+> - `max_items` recorta y resume (`+N more`), pero no pagina: el resto no es visible.
 
 > [!question] Preguntas abiertas
 > - ¿Fuente desde `QgsSettings`/tema en vez de `Arial` fija?
-> - ¿Paginar o colapsar unidades cuando superan la altura del canvas?
+> - ¿Permitir varias columnas cuando el número de ítems supera la altura?
 
 ---
 
@@ -324,28 +366,34 @@ del dict: el orden de la leyenda es el de primer uso en el render.
 Con topo + struct + dos unidades (`Arenisca`, `Lutita`), la caja queda así:
 
 ```text
-┌──────────────────────┐
-│ ── Topography         │
-│ ── Structures         │
-│ ■■ Arenisca           │
-│ ■■ Lutita             │
-└──────────────────────┘
+┌────────────────────────────┐
+│ ── Topography               │
+│ ── Structures               │
+│ ── Drillhole traces         │
+│ Geology                     │
+│ ■■ Arenisca                 │
+│ ■■ Lutita                   │
+│ Drillhole lithologies       │
+│ ■■ Caliza                   │
+│ Interpretations             │
+│ ■■ Falla inferida           │
+└────────────────────────────┘
 ```
 
 | Pieza | Geometría | Color |
 |-------|-----------|-------|
-| Caja | `legend_size + margin`, arriba-derecha | relleno blanco alfa 200 |
+| Caja | `legend_size + margin`, esquina de `layout["position"]` | relleno blanco alfa 200 |
 | Borde | mismo `QRectF`, segunda pasada | gris `(100,100,100)` |
 | Línea topo | `drawLine(x+p, y+ih/2, ...)`, ancho 2 | azul `(0,102,204)` |
 | Línea struct | idéntica, otro color | rojo `(204,0,0)` |
-| Swatch | `10×10` centrado en la fila | `QColor` del `ColorManager` |
+| Swatch | `symbol_size` (10 con fuente 8) | `QColor` del `ColorManager` |
 | Texto | `max_text_width × ih`, negro | `AlignLeft + AlignVCenter` |
 
 ---
 
 ## 📏 Ejemplo de dimensionado
 
-`fontMetrics` con `Arial 8` mide: "Topography" → 62 px, "Structures" → 58 px,
+`fontMetrics` con `Arial 8` (layout por defecto) mide: "Topography" → 62 px, "Structures" → 58 px,
 "Arenisca" → 48 px, "Formación Playa Larga" → 118 px:
 
 | Paso | Cálculo | Valor |
@@ -369,7 +417,7 @@ Con topo + struct + dos unidades (`Arenisca`, `Lutita`), la caja queda así:
 | Literales UI | "Topography"/"Structures" vía `translate` (se miden traducidos) |
 | Datos | nombres de unidad sin traducir (son datos de la capa) |
 | Caja elástica | crece con el idioma: el ES suele ser más ancho que el EN |
-| Sin paginación | N unidades → N filas; con 30 unidades la caja supera el canvas |
+| Recorte | `max_items` deja las primeras N y resume el resto como `+N more` |
 
 ---
 
@@ -379,9 +427,9 @@ Con topo + struct + dos unidades (`Arenisca`, `Lutita`), la caja queda así:
 |----------|-----------|
 | ¿Quién la llama? | `PreviewRenderer.draw_legend(painter, rect)` tras `render` |
 | ¿De dónde salen las unidades? | `layer_factory.active_units` (registro del `ColorManager`) |
-| ¿De dónde los flags? | `has_topography` / `has_structures` del renderer |
+| ¿De dónde los flags? | `has_topography` / `has_structures` / `has_drillholes` del renderer |
 | ¿Cuándo se resetea? | `_cleanup_layers` vacía `active_units` y los flags |
-| ¿Pinta sobre capas? | Sí: painter del canvas, tras el `refresh`, arriba-derecha |
+| ¿Pinta sobre capas? | Sí: painter del canvas, tras el `refresh`, en la esquina configurada |
 
 > [!note] Pintado, no capa
 > La leyenda no es un `QgsVectorLayer`: no entra en el extent, el Z-order ni la
@@ -400,4 +448,4 @@ Con topo + struct + dos unidades (`Arenisca`, `Lutita`), la caja queda así:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

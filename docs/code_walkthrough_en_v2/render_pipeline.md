@@ -47,16 +47,16 @@ belongs neither to computation nor to the low-level renderer:
 ```mermaid
 graph TD
     MIX["RenderPipelineMixin<br/>(plugin/render_pipeline.py)"]
-    DLG["SecInterpDialog<br/>(get_preview_options,<br/>page_dem, page_struct,<br/>render_state, legend_widget,<br/>interpretations)"]
+    DLG["SecInterpDialog<br/>(get_preview_options,<br/>page_dem, page_struct,<br/>render_state, interpretations)"]
     PR["PreviewRenderer.render<br/>(gui/preview_renderer.py)"]
     RS["RenderState.update<br/>(gui/preview_state.py)"]
-    LG["LegendWidget.update_legend<br/>(gui/legend_widget.py)"]
+    SP["PreviewSidePanel.update_legend<br/>(gui/preview_side_panel.py)"]
     LOG["get_logger<br/>(logger_config.py)"]
 
     MIX --> DLG
     MIX --> PR
     MIX --> RS
-    MIX --> LG
+    MIX --> SP
     MIX --> LOG
     PR -.->|canvas, layers| RS
 ```
@@ -138,6 +138,7 @@ there is no section.
     if vert_exag is None:
         vert_exag = self.dlg.page_dem.vertexag_spin.value()
     dip_length = self._calculate_dip_length(struct_data)
+    style = self.dlg.page_settings.symbology_tab.get_data()
 ```
 
 Presentation-parameter resolution with clear precedence:
@@ -164,6 +165,11 @@ Presentation-parameter resolution with clear precedence:
         preserve_extent=kwargs.get("preserve_extent", False),
         drillhole_data=filtered["drill"],
         interp_data=filtered["interp"],
+        topo_color_mode=style.get("color_mode", "gradient"),
+        topo_ramp_name=style.get("ramp_name"),
+        topo_single_color=style.get("single_color_hex"),
+        layer_styles=style,
+        hidden_interp_ids=getattr(self.dlg, "_hidden_interp_ids", None),
     )
 
     if canvas is None:
@@ -181,20 +187,41 @@ refreshes), not an error.
 ```python
     self.dlg.render_state.update(canvas, layers)
 
-    if hasattr(self.dlg, "legend_widget"):
-        self.dlg.legend_widget.update_legend(
-            self.preview_renderer, options.get("show_legend", True)
+    side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
+    if side_panel is not None:
+        layer_visibility = {
+            "topography": options.get("show_topo", True),
+            "structures": options.get("show_struct", True),
+            "drillholes": options.get("show_drillholes", True),
+        }
+        side_panel.update_legend(
+            self.preview_renderer, True, style, layer_visibility,
+            getattr(self.dlg, "_hidden_interp_ids", None),
         )
+        side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
+
+    symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
+    if symbology_tab is not None:
+        symbology_tab.refresh_units()
 ```
 
-Result publication to two consumers:
+Result publication to three consumers:
 
 1. `render_state.update(canvas, layers)` — the `RenderState` (see
    [[preview_state]]) records which canvas and layers form the current scene;
    exporters and tools query it afterwards.
-2. `legend_widget.update_legend(...)` — the legend syncs with what was drawn,
-   honoring `show_legend` (default `True`). The `hasattr` covers dialogs without
-   a legend (tests, reduced builds).
+2. `side_panel.update_legend(...)` — the side-panel legend syncs with what was
+   drawn (see [[preview_side_panel]]): it receives the renderer, the style and the
+   layer visibility. `update_interpretations(...)` refreshes the interpretation
+   list. The `getattr` covers dialogs without a panel (headless tests).
+3. `symbology_tab.refresh_units()` — the per-unit editor reflects the current
+   aliases/colors (see [[symbology_tab]]).
+
+> [!note] The style comes from the Symbology tab
+> `style = page_settings.symbology_tab.get_data()` is a `dict` with colors, widths,
+> topography mode and legend options. It goes to `render()` as `layer_styles` and
+> also to the panel, so the preview and the legend share the same source (see
+> [[symbology_tab]]).
 
 ### `_get_filtered_preview_data` — visibility filtering
 
@@ -330,7 +357,7 @@ presentation, not geodesy.
 | No dialog or no renderer | `logger.warning` + `return` |
 | Overlapping render or no data | `logger.debug` + `return` (normal condition) |
 | No `struct_data` / scale ≤ 0 / invalid raster | `dip_length = None` (renderer default) |
-| Dialog without `legend_widget` | legend skipped (`hasattr`) |
+| Dialog without `preview_widget.side_panel` | legend skipped (`getattr`) |
 | Missing `show_*` flag | default `True` (visible) |
 
 > [!note] No own `try/except`
@@ -418,7 +445,8 @@ assert out["interp"] is None
 - [[main_dialog]] — spins, combos, `render_state`, `interpretations`
 - [[preview_renderer]] — `render()` and its `is_rendering` lock
 - [[preview_state]] — `RenderState.update`
-- [[legend_widget]] — `update_legend`
+- [[preview_side_panel]] — `update_legend` / `update_interpretations`
+- [[symbology_tab]] — `get_data()` (source of the `style`)
 - [[dialog_preview_manager]] — caller of `draw_preview`
 - [[preview_task_orchestrator]] — LOD and `max_points`
 - [[controller]] — `ProfileController`, source of the drawn data
@@ -426,4 +454,4 @@ assert out["interp"] is None
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

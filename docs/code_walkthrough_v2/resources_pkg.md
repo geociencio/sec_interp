@@ -398,4 +398,4 @@ Dos notas cubren este directorio; el reparto es explícito para no duplicar ni i
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

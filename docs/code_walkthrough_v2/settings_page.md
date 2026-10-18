@@ -13,7 +13,7 @@ cssclass: secinterp-note
 # `gui/ui/pages/settings_page.py`
 
 > [!abstract] Resumen en una línea
-> Página coordinadora de ajustes: contenedor con tabs Default/Advanced/Información que delega en `DefaultTab` y `AdvancedTab`, expone sus widgets por compatibilidad y persiste vía `QgsSettings` + `ConfigService`.
+> Página coordinadora de ajustes: contenedor con tabs Default/Advanced/Symbology/Información que delega en `DefaultTab`, `AdvancedTab` y `SymbologyTab`, expone sus widgets por compatibilidad y persiste vía `QgsSettings` + `ConfigService`.
 
 **Ruta**: `gui/ui/pages/settings_page.py` (124 líneas)
 **Clase principal**: `SettingsPage(BasePage)`
@@ -30,7 +30,7 @@ tendría que conocer los tres y fusionar su lectura y persistencia.
 
 | Problema | Solución |
 |----------|----------|
-| Dos formularios (export por defecto + avanzado 3D) más info en una sola página | `SettingsPage` los hospeda en un `QTabWidget` y fusiona `get_data` |
+| Tres formularios (export, avanzado 3D y symbology) más info en una sola página | `SettingsPage` los hospeda en un `QTabWidget` y fusiona `get_data` |
 | Código antiguo accede a `page.chk_exp_topo`, `page.combo_format`, etc. | `_expose_tab_widgets()` re-expone los widgets como atributos propios |
 | Los ajustes deben sobrevivir al cierre de QGIS | `load_settings` al construir + `save_settings` ante cada `changed` |
 
@@ -94,6 +94,7 @@ from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
 from .settings import AdvancedTab, DefaultTab, build_info_tab
+from .settings.symbology_tab import SymbologyTab
 from .settings.settings_persistence import load_settings, save_settings
 ```
 
@@ -131,6 +132,7 @@ Protocolo `BasePage`:
 |----------|--------|---------|-----------|
 | `default_tab` | `DefaultTab` | Default | `chk_exp_*` (5), `combo_format`, `txt_naming`, `btn_reset_export` |
 | `advanced_tab` | `AdvancedTab` | Advanced | `chk_enable_3d`, `chk_3d_traces/intervals/original/projected` |
+| `symbology_tab` | `SymbologyTab` | Symbology | estilos en vivo, leyenda y editor por unidad (ver [[symbology_tab]]) |
 | `info_tab` | `build_info_tab(self.tr)` | Plugin Information | solo lectura (versión, autor, enlaces) |
 
 ---
@@ -171,6 +173,9 @@ def _setup_ui(self) -> None:
 
     self.advanced_tab = AdvancedTab()
     self.tab_widget.addTab(self.advanced_tab, self.tr("Advanced"))
+
+    self.symbology_tab = SymbologyTab()
+    self.tab_widget.addTab(self.symbology_tab, self.tr("Symbology"))
 
     self.info_tab = build_info_tab(self.tr)
     self.tab_widget.addTab(self.info_tab, self.tr("Plugin Information"))
@@ -419,4 +424,4 @@ Cobertura indirecta:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

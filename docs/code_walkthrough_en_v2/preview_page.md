@@ -133,7 +133,7 @@ Control persistence:
 | Canvas | `canvas`, `lbl_coords`, `lbl_scale`, `lbl_crs` | map + state (grey 9pt) |
 | Actions | `btn_preview/measure/interpret/finalize/export` | render, measure, draw, export |
 | LOD | `spin_max_points`, `chk_auto_lod`, `chk_adaptive_sampling` | point cap + auto + adaptive |
-| Visibility | `chk_topo/geol/struct/drillholes/interpretations/legend` | six layers, all on |
+| Visibility | `chk_topo/geol/struct/drillholes/interpretations` | five layers, all on |
 | Results | `results_group`, `results_text` | collapsible group + read-only text |
 
 ---
@@ -241,10 +241,11 @@ on by default). Note `chk_auto_lod.toggled` is connected here **and** in
 ```python
 self.chk_topo = QCheckBox(self.tr("Show Topography"))
 self.chk_topo.setChecked(True)
-# ... chk_geol, chk_struct, chk_drillholes, chk_interpretations, chk_legend ...
+# ... chk_geol, chk_struct, chk_drillholes, chk_interpretations ...
 ```
 
-Six checkboxes, all on by default. The preview renderer consults them before
+Five checkboxes, all on by default (the legend no longer has a checkbox: it lives in the
+side panel, see [[preview_side_panel]]). The preview renderer consults them before
 adding each layer family to the canvas. They are the visual counterpart of the
 settings pages: hiding "Show Geology" never erases the [[geology_page]]
 configuration, only its render.
@@ -326,14 +327,16 @@ def dump(self) -> dict[str, Any]:
         "show_struct": self.chk_struct.isChecked(),
         "show_drillholes": self.chk_drillholes.isChecked(),
         "show_interpretations": self.chk_interpretations.isChecked(),
-        "show_legend": self.chk_legend.isChecked(),
         "auto_lod": self.chk_auto_lod.isChecked(),
         "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
+        "smooth": self.chk_smooth.isChecked(),
+        "smooth_window": self.spin_smooth_window.value(),
         "max_points": self.spin_max_points.value(),
+        "legend_splitter": list(self.canvas_splitter.sizes()),
     }
 ```
 
-Nine keys: `show_*/auto_lod/adaptive_sampling/max_points`. `load` iterates
+Eleven keys: visibilities, LOD/adaptive, smoothing, `max_points` and the `QSplitter` layout (`legend_splitter`). `load` iterates
 `(chk, key)` pairs with a per-key `is not None` guard; `reset` re-enables the six
 visibilities + adaptive, disables Auto and restores 1000 points. The canvas itself
 (rendered layers) never persists: only the controls.
@@ -464,4 +467,4 @@ indirect and must be described honestly:
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

@@ -438,4 +438,4 @@ PYTHONPATH=.. uv run python3 -m unittest tests.gui.test_settings_page -v
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

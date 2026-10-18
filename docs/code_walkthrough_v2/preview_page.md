@@ -135,7 +135,7 @@ Persistencia de controles:
 | Canvas | `canvas`, `lbl_coords`, `lbl_scale`, `lbl_crs` | mapa + estado (gris 9pt) |
 | Acciones | `btn_preview/measure/interpret/finalize/export` | render, medir, dibujar, exportar |
 | LOD | `spin_max_points`, `chk_auto_lod`, `chk_adaptive_sampling` | tope de puntos + auto + adaptativo |
-| Visibilidad | `chk_topo/geol/struct/drillholes/interpretations/legend` | seis capas, todas activas |
+| Visibilidad | `chk_topo/geol/struct/drillholes/interpretations` | cinco capas, todas activas |
 | Resultados | `results_group`, `results_text` | grupo colapsable + texto solo lectura |
 
 ---
@@ -238,15 +238,16 @@ detalle al tamaño del preview y deshabilita el spin) y muestreo adaptativo por
 curvatura (Fase 2, activo por defecto). Nótese que `chk_auto_lod.toggled` se
 conecta aquí **y** en `connect_signals`: doble conexión real (ver observaciones).
 
-### `_setup_layer_checkboxes` — seis visibilidades
+### `_setup_layer_checkboxes` — cinco visibilidades
 
 ```python
 self.chk_topo = QCheckBox(self.tr("Show Topography"))
 self.chk_topo.setChecked(True)
-# ... chk_geol, chk_struct, chk_drillholes, chk_interpretations, chk_legend ...
+# ... chk_geol, chk_struct, chk_drillholes, chk_interpretations ...
 ```
 
-Seis checkboxes, todos activos por defecto. El renderer de preview los consulta
+Cinco checkboxes, todos activos por defecto (la leyenda ya no tiene checkbox: vive en el
+panel lateral, ver [[preview_side_panel]]). El renderer de preview los consulta
 antes de añadir cada familia de capas al canvas. Son el equivalente visual de las
 páginas de configuración: ocultar "Show Geology" no borra la configuración de
 [[geology_page]], solo su render.
@@ -329,14 +330,16 @@ def dump(self) -> dict[str, Any]:
         "show_struct": self.chk_struct.isChecked(),
         "show_drillholes": self.chk_drillholes.isChecked(),
         "show_interpretations": self.chk_interpretations.isChecked(),
-        "show_legend": self.chk_legend.isChecked(),
         "auto_lod": self.chk_auto_lod.isChecked(),
         "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
+        "smooth": self.chk_smooth.isChecked(),
+        "smooth_window": self.spin_smooth_window.value(),
         "max_points": self.spin_max_points.value(),
+        "legend_splitter": list(self.canvas_splitter.sizes()),
     }
 ```
 
-Nueve claves `show_*/auto_lod/adaptive_sampling/max_points`. `load` itera pares
+Once claves: visibilidades, LOD/adaptativo, suavizado, `max_points` y el reparto del `QSplitter` (`legend_splitter`). `load` itera pares
 `(chk, key)` con guarda `is not None` por clave; `reset` reactiva las seis
 visibilidades + adaptativo, desactiva Auto y restaura 1000 puntos. El canvas en sí
 (capas renderizadas) no persiste: solo los controles.
@@ -467,4 +470,4 @@ indirecta y hay que describirla con honestidad:
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*

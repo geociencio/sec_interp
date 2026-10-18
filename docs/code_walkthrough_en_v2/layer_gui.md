@@ -102,7 +102,7 @@ graph TD
 | [[interpretation_inheritance_mixin]] | `gui/interpretation_inheritance_mixin.py` (190 lines) | Inherits attributes from the nearest segment or interval |
 | [[interpretation_persistence_mixin]] | `gui/interpretation_persistence_mixin.py` (177 lines) | Persists to project JSON or an external vector layer |
 | [[layer_notification_manager]] | `gui/layer_notification_manager.py` (73 lines) | Invalidates `DataCache` buckets on `dataChanged` (real note, not a hub) |
-| [[legend_widget]] | `gui/legend_widget.py` (81 lines) | Legend overlay on the canvas, never stealing the mouse |
+| [[preview_side_panel]] | `gui/preview_side_panel.py` (341 lines) | Legend side panel: editable layers, units, lithologies and interpretations |
 | [[main_dialog_utils]] | `gui/main_dialog_utils.py` (50 lines) | Static QGIS-entity helpers for the facade |
 | [[preview_axes_manager]] | `gui/preview_axes_manager.py` (204 lines) | Preview grid and labels with "nice" 1-2-5 intervals |
 | [[preview_callbacks_mixin]] | `gui/preview_callbacks_mixin.py` (127 lines) | Receives async `QgsTask` signals and re-renders |
@@ -164,7 +164,7 @@ through the core `PreviewService`, and caches it by the hash of
 (`QgsTask`), whose results are collected by [[preview_callbacks_mixin]];
 drawing is done by [[preview_render_mixin]] + [[preview_renderer]] with layers
 from [[preview_layer_factory]], grid from [[preview_axes_manager]], legend
-from [[preview_legend_renderer]] / [[legend_widget]], and the report from
+from [[preview_legend_renderer]] / [[preview_side_panel]], and the report from
 [[preview_reporter]]. Shared state lives in [[preview_state]].
 
 ### Interpretations and outputs
@@ -221,4 +221,4 @@ the core or the background threads; only WKT, dicts and DTOs travel.
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

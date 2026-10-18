@@ -361,6 +361,31 @@ Only if **additionally** the extent falls within lon/lat bounds
 
 ---
 
+## 🧭 Decision matrix
+
+| `crs_is_geographic` | Extent | Span / pixel | Verdict |
+|---|---|---|---|
+| `True` | inside lon/lat | any | plausible |
+| `True` | outside lon/lat | any | **implausible** (projected declared as geographic) |
+| `False` | outside lon/lat | span ≥ 1 and pixel ≥ 1 mm | plausible |
+| `False` | inside lon/lat | span < 1 or pixel < 1 mm | **implausible** (geographic declared as projected) |
+| `False` | inside lon/lat | larger span/pixel | plausible (UTM near the origin) |
+| `None` | any | — | no signal (does not decide) |
+
+**How the signals combine**: the helper returns a reason (string) or `None`; the validator
+turns it into an error. Detection requires the available signals to point at the
+contradiction: a clearly projected extent with a geographic CRS blocks, but an in-range
+extent is not blocked just because the pixel is small.
+
+**Example**: `crs_is_geographic=True` with extent `(500000, 0)–(500100, 100)` →
+reason *"extent looks projected"* → block with the *Assign Projection* remedy.
+
+**Known false positives**: a geographic CRS with 0–360 longitudes (used by some products)
+can fall outside −180..180 and trigger the projected branch; that is why the message asks to
+review the projection instead of reprojecting blindly.
+
+---
+
 ## 🔗 Related notes
 
 - [[Index]] — vault index
@@ -372,4 +397,4 @@ Only if **additionally** the extent falls within lon/lat bounds
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

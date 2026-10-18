@@ -63,7 +63,7 @@ graph TD
     DLG --> TM["ToolManager + NavigationManager"]
     DLG --> SG["SignalManager"]
     DLG --> LF["PreviewLayerFactory"]
-    DLG --> LG["LegendWidget + RenderState"]
+    DLG --> LG["PreviewSidePanel + RenderState"]
 
     PM -.->|shared cache| NM
 ```
@@ -112,7 +112,6 @@ from .dialog_preview_manager import PreviewManager
 from .dialog_signal_manager import SignalManager
 from .dialog_state_manager import StateManager
 from .dialog_tool_manager import NavigationManager, ToolManager
-from .legend_widget import LegendWidget
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_state import PreviewCache, RenderState
 from .ui.main_window import SecInterpMainWindow
@@ -121,7 +120,7 @@ from .ui.main_window import SecInterpMainWindow
 | # | Observation |
 |---|-------------|
 | ① | Mixins use absolute imports (`sec_interp.gui.*`); managers use relative ones (`.dialog_*`). Package convention: reusable pieces absolute, dialog-internal pieces relative. |
-| ② | Nine managers + `LegendWidget` + `PreviewLayerFactory` + `PreviewCache/RenderState`: the whole collaboration graph is declared here. It is the visual signature of a composition root. |
+| ② | Nine managers + `PreviewLayerFactory` + `PreviewCache/RenderState`: the whole collaboration graph is declared here. It is the visual signature of a composition root. |
 | ③ | Minimal, justified QGIS imports: `Qgis` (message levels), `QgsProject` (project instance), `QSettings`/`QUrl`/`QDesktopServices` (only for `open_help`). |
 | ④ | `PreviewService` and `Pages` are imported **inside** `_init_managers` (deferred imports) to avoid load-time cycles between `gui` and `core.services`. |
 
@@ -208,7 +207,6 @@ def __init__(self, iface=None, plugin_instance=None, parent=None) -> None:
 
     self._init_managers()
 
-    self.legend_widget = LegendWidget(self.preview_widget.canvas)
     self.render_state = RenderState()
 
     self.clear_cache_btn = QPushButton(self.tr("Clear Cache"))
@@ -240,7 +238,7 @@ def __init__(self, iface=None, plugin_instance=None, parent=None) -> None:
 |---|---|---|
 | 1. Base + identity | `super().__init__`, `iface`, `plugin_instance`, `project`, `messagebar` | Managers receive `self`; the dialog must exist first |
 | 2. Managers | `_init_managers()` | Creates input/state/preview/export/interpretation/tools |
-| 3. Visual components | `LegendWidget(canvas)`, `RenderState()`, extra buttons | Require `preview_widget` and `button_box` from the base window |
+| 3. Visual components | `RenderState()`, extra buttons | Require `preview_widget` and `button_box` from the base window |
 | 4. Signals | `ToolManager.initialize_tools()`, `SignalManager(...).connect_all()` | Everything must exist before wiring |
 | 5. Initial state | `update_all()`, `load_settings()`, `_save_on_close = True` | The UI reflects persisted state on open |
 
@@ -469,4 +467,4 @@ There is no single `test_main_dialog.py`; coverage is split by responsibility (m
 
 ---
 
-*Note of the SecInterp Code Walkthrough v2 vault — v3.9.1*
+*Note of the SecInterp Code Walkthrough v2 vault — v3.11.0*

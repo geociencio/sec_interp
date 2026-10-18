@@ -46,16 +46,16 @@ que no pertenece ni al cómputo ni al renderer de bajo nivel:
 ```mermaid
 graph TD
     MIX["RenderPipelineMixin<br/>(plugin/render_pipeline.py)"]
-    DLG["SecInterpDialog<br/>(get_preview_options,<br/>page_dem, page_struct,<br/>render_state, legend_widget,<br/>interpretations)"]
+    DLG["SecInterpDialog<br/>(get_preview_options,<br/>page_dem, page_struct,<br/>render_state, interpretations)"]
     PR["PreviewRenderer.render<br/>(gui/preview_renderer.py)"]
     RS["RenderState.update<br/>(gui/preview_state.py)"]
-    LG["LegendWidget.update_legend<br/>(gui/legend_widget.py)"]
+    SP["PreviewSidePanel.update_legend<br/>(gui/preview_side_panel.py)"]
     LOG["get_logger<br/>(logger_config.py)"]
 
     MIX --> DLG
     MIX --> PR
     MIX --> RS
-    MIX --> LG
+    MIX --> SP
     MIX --> LOG
     PR -.->|canvas, layers| RS
 ```
@@ -137,6 +137,7 @@ no hay sección.
     if vert_exag is None:
         vert_exag = self.dlg.page_dem.vertexag_spin.value()
     dip_length = self._calculate_dip_length(struct_data)
+    style = self.dlg.page_settings.symbology_tab.get_data()
 ```
 
 Resolución de parámetros de presentación con precedencia clara:
@@ -163,6 +164,11 @@ Resolución de parámetros de presentación con precedencia clara:
         preserve_extent=kwargs.get("preserve_extent", False),
         drillhole_data=filtered["drill"],
         interp_data=filtered["interp"],
+        topo_color_mode=style.get("color_mode", "gradient"),
+        topo_ramp_name=style.get("ramp_name"),
+        topo_single_color=style.get("single_color_hex"),
+        layer_styles=style,
+        hidden_interp_ids=getattr(self.dlg, "_hidden_interp_ids", None),
     )
 
     if canvas is None:
@@ -180,20 +186,41 @@ encadenados), no un error.
 ```python
     self.dlg.render_state.update(canvas, layers)
 
-    if hasattr(self.dlg, "legend_widget"):
-        self.dlg.legend_widget.update_legend(
-            self.preview_renderer, options.get("show_legend", True)
+    side_panel = getattr(self.dlg.preview_widget, "side_panel", None)
+    if side_panel is not None:
+        layer_visibility = {
+            "topography": options.get("show_topo", True),
+            "structures": options.get("show_struct", True),
+            "drillholes": options.get("show_drillholes", True),
+        }
+        side_panel.update_legend(
+            self.preview_renderer, True, style, layer_visibility,
+            getattr(self.dlg, "_hidden_interp_ids", None),
         )
+        side_panel.update_interpretations(getattr(self.dlg, "interpretations", None))
+
+    symbology_tab = getattr(getattr(self.dlg, "page_settings", None), "symbology_tab", None)
+    if symbology_tab is not None:
+        symbology_tab.refresh_units()
 ```
 
-Publicación del resultado en dos consumidores:
+Publicación del resultado en tres consumidores:
 
 1. `render_state.update(canvas, layers)` — el `RenderState` (ver [[preview_state]])
    registra qué canvas y capas componen la escena actual; exportadores y
    herramientas lo consultan después.
-2. `legend_widget.update_legend(...)` — la leyenda se sincroniza con lo dibujado,
-   respetando `show_legend` (default `True`). El `hasattr` cubre diálogos sin
-   leyenda (tests, versiones reducidas).
+2. `side_panel.update_legend(...)` — la leyenda del panel lateral se sincroniza con
+   lo dibujado (ver [[preview_side_panel]]): recibe el renderer, el estilo y la
+   visibilidad de capa. `update_interpretations(...)` refresca la lista de
+   interpretaciones. El `getattr` cubre diálogos sin panel (tests headless).
+3. `symbology_tab.refresh_units()` — el editor por unidad refleja los alias/colores
+   vigentes (ver [[symbology_tab]]).
+
+> [!note] El estilo viene del tab de Symbology
+> `style = page_settings.symbology_tab.get_data()` es un `dict` con colores, anchos,
+> modo de topografía y opciones de leyenda. Se pasa a `render()` como
+> `layer_styles` y también al panel, para que preview y leyenda compartan la misma
+> fuente (ver [[symbology_tab]]).
 
 ### `_get_filtered_preview_data` — filtro por visibilidad
 
@@ -328,7 +355,7 @@ unidades de mapa. Ambas son presentación, no geodesia.
 | Sin diálogo o sin renderer | `logger.warning` + `return` |
 | Render solapado o sin datos | `logger.debug` + `return` (condición normal) |
 | Sin `struct_data` / escala ≤ 0 / ráster inválido | `dip_length = None` (default del renderer) |
-| Diálogo sin `legend_widget` | se omite la leyenda (`hasattr`) |
+| Diálogo sin `preview_widget.side_panel` | se omite la leyenda (`getattr`) |
 | Bandera `show_*` ausente | default `True` (visible) |
 
 > [!note] Sin `try/except` propio
@@ -416,7 +443,8 @@ assert out["interp"] is None
 - [[main_dialog]] — spins, combos, `render_state`, `interpretations`
 - [[preview_renderer]] — `render()` y su lock `is_rendering`
 - [[preview_state]] — `RenderState.update`
-- [[legend_widget]] — `update_legend`
+- [[preview_side_panel]] — `update_legend` / `update_interpretations`
+- [[symbology_tab]] — `get_data()` (fuente del `style`)
 - [[dialog_preview_manager]] — llamador de `draw_preview`
 - [[preview_task_orchestrator]] — LOD y `max_points`
 - [[controller]] — `ProfileController`, origen de los datos dibujados
@@ -424,4 +452,4 @@ assert out["interp"] is None
 
 ---
 
-*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.9.1*
+*Nota de la bóveda SecInterp Code Walkthrough v2 — v3.11.0*
