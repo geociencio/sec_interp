@@ -135,22 +135,21 @@ class SignalManager:
 
     def _disconnect_preview_checkboxes(self) -> None:
         """Disconnect layer visibility checkboxes."""
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_topo.stateChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_geol.stateChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_struct.stateChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_drillholes.stateChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.preview_widget.chk_interpretations.stateChanged.disconnect()
+        widget = self.dialog.preview_widget
+        for signal in (
+            widget.chk_topo.stateChanged,
+            widget.chk_geol.stateChanged,
+            widget.chk_struct.stateChanged,
+            widget.chk_drillholes.stateChanged,
+            widget.chk_interpretations.stateChanged,
+        ):
+            with contextlib.suppress(Exception):
+                signal.disconnect()
 
     def _disconnect_preview_misc_options(self) -> None:
         """Disconnect legend, spinboxes, smoothing and adaptive sampling."""
         widget = self.dialog.preview_widget
         for signal in (
-            widget.chk_legend.stateChanged,
             widget.spin_max_points.valueChanged,
             widget.chk_auto_lod.toggled,
             widget.chk_adaptive_sampling.toggled,
@@ -163,7 +162,6 @@ class SignalManager:
     def _disconnect_page_signals(self) -> None:
         """Disconnect page-specific signals with full tracking."""
         self._disconnect_explicit_page_signals()
-        self._disconnect_vertical_exaggeration_signals()
         self._disconnect_sequential_pages()
 
     def _disconnect_explicit_page_signals(self) -> None:
@@ -171,22 +169,18 @@ class SignalManager:
         for signal in (
             self.dialog.page_dem.raster_combo.layerChanged,
             self.dialog.page_dem.band_combo.bandChanged,
+            self.dialog.page_dem.vertexag_spin.valueChanged,
+            self.dialog.page_dem.auto_ve_check.toggled,
             self.dialog.page_section.line_combo.layerChanged,
             self.dialog.page_section.dataChanged,
             self.dialog.page_geology.dataChanged,
             self.dialog.page_struct.dataChanged,
             self.dialog.page_drillhole.dataChanged,
+            self.dialog.page_settings.symbology_tab.changed,
             self.dialog.output_widget.fileChanged,
         ):
             with contextlib.suppress(Exception):
                 signal.disconnect()
-
-    def _disconnect_vertical_exaggeration_signals(self) -> None:
-        """Disconnect the vertical exaggeration gating signals."""
-        with contextlib.suppress(Exception):
-            self.dialog.page_dem.vertexag_spin.valueChanged.disconnect()
-        with contextlib.suppress(Exception):
-            self.dialog.page_dem.auto_ve_check.toggled.disconnect()
 
     def _disconnect_sequential_pages(self) -> None:
         """Sequential cleanup for all managed components."""
@@ -284,9 +278,6 @@ class SignalManager:
         self.dialog.preview_widget.chk_interpretations.stateChanged.connect(
             self.preview_manager.update_from_checkboxes
         )
-        self.dialog.preview_widget.chk_legend.stateChanged.connect(
-            self.preview_manager.update_from_checkboxes
-        )
 
         # Preview settings (LOD): re-render from cache
         widget = self.dialog.preview_widget
@@ -300,6 +291,10 @@ class SignalManager:
         # Smoothing affects the geology geometry: invalidate the preview (S2)
         widget.chk_smooth.toggled.connect(self.state_manager.update_button_state)
         widget.spin_smooth_window.valueChanged.connect(self.state_manager.update_button_state)
+
+        # Symbology changes re-render the preview live (presentation only)
+        symbology = self.dialog.page_settings.symbology_tab
+        symbology.changed.connect(self.preview_manager.update_from_checkboxes)
 
     def _connect_page_signals(self) -> None:
         """Connect page-specific signals for state updates."""

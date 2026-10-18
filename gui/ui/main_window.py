@@ -8,6 +8,7 @@ from typing import Any
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
+    QApplication,
     QDialog,
     QDialogButtonBox,
     QHBoxLayout,
@@ -43,6 +44,11 @@ class SecInterpMainWindow(QDialog):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Sec Interp"))
         self.resize(1200, 700)
+        screen = QApplication.primaryScreen()
+        if screen is not None:
+            # Never let content growth push the dialog beyond the screen.
+            rect = screen.availableGeometry()
+            self.setMaximumSize(rect.width(), rect.height())
 
         # Initialize UI components
         self.sidebar = Sidebar()

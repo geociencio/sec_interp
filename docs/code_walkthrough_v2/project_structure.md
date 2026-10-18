@@ -6,7 +6,7 @@
 > and analysis artifacts (`AGENTS.md`, `AI_CONTEXT.md`, `project_context.json`,
 > `PROJECT_SUMMARY.md`).
 
-**Last updated**: 2026-10-04
+**Last updated**: 2026-10-18
 **Plain-text copy**: [`project_structure.txt`](project_structure.txt)
 
 ---
@@ -151,7 +151,9 @@ sec_interp/
 │   │   │   │   ├── advanced_tab.py
 │   │   │   │   ├── default_tab.py
 │   │   │   │   ├── info_tab.py
-│   │   │   │   └── settings_persistence.py
+│   │   │   │   ├── settings_persistence.py
+│   │   │   │   ├── symbology_tab.py
+│   │   │   │   └── symbology_units.py
 │   │   │   ├── __init__.py
 │   │   │   ├── base_page.py
 │   │   │   ├── dem_page.py
@@ -181,7 +183,6 @@ sec_interp/
 │   ├── interpretation_inheritance_mixin.py
 │   ├── interpretation_persistence_mixin.py
 │   ├── layer_notification_manager.py
-│   ├── legend_widget.py
 │   ├── main_dialog.py
 │   ├── main_dialog_config.py
 │   ├── main_dialog_utils.py
@@ -193,6 +194,7 @@ sec_interp/
 │   ├── preview_render_mixin.py
 │   ├── preview_renderer.py
 │   ├── preview_reporter.py
+│   ├── preview_side_panel.py
 │   ├── preview_state.py
 │   ├── preview_task_orchestrator.py
 │   ├── ui_status_manager.py

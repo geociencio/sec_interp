@@ -68,7 +68,8 @@ graph TD
             direction TB
             PAGES[ui/pages/<br/>Tab-based Pages]
             ADAPTERS[adapters/<br/>UI Adapters]
-            LEGEND[legend_widget.py<br/>LegendWidget]
+            SIDE_PANEL[preview_side_panel.py<br/>Preview Side Panel]
+            SYMBOLOGY[symbology_tab.py<br/>Live Symbology]
         end
 
         MAIN --> MANAGERS
@@ -77,7 +78,8 @@ graph TD
         MAIN --> WORKERS
         MAIN --> TOOLS
         MAIN --> UI_PAGES
-        MAIN --> LEGEND
+        MAIN --> SIDE_PANEL
+        MAIN --> SYMBOLOGY
 
         MANAGERS --> RENDERING
         MANAGERS --> WORKERS

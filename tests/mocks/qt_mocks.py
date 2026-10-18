@@ -56,6 +56,11 @@ class MockQApplication(MagicMock):
         return text
 
     @staticmethod
+    def primaryScreen():
+        """Return a mock primary screen."""
+        return MagicMock(name="PrimaryScreen")
+
+    @staticmethod
     def installTranslator(translator):
         """Install translator."""
         return True
@@ -332,6 +337,7 @@ class MockQWidget(MockQObject):
         self.textChanged = mock_signal()
         self.stateChanged = mock_signal()
         self.currentIndexChanged = mock_signal()
+        self.editingFinished = mock_signal()
 
     def setVisible(self, visible):
         """Set widget visibility."""
@@ -354,8 +360,24 @@ class MockQWidget(MockQObject):
         return self.Accepted
 
     def setLayout(self, layout):
-        """Set widget layout."""
+        """Set layout."""
         self._layout = layout
+
+    def setWidgetResizable(self, resizable):
+        """Set whether the scroll area resizes its widget."""
+        pass
+
+    def setWidget(self, widget):
+        """Set the scroll area's widget."""
+        self._widget = widget
+
+    def setParent(self, parent):
+        """Set the widget parent."""
+        self._parent = parent
+
+    def deleteLater(self):
+        """Schedule the widget for deletion."""
+        self._deleted = True
 
     def layout(self):
         """Get widget layout."""
@@ -371,6 +393,18 @@ class MockQWidget(MockQObject):
 
     def setMaximumSize(self, w, h):
         """Set maximum size."""
+        pass
+
+    def setMinimumHeight(self, height):
+        """Set minimum height."""
+        pass
+
+    def setMaximumHeight(self, height):
+        """Set maximum height."""
+        pass
+
+    def setSizePolicy(self, horizontal, vertical):
+        """Set size policy."""
         pass
 
     def setEnabled(self, enabled):
@@ -552,6 +586,14 @@ class MockQLayout(MockQObject):
         """Add stretch to layout."""
         pass
 
+    def setStretchFactor(self, widget, stretch):
+        """Set the stretch factor for a widget."""
+        pass
+
+    def setStretch(self, index, stretch):
+        """Set the stretch factor for a layout item."""
+        pass
+
     def setContentsMargins(self, l, t, r, b):
         """Set contents margins."""
         pass
@@ -566,6 +608,10 @@ class MockQLayout(MockQObject):
 
     def insertWidget(self, index, widget):
         """Insert widget at index."""
+        pass
+
+    def removeWidget(self, widget):
+        """Remove a widget from the layout."""
         pass
 
     def addSpacing(self, spacing):
@@ -587,6 +633,30 @@ class MockQListWidget(MockQWidget):
     def addItem(self, item):
         """Add item to list."""
         self._items.append(item)
+
+    def clear(self):
+        """Remove all items."""
+        self._items = []
+
+    def count(self):
+        """Return the number of items."""
+        return len(self._items)
+
+    def item(self, row):
+        """Return the item at the given row."""
+        return self._items[row]
+
+    def setTextElideMode(self, mode):
+        """Set text elide mode."""
+        pass
+
+    def setWordWrap(self, enabled):
+        """Set word wrap."""
+        pass
+
+    def setUniformItemSizes(self, enabled):
+        """Set uniform item sizes."""
+        pass
 
     def setCurrentRow(self, row):
         """Set current row."""
@@ -639,6 +709,14 @@ class MockQListWidgetItem:
     def setIcon(self, icon):
         """Set item icon."""
         self._icon = icon
+
+    def setToolTip(self, tip):
+        """Set item tooltip."""
+        self._tooltip = tip
+
+    def toolTip(self):
+        """Get item tooltip."""
+        return getattr(self, "_tooltip", "")
 
     def setTextAlignment(self, alignment):
         """Set text alignment."""

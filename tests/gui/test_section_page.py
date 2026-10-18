@@ -16,9 +16,6 @@ from tests.base_test import BaseTestCase
 _SECTION_PAGE = "sec_interp.gui.ui.pages.section_page"
 
 _METRICS_PATH = "sec_interp.gui.ui.pages.section_page.extract_section_line_metrics"
-_STYLE_KEYS = {"color_mode", "ramp_name", "single_color_hex"}
-
-
 def _layer(*, valid: bool = True, geographic: bool = False) -> MagicMock:
     """Build a fake line layer for validation."""
     layer = MagicMock()
@@ -102,66 +99,6 @@ class TestSectionPageValidation(BaseTestCase):
         self.page.line_combo.currentLayer = MagicMock(return_value=_layer())
         with patch(_METRICS_PATH, return_value=(2, 100.0)):
             self.assertTrue(self.page.is_complete())
-
-
-class TestSectionPageStyle(BaseTestCase):
-    """Profile color-mode controls and their data contract."""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Ensure a QApplication exists for widget construction."""
-        super().setUpClass()
-        cls.app = QApplication.instance() or QApplication(sys.argv)
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.page = SectionPage()
-        self.page.radio_gradient.isChecked.return_value = True
-        self.page.radio_single.isChecked.return_value = False
-        self.page.ramp_button.colorRampName.return_value = "Spectral"
-        self.page.color_button.color.return_value.name.return_value = "#1f77b4"
-
-    def test_get_data_includes_style_keys(self) -> None:
-        """get_data exposes mode, ramp and color."""
-        data = self.page.get_data()
-
-        self.assertTrue(_STYLE_KEYS.issubset(data))
-        self.assertEqual(data["color_mode"], "gradient")
-        self.assertEqual(data["ramp_name"], "Spectral")
-        self.assertEqual(data["single_color_hex"], "#1f77b4")
-
-    def test_dump_includes_style_keys(self) -> None:
-        """dump carries the style keys for persistence."""
-        self.assertTrue(_STYLE_KEYS.issubset(self.page.dump()))
-
-    def test_load_restores_style(self) -> None:
-        """Loading a single-color dump selects the Simple radio."""
-        self.page.load(
-            {"color_mode": "single", "ramp_name": "RdYlGn", "single_color_hex": "#ff0000"}
-        )
-
-        self.page.radio_single.setChecked.assert_called_with(True)
-        self.page.ramp_button.setColorRampFromName.assert_called_with("RdYlGn")
-
-    def test_mode_toggle_visibility(self) -> None:
-        """Single mode hides the ramp and shows the color button."""
-        self.page.radio_single.isChecked.return_value = True
-
-        self.page._on_color_mode_changed()
-
-        self.page.ramp_button.setVisible.assert_called_with(False)
-        self.page.color_button.setVisible.assert_called_with(True)
-
-    def test_reset_returns_to_gradient(self) -> None:
-        """Reset selects the gradient mode again."""
-        self.page.reset()
-
-        self.page.radio_gradient.setChecked.assert_called_with(True)
-
-    def test_connect_disconnect_signals(self) -> None:
-        """Signal wiring is symmetric and does not raise."""
-        self.page.connect_signals()
-        self.page.disconnect_signals()
 
 
 class TestTopoStyleHash(BaseTestCase):

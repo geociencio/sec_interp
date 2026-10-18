@@ -88,20 +88,21 @@ class TestSettingsPage(BaseTestCase):
         page.chk_enable_3d.setChecked(True)
 
         data = page.get_data()
-        self.assertEqual(
-            data,
-            {
-                "enable_3d": True,
-                "exp_topo": True,
-                "exp_geol": True,
-                "exp_struct": True,
-                "exp_drill": True,
-                "exp_interp": True,
-                "drill_3d_intervals": True,
-                "drill_3d_original": True,
-                "drill_3d_projected": False,
-                "drill_3d_traces": True,
-                "export_format": "",  # MockComboBox has empty text by default
-                "export_naming": "{filename}_{profile}",  # This is the placeholder text but our mock QLineEdit doesn't do that yet
-            },
-        )
+        expected = {
+            "enable_3d": True,
+            "exp_topo": True,
+            "exp_geol": True,
+            "exp_struct": True,
+            "exp_drill": True,
+            "exp_interp": True,
+            "drill_3d_intervals": True,
+            "drill_3d_original": True,
+            "drill_3d_projected": False,
+            "drill_3d_traces": True,
+            "export_format": "",  # MockComboBox has empty text by default
+            "export_naming": "{filename}_{profile}",
+        }
+        for key, value in expected.items():
+            self.assertEqual(data[key], value)
+        # Symbology keys are included as well
+        self.assertIn("color_mode", data)

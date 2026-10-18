@@ -25,7 +25,6 @@ class TestMultiSessionPersistence(BaseTestCase):
             patch("sec_interp.gui.main_dialog.ExportManager"),
             patch("sec_interp.gui.main_dialog.PreviewManager"),
             patch("sec_interp.gui.main_dialog.InterpretationManager"),
-            patch("sec_interp.gui.main_dialog.LegendWidget"),
         ):
             self.dialog = SecInterpDialog(plugin_instance=self.mock_plugin)
 

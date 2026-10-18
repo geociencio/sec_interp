@@ -30,15 +30,16 @@ class TopoRenderer(BasePreviewRenderer):
                 ``"single"``), ``ramp_name`` and ``single_color``.
 
         """
+        width = str(kwargs.get("line_width") or LINE_STYLE["width"])
         if kwargs.get("color_mode") == "single":
-            self._apply_single_color(layer, kwargs.get("single_color"))
+            self._apply_single_color(layer, kwargs.get("single_color"), width)
             return
-        self._apply_gradient(layer, kwargs.get("ramp_name"))
+        self._apply_gradient(layer, kwargs.get("ramp_name"), width)
 
-    def _apply_gradient(self, layer: QgsVectorLayer, ramp_name: str | None) -> None:
+    def _apply_gradient(self, layer: QgsVectorLayer, ramp_name: str | None, width: str) -> None:
         """Apply graduated elevation styling, falling back to a known ramp."""
         renderer = QgsGraduatedSymbolRenderer("elev")
-        renderer.setSourceSymbol(QgsLineSymbol.createSimple(LINE_STYLE))
+        renderer.setSourceSymbol(QgsLineSymbol.createSimple({**LINE_STYLE, "width": width}))
 
         ramp = self._resolve_ramp(ramp_name)
         if ramp is not None:
@@ -48,9 +49,11 @@ class TopoRenderer(BasePreviewRenderer):
         renderer.updateClasses(layer, 8)
         layer.setRenderer(renderer)
 
-    def _apply_single_color(self, layer: QgsVectorLayer, single_color: str | None) -> None:
+    def _apply_single_color(
+        self, layer: QgsVectorLayer, single_color: str | None, width: str
+    ) -> None:
         """Apply a single-color line style."""
-        symbol = QgsLineSymbol.createSimple(LINE_STYLE)
+        symbol = QgsLineSymbol.createSimple({**LINE_STYLE, "width": width})
         color = QColor(single_color) if single_color else QColor()
         if color.isValid():
             symbol.setColor(color)

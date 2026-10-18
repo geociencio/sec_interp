@@ -19,11 +19,12 @@ class InterpretationRenderer(BasePreviewRenderer):
     def apply_style(self, layer: QgsVectorLayer, **kwargs) -> None:
         """Apply categorized styling based on interpretation ID and custom color."""
         interp_data = kwargs.get("interp_data", [])
+        default_color = kwargs.get("default_color") or "#FF0000"
         categories = []
 
         for interp in interp_data:
-            # Use interpretation color directly
-            hex_color = interp.color if interp.color else "#FF0000"
+            # Use the interpretation color, falling back to the configured default
+            hex_color = interp.color if interp.color else default_color
             color = QColor(hex_color)
 
             # Fill color with transparency - create from hex string again to avoid copy constructor issues in mocks

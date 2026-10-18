@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.9.1 | Last Updated: 2026-10-04
+> Version 3.11.0 | Last Updated: 2026-10-18
 
 ---
 
@@ -125,7 +125,7 @@ The project organization follows a highly modular architecture based on the **Se
     - `preview_legend_renderer.py` — Draws the legend (topography, structures, units) on a `QPainter` → [[preview_legend_renderer]] · [doc](code_walkthrough/layer_gui.md)
     - `preview_reporter.py` → [[preview_state]] · [doc](code_walkthrough/preview_state.md)
     - `preview_state.py` → [[preview_state]] · [doc](code_walkthrough/preview_state.md)
-    - `legend_widget.py` — dynamic legend widget
+    - `preview_side_panel.py` — collapsible legend side panel (per-unit hide/color/alias, interpretations list)
   - `renderers/` → [[gui_renderers]] · [[layer_gui_renderers]] · [doc](code_walkthrough/layer_gui_renderers.md)
     - `renderers/base_renderer.py`, `topo/geology/drillhole/structure/interpretation_renderer.py`, `color_manager.py`
   - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [[gui_tasks]] · [[layer_gui_tasks]] · [doc](code_walkthrough/layer_gui_tasks.md)
@@ -238,7 +238,8 @@ graph TD
             direction TB
             PAGES[ui/pages/<br/>Tab-based Pages]
             ADAPTERS[adapters/<br/>UI Adapters]
-            LEGEND[legend_widget.py<br/>LegendWidget]
+            SIDE_PANEL[preview_side_panel.py<br/>Preview Side Panel]
+            SYMBOLOGY[symbology_tab.py<br/>Live Symbology]
         end
 
         MAIN --> MANAGERS
@@ -247,7 +248,8 @@ graph TD
         MAIN --> WORKERS
         MAIN --> TOOLS
         MAIN --> UI_PAGES
-        MAIN --> LEGEND
+        MAIN --> SIDE_PANEL
+        MAIN --> SYMBOLOGY
 
         MANAGERS --> RENDERING
         MANAGERS --> WORKERS
@@ -496,7 +498,8 @@ graph TD
 - **Map Tools** (`tools/`): `QgsMapTool` implementations for interactive editing (pan, measure, interpretation drawing).
 - **UI Pages** (`ui/pages/`): Tab-based page components for each plugin section.
 - **UI Adapters** (`adapters/`): Adapters bridging QGIS widgets to internal models.
-- **LegendWidget** (`legend_widget.py`): Dynamic legend synchronized with renderers.
+- **PreviewSidePanel** (`preview_side_panel.py`): Collapsible legend beside the preview, synchronized with the renderers; per-unit hide/color/alias, drillhole lithologies and the interpretations list.
+- **Symbology tab** (`ui/pages/settings/symbology_tab.py`, `symbology_units.py`): Live per-layer styles (topography, structures, drillholes, interpretations), the shared per-unit editor and the legend layout (position, font size, max items).
 
 ## ⚙️ Core Layer - Business Logic
 
@@ -778,5 +781,5 @@ All tools are configured to run in CI pipelines with:
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last Updated**: 2026-10-04
-**Plugin Version**: 3.9.1
+**Plugin Version**: 3.11.0
 **Author**: Juan M. Bernales

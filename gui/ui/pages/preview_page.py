@@ -7,6 +7,7 @@ from typing import Any
 
 from qgis.core import QgsApplication
 from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -15,10 +16,15 @@ from qgis.PyQt.QtWidgets import (
     QLabel,
     QPushButton,
     QSpinBox,
+    QSplitter,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
+
+from sec_interp.gui.preview_side_panel import PreviewSidePanel
+
+_DEFAULT_PANEL_SIZES = [600, 200]
 
 
 class PreviewWidget(QWidget):
@@ -43,7 +49,19 @@ class PreviewWidget(QWidget):
         self.frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_layout = QVBoxLayout(self.frame)
 
+        self.side_panel = PreviewSidePanel()
         self._setup_canvas_area()
+
+        # Canvas on the left, legend/interpretations panel on the right
+        self.canvas_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.canvas_splitter.setChildrenCollapsible(True)
+        self.canvas_splitter.addWidget(self.canvas_container)
+        self.canvas_splitter.addWidget(self.side_panel)
+        self.canvas_splitter.setStretchFactor(0, 4)
+        self.canvas_splitter.setStretchFactor(1, 1)
+        self.canvas_splitter.setSizes(_DEFAULT_PANEL_SIZES)
+        self.frame_layout.addWidget(self.canvas_splitter, stretch=10)
+
         self._setup_controls_group()
         self._setup_results_area()
 
@@ -63,11 +81,15 @@ class PreviewWidget(QWidget):
         self.chk_smooth.toggled.connect(self._toggle_smooth_spin)
 
     def _setup_canvas_area(self) -> None:
-        """Set up map canvas and status bar."""
+        """Set up map canvas and status bar in their own container."""
+        self.canvas_container = QWidget()
+        container_layout = QVBoxLayout(self.canvas_container)
+        container_layout.setContentsMargins(0, 0, 0, 0)
+
         self.canvas = QgsMapCanvas()
         self.canvas.setCanvasColor(QColor(255, 255, 255))
         self.canvas.setMinimumHeight(300)
-        self.frame_layout.addWidget(self.canvas, stretch=10)
+        container_layout.addWidget(self.canvas, stretch=10)
 
         # -- Status Bar --
         status_layout = QHBoxLayout()
@@ -85,7 +107,7 @@ class PreviewWidget(QWidget):
         status_layout.addWidget(self.lbl_scale)
         status_layout.addStretch()
         status_layout.addWidget(self.lbl_crs)
-        self.frame_layout.addLayout(status_layout)
+        container_layout.addLayout(status_layout)
 
     def _setup_controls_group(self) -> None:
         """Set up collapsible controls (action buttons, LOD, checkboxes)."""
@@ -189,15 +211,12 @@ class PreviewWidget(QWidget):
         self.chk_drillholes.setChecked(True)
         self.chk_interpretations = QCheckBox(self.tr("Show Interpretations"))
         self.chk_interpretations.setChecked(True)
-        self.chk_legend = QCheckBox(self.tr("Show Legend"))
-        self.chk_legend.setChecked(True)
 
         chk_layout.addWidget(self.chk_topo)
         chk_layout.addWidget(self.chk_geol)
         chk_layout.addWidget(self.chk_struct)
         chk_layout.addWidget(self.chk_drillholes)
         chk_layout.addWidget(self.chk_interpretations)
-        chk_layout.addWidget(self.chk_legend)
         parent_layout.addLayout(chk_layout)
 
     def _setup_results_area(self) -> None:
@@ -245,12 +264,12 @@ class PreviewWidget(QWidget):
             "show_struct": self.chk_struct.isChecked(),
             "show_drillholes": self.chk_drillholes.isChecked(),
             "show_interpretations": self.chk_interpretations.isChecked(),
-            "show_legend": self.chk_legend.isChecked(),
             "auto_lod": self.chk_auto_lod.isChecked(),
             "adaptive_sampling": self.chk_adaptive_sampling.isChecked(),
             "smooth": self.chk_smooth.isChecked(),
             "smooth_window": self.spin_smooth_window.value(),
             "max_points": self.spin_max_points.value(),
+            "legend_splitter": list(self.canvas_splitter.sizes()),
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -261,7 +280,6 @@ class PreviewWidget(QWidget):
             (self.chk_struct, "show_struct"),
             (self.chk_drillholes, "show_drillholes"),
             (self.chk_interpretations, "show_interpretations"),
-            (self.chk_legend, "show_legend"),
             (self.chk_auto_lod, "auto_lod"),
             (self.chk_adaptive_sampling, "adaptive_sampling"),
             (self.chk_smooth, "smooth"),
@@ -276,6 +294,9 @@ class PreviewWidget(QWidget):
         if smooth_window is not None:
             self.spin_smooth_window.setValue(int(smooth_window))
         self._toggle_smooth_spin(self.chk_smooth.isChecked())
+        sizes = data.get("legend_splitter")
+        if isinstance(sizes, list) and sizes:
+            self.canvas_splitter.setSizes([int(s) for s in sizes])
 
     def reset(self) -> None:
         """Reset preview controls to defaults."""
@@ -285,7 +306,6 @@ class PreviewWidget(QWidget):
             self.chk_struct,
             self.chk_drillholes,
             self.chk_interpretations,
-            self.chk_legend,
             self.chk_adaptive_sampling,
         ]:
             chk.setChecked(True)
@@ -294,3 +314,4 @@ class PreviewWidget(QWidget):
         self.chk_smooth.setChecked(False)
         self.spin_smooth_window.setValue(30)
         self._toggle_smooth_spin(False)
+        self.canvas_splitter.setSizes(_DEFAULT_PANEL_SIZES)

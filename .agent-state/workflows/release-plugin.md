@@ -8,7 +8,7 @@ stop_conditions:
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
-  - Verify that 763 tests pass in Docker
+  - Verify that 792 tests pass in Docker
   - Confirm CC <= 10 for all methods (qgis-analyzer --max-cc 10)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)

@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->763<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->792<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-18<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -15,7 +15,7 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->23<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->301<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->323<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->352<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -67,6 +67,7 @@
 - **tests/core/services/drillhole/test_processors.py**: 6 tests
 - **tests/gui/test_attribute_inheritance.py**: 1 tests
 - **tests/gui/test_cache_fix.py**: 1 tests
+- **tests/gui/test_color_manager.py**: 10 tests
 - **tests/gui/test_dem_page.py**: 13 tests
 - **tests/gui/test_dialog_export_manager.py**: 10 tests
 - **tests/gui/test_dialog_input_manager.py**: 5 tests
@@ -91,21 +92,23 @@
 - **tests/gui/test_message_manager.py**: 5 tests
 - **tests/gui/test_multi_session_persistence.py**: 3 tests
 - **tests/gui/test_preview_components.py**: 20 tests
-- **tests/gui/test_preview_legend_renderer.py**: 3 tests
+- **tests/gui/test_preview_legend_renderer.py**: 7 tests
 - **tests/gui/test_preview_page.py**: 5 tests
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
+- **tests/gui/test_preview_side_panel.py**: 10 tests
 - **tests/gui/test_preview_task_orchestrator.py**: 6 tests
-- **tests/gui/test_section_page.py**: 19 tests
+- **tests/gui/test_section_page.py**: 13 tests
 - **tests/gui/test_section_resolver.py**: 10 tests
 - **tests/gui/test_settings_page.py**: 4 tests
 - **tests/gui/test_signal_restoration.py**: 5 tests
 - **tests/gui/test_structure_extractor.py**: 3 tests
 - **tests/gui/test_structure_page.py**: 3 tests
+- **tests/gui/test_symbology_tab.py**: 8 tests
 - **tests/gui/test_ui_gating.py**: 29 tests
 - **tests/gui/test_validation_extractor.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
 - **tests/gui/tasks/test_geology_task.py**: 6 tests
-- **tests/gui/renderers/test_renderers.py**: 6 tests
+- **tests/gui/renderers/test_renderers.py**: 9 tests
 - **tests/exporters/test_drillhole_3d_exporter.py**: 4 tests
 - **tests/exporters/test_drillhole_export_objects.py**: 4 tests
 - **tests/exporters/test_dynamic_attrs.py**: 1 tests

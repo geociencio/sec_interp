@@ -40,7 +40,6 @@ Submodules
    sec_interp.gui.interpretation_inheritance_mixin
    sec_interp.gui.interpretation_persistence_mixin
    sec_interp.gui.layer_notification_manager
-   sec_interp.gui.legend_widget
    sec_interp.gui.main_dialog
    sec_interp.gui.main_dialog_config
    sec_interp.gui.main_dialog_utils
@@ -51,6 +50,7 @@ Submodules
    sec_interp.gui.preview_param_hasher
    sec_interp.gui.preview_render_mixin
    sec_interp.gui.preview_renderer
+   sec_interp.gui.preview_side_panel
    sec_interp.gui.preview_reporter
    sec_interp.gui.preview_state
    sec_interp.gui.preview_task_orchestrator

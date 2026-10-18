@@ -16,28 +16,28 @@
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
         "avg_retries_per_session": 1.18,
-        "tests_ok": 763,
+        "tests_ok": 792,
         "tests_ok_note": "615 = static count of def test_ across the CI categories (agentic/core/gui/exporters/integration), auto-synced by sync_metrics.py.",
-        "quality_score_latest": 56.2,
+        "quality_score_latest": 55.7,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-09-20).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 97.1,
+        "type_hint_coverage_params": 97.2,
         "type_hint_coverage_returns": 99.7,
         "docstring_coverage": 99.0,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
         "i18n_note": "qgis-analyzer 1.15.2 MISSING_I18N rule (AST-based) reports 0 violations. PerformanceTimer timing labels are suppressed via pyproject.toml [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N] extra_ignore_calls.",
-        "total_issues": 33,
+        "total_issues": 36,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
-            "GOD_OBJECT": 17,
+            "GOD_OBJECT": 20,
             "MISSING_DOCSTRING": 9,
             "NON_PYTHONIC_LOOP": 4,
             "POTENTIAL_MISSING_SLOT": 2,
             "SPAGHETTI_CODE": 1
         },
-        "module_size_gate": "FAIL (4 modules > 400 lines)",
+        "module_size_gate": "FAIL (5 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "core/controller.py",
@@ -53,10 +53,14 @@
             },
             {
                 "path": "gui/preview_layer_factory.py",
-                "lines": 511
+                "lines": 535
+            },
+            {
+                "path": "gui/preview_renderer.py",
+                "lines": 439
             }
         ],
-        "test_count": 763
+        "test_count": 792
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -64,18 +68,18 @@
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 56.2,
+                "module_stability": 55.7,
                 "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
-                "GOD_OBJECT": 17,
+                "GOD_OBJECT": 20,
                 "MISSING_DOCSTRING": 9,
                 "NON_PYTHONIC_LOOP": 4,
                 "POTENTIAL_MISSING_SLOT": 2,
                 "SPAGHETTI_CODE": 1,
                 "MISSING_I18N": 0,
-                "total": 33
+                "total": 36
             }
         },
         "tests_local": {

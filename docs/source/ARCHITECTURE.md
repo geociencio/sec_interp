@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.9.1 | Last update: 2026-10-04
+> Version 3.11.0 | Last update: 2026-10-18
 >
 > ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
 >
@@ -127,7 +127,7 @@ graph TB
         end
 
         RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>~280 lines]
-        LEGEND[legend_widget.py<br/>LegendWidget]
+        SIDE_PANEL[preview_side_panel.py<br/>Preview Side Panel]
 
         subgraph TOOLS["🛠️ Tools"]
             MEASURE[measure_tool.py<br/>ProfileMeasureTool]
@@ -212,7 +212,7 @@ graph TB
     MAIN -->|uses| UI_MAIN
 
     PREVIEW_MGR -->|renders with| RENDERER
-    PREVIEW_MGR -->|updates| LEGEND
+    PREVIEW_MGR -->|updates| SIDE_PANEL
     PREVIEW_MGR -->|activates| TOOLS
     PREVIEW_MGR -->|launches| TASKS
     TASKS -->|uses| SERVICES
@@ -237,7 +237,7 @@ graph TB
     classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
 
     class QGIS,PLUGIN entryPoint
-    class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,LEGEND,MEASURE guiLayer
+    class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,SIDE_PANEL,MEASURE guiLayer
     class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,DOMAIN coreLayer
     class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
     class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
@@ -289,7 +289,7 @@ class SecInterpDialog(
         self.plugin_instance = plugin_instance
         self.project = QgsProject.instance()
         self._init_managers()
-        self.legend_widget = LegendWidget(self.preview_widget.canvas)
+        # The legend lives in PreviewPage.side_panel (PreviewSidePanel), not on the dialog.
         self.signal_manager = SignalManager(self, self.preview_manager,
                                             self.export_manager, self.tool_manager,
                                             self.state_manager)
@@ -1398,5 +1398,5 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last update**: 2026-01-18
-**Plugin Version**: 3.9.1
+**Plugin Version**: 3.11.0
 **Author**: Juan M. Bernales
