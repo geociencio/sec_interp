@@ -1,3 +1,15 @@
+## [2026-10-18] Session: v3.11.0 Train Merge, Vault Refresh & Portal Upload
+- **Achievement**: Closed the release train — merged **v3.11.0** into `main` (still at 3.9.1) after the scheduled publication, refreshed the bilingual Code Walkthrough v2 vault to v3.11.0, and prepared/uploaded the release ZIP. `main` is now 3.11.0.
+- **Changes**:
+    - **Merge** (`03310c45`): 26 train / 83 main commits. The train predates the `.agent` submodule conversion, so a prep commit (`5cb954cc`) dropped its in-tree framework; conflicts in `CHANGELOG`/`DEVELOPMENT_LOG` resolved as unions; the duplicated `_all_band_statistics` (same Qt6 fix on both sides) removed; `gui/legend_widget.py` deleted in favour of `gui/preview_side_panel.py`.
+    - **CC fix**: `PreviewLegendRenderer.draw_legend` arrived with CC 14 (the train CI never ran the analyzer) → split into row builders, **CC 5**.
+    - **Docs**: architecture maps, structure trees, Sphinx stubs, vault mirrors and `make docs-version` (13 docs) updated to 3.11.0.
+    - **Vault** (`ad3e4009`): 8 new notes (preview side panel, Symbology tab, per-unit mixin, `color_manager`; ES+EN), `legend_widget` notes removed, `preview_legend_renderer`/`topography` refreshed, 364 footers normalized; `check_notes --strict` PASS (314 notes).
+    - **Release**: official `sec_interp.3.11.0.zip` (2.28 MiB) downloaded and verified; uploaded to the QGIS portal (**pending approval**).
+- **Quality**: ruff/format clean · mypy 89 files · Docker **728 executed OK** · CC/i18n/security PASS · analyzer 36 issues (quality 55.7) · `check_docs` + `check_notes --strict` PASS.
+- **Maintenance**: [session_2026-10-18_v311_merge_vault_portal.md](maintenance/session_2026-10-18_v311_merge_vault_portal.md).
+- **Follow-up**: confirm portal approval; backlog `module_size_gate` + `GOD_OBJECT`; next feature work starts with interop plan §9 **B1** (drillhole 3D styles).
+
 ## [2026-10-18] Release: v3.11.0 — Live Symbology & Legend Styling
 - **Milestone**: Fourth release of the incremental train from v3.8.0 (scheduled). Goal 1.1 Fases 1–3: live per-layer symbology, per-unit editor and configurable legend layout.
 - **Highlights**: Settings → Symbology tab (live styles, project-persisted); per-unit hide/recolor/rename/reorder reflected in preview and exported legend; legend layout (position, font size, max items).

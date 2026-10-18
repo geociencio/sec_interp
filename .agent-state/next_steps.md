@@ -1,4 +1,40 @@
-# Next Steps (Updated 2026-10-11)
+# Next Steps (Updated 2026-10-18)
+
+## ✅ Session 2026-10-18 — v3.11.0 Train Merge, Vault Refresh & Portal (COMPLETADO)
+
+- **Qué se hizo**: se cerró el tren de release mergeando **v3.11.0** en `main` (que seguía en
+  3.9.1), se refrescó la **bóveda v2** a v3.11.0 y se preparó/subió el ZIP al portal.
+  - **Merge** (`03310c45`): 26 commits del tren / 83 de main. El tren se cortó antes de la
+    conversión de `.agent` en submódulo → un commit previo (`5cb954cc`) descartó su árbol
+    legacy; conflictos de `CHANGELOG`/`DEVELOPMENT_LOG` resueltos como unión; se eliminó
+    `gui/legend_widget.py` (sustituido por `gui/preview_side_panel.py`) y el duplicado de
+    `_all_band_statistics` que dejó el auto-merge (mismo fix Qt6 en ambas ramas).
+  - **Complejidad**: `PreviewLegendRenderer.draw_legend` llegó con complejidad 14 (el CI
+    del tren no ejecutaba el analyzer) → refactor a constructores de filas, ahora 5; gate PASS.
+  - **Docs**: `ARCHITECTURE_EN`, Mermaid, `docs/structure/*`, stubs Sphinx, espejos de
+    bóveda y `make docs-version` (13 docs) → 3.11.0.
+  - **Bóveda** (`ad3e4009`): 8 notas nuevas ES+EN (`preview_side_panel`, `symbology_tab`,
+    `symbology_units`, `color_manager`), fuera las 2 de `legend_widget`, refrescadas
+    `preview_legend_renderer`/`topography`, 364 footers a v3.11.0,
+    `project_structure_links` regenerado. `check_notes --strict` PASS (314 notas).
+  - **Release**: asset oficial `sec_interp.3.11.0.zip` (2.28 MiB, SHA-256 `104593c9…cba40`)
+    descargado y verificado (311 entradas, ayuda 14 idiomas); **subido al portal**.
+- **Calidad**: ruff/format limpios · `make mypy` 89 ficheros · Docker **728 ejecutados OK**
+  · CC/i18n/security PASS · analyzer 36 issues (quality 55.7) · `check_docs` y
+  `check_notes --strict` PASS.
+- **Referencia**: `docs/maintenance/session_2026-10-18_v311_merge_vault_portal.md`.
+- **Pendiente / cómo reanudar**:
+  1. **Portal QGIS**: v3.11.0 **pendiente de aprobación**; la página aún muestra 3.10.0.
+     Verificar en *My plugins* / correo.
+  2. **Opcional**: borrar la rama de seguridad `backup/main-pre-v3.11.0` cuando se valide
+     `main`; el submódulo `.agent` tiene un cambio local no versionado (contador del
+     workflow `release-plugin.md`, 763 → 792) exigido por `forge metrics validate`.
+  3. **Backlog**: `module_size_gate` FAIL (4 módulos: `core/controller.py` 428,
+     `exporters/interpretation_3d_exporter.py` 472, `gui/adapters/geometry.py` 598,
+     `gui/preview_layer_factory.py` 511), 20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`, i18n de
+     core (mensajes en inglés).
+  4. **Siguiente feature**: implementar el plan de interop §9 empezando por **B1**
+     (estilos 3D de sondeo) — `docs/plans/implementation_plan_interop_stereonet_3d.md`.
 
 ## ✅ Session 2026-10-11 — Release Train Unblock & v3.10.0 (COMPLETADO)
 

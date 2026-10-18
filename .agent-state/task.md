@@ -1,4 +1,15 @@
-# Active Task Board (Updated 2026-10-11)
+# Active Task Board (Updated 2026-10-18)
+
+### Completed this session (2026-10-18 — v3.11.0 merge + vault + portal)
+
+- [x] **Merge `release/v3.11.0` → `main`** (`03310c45`): 26 train / 83 main commits; `.agent` submodule preserved (prep commit `5cb954cc`), changelog/dev-log unions, `legend_widget` removed, duplicated Qt6 helper removed.
+- [x] **CC regression fixed**: `PreviewLegendRenderer.draw_legend` 14 → 5 (the train CI did not run the analyzer).
+- [x] **Docs aligned**: architecture maps, structure trees, Sphinx stubs, mirrors, `make docs-version` → 3.11.0.
+- [x] **Vault v3.11.0** (`ad3e4009`): 8 new notes (ES+EN) for preview side panel, Symbology tab, per-unit mixin and `color_manager`; legend_widget notes removed; 364 footers normalized; `check_notes --strict` PASS (314 notes).
+- [x] **ZIP** `dist/sec_interp.3.11.0.zip` (2.28 MiB) downloaded from the release and verified; **uploaded to the QGIS portal**.
+- Ref: `docs/maintenance/session_2026-10-18_v311_merge_vault_portal.md`.
+- [ ] **Portal**: confirm v3.11.0 approval (page still lists 3.10.0).
+- [ ] Optional: delete `backup/main-pre-v3.11.0`.
 
 ### Completed this session (2026-10-11 — ecosystem scan + stereonet/3D interop plan)
 

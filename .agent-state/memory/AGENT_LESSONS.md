@@ -15,6 +15,38 @@ See `.agent-state/memory/memory_policy.md` for the full policy.
 lessons:
 
   # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
+  - date: '2026-10-18'
+    category: TOOLING
+    topic: a 3-way merge silently duplicates a helper when both branches applied the same fix
+    lesson: The v3.11.0 train and main each cherry-picked the same Qt6 fix into
+      `gui/ui/pages/dem_page.py`, so the 3-way merge (base without the fix) kept both copies
+      of `_all_band_statistics`; tests stayed green because the second definition simply
+      shadows the first.
+    action: After merging branches that share cherry-picked fixes, diff the merged files
+      against both parents and scan for duplicated top-level defs (AST) before trusting a
+      green suite; an auto-merge with no conflict markers can still be wrong.
+
+  - date: '2026-10-18'
+    category: AGENTIC_SYSTEM
+    topic: the scheduled release CI never runs the analyzer, so CC regressions ship
+    lesson: v3.11.0 was published from the train branch while
+      `PreviewLegendRenderer.draw_legend` had complexity 14; the release workflow runs tests, docs
+      and packaging, not `qgis-analyzer --max-cc 10`, so the pre-push gate never saw it and
+      the merge into main exposed it.
+    action: Treat a release branch as CC-unverified until the analyzer runs; run
+      `qgis-analyzer analyze . --max-cc 10` (or the pre-push hook) on the branch before
+      tagging, and budget a refactor when merging a train that skipped it.
+
+  - date: '2026-10-18'
+    category: TOOLING
+    topic: merging a pre-submodule branch can delete .agent-state through rename detection
+    lesson: The train predates the framework extraction and tracks `.agent/` as a directory;
+      merging it into main (where `.agent` is a gitlink) made git pair the deleted
+      `.agent/skills/**` files with main's renamed `.agent-state/skills/**`, leaving 47
+      `UD` conflicts that would have removed the project overlay.
+    action: Drop the legacy `.agent` tree on a temporary branch before merging, and after
+      any merge involving the submodule conversion check for `UD` entries under
+      `.agent-state`; restore them with `git checkout HEAD -- .agent-state` before commit.
   - date: '2026-10-11'
     category: TOOLING
     topic: a Latin-1 CSV misread as UTF-8 silently corrupts parsed structural strikes
@@ -40,7 +72,7 @@ lessons:
     topic: dip direction is strike ± 90, chosen by the source's dip-direction label
     lesson: SecInterp's StructureMeasurement keeps original_strike (an azimuth from quadrant
       notation) and original_dip but drops the dip direction the source text carries
-      ("22 SW"). The dip direction is perpendicular to the strike: dip_dir = strike − 90 for
+      ("22 SW"). The dip direction is perpendicular to the strike (dip_dir = strike − 90) for
       the SW side (N15W -> 255) or strike + 90 for the NE side (-> 75). The cardinal label
       only names the side, so it is approximate, not an exact azimuth — reading "SW" as 225
       was wrong.
@@ -79,7 +111,7 @@ lessons:
       upstream tests that hard-code those numbers, plus a compound-coverage invariant that
       requires every granular command to be reachable in compound mode.
     action: When forking a repo with count-pinning or parity tests, treat the constants as
-      part of your fork: update TOOL_COUNT/COMPOUND_TOOL_COUNT and add the new commands to
+      part of your fork — update TOOL_COUNT/COMPOUND_TOOL_COUNT and add the new commands to
       the compound group (satisfying the invariant) rather than deleting or xfail-ing the
       tests — they are the cheapest guard that handler↔tool parity stays correct.
 
