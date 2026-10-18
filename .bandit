@@ -11,6 +11,10 @@ exclude_dirs:
   - "antigravity-framerepo"
   - "analysis_results"
   - ".git"
+  # Dev tooling, not shipped in the plugin ZIP and deliberately out of scope
+  # (mirrors .analyzerignore and [tool.ruff] exclude).
+  - ".agent"
+  - "tools"
 
 # Tests to run
 tests:
