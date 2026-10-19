@@ -160,6 +160,14 @@ transcompile:
 	@echo "----------------------------------------"
 	@uv run qgis-manage compile --type translations
 
+.PHONY: i18n-check
+i18n-check:
+	@echo
+	@echo "----------------------------------------"
+	@echo "Checking translation catalogs..."
+	@echo "----------------------------------------"
+	@uv run python3 -m unittest tests.core.test_i18n_catalogs
+
 transclean:
 	@echo
 	@echo "------------------------------------"

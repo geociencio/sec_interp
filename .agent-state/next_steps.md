@@ -1,6 +1,6 @@
 # Next Steps (Updated 2026-10-19)
 
-## ✅ Session 2026-10-19 — Export Cache Keys & Python 3.9 Compatibility (COMPLETADO)
+## ✅ Session 2026-10-19 — Export Cache, Python 3.9 & i18n (COMPLETADO)
 
 - **Caché**: `ProfileController` ahora hashea por componente todos los inputs que
   afectan a la salida: línea, ráster, `section_feature_id`, banda, `max_points`,
@@ -9,9 +9,11 @@
 - **Compatibilidad**: eliminados `isinstance(x, A | B)` y `zip(strict=...)` (Python 3.10+);
   `safe_loader` usa `from __future__ import annotations`; ruff apunta a `py39`; gate estático
   `tests/core/test_python_compat.py`; README/README_DEV declaran Python 3.9+ en runtime.
-- **Tests**: 4 regresiones de caché + 5 de compatibilidad; suite **769 OK**.
-- **Docs**: `core/AGENTS.md` alineado con el runner `unittest`.
-- **Estado actual**: `tests_static=818`, `tests_executed=769`; `agent_metrics.json` al día.
+- **i18n**: los 13 catálogos se regeneraron (363 mensajes) y se completaron las cadenas
+  v3.9–v3.11 con 0 `unfinished`; `.qm` recompilados; gate `make i18n-check` con 6 tests.
+- **Tests**: 4 de caché + 5 de compatibilidad + 6 de i18n; suite **775 OK**.
+- **Docs**: `core/AGENTS.md` alineado con unittest; README de i18n actualizado.
+- **Estado actual**: `tests_static=824`, `tests_executed=775`; `agent_metrics.json` al día.
 - **Pendiente / cómo reanudar**:
   1. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
 

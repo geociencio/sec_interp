@@ -19,11 +19,12 @@
 
 ## ✅ Cerrado recientemente (2026-10-18/19)
 
+- [x] **i18n** — los 13 catálogos se regeneraron a 363 mensajes, se completaron las cadenas v3.9–v3.11 (0 `unfinished`), se recompilaron los `.qm` y se añadió el gate `make i18n-check` (`tests/core/test_i18n_catalogs.py`).
 - [x] **Compatibilidad QGIS 3.28 / Python 3.9** — eliminados `isinstance(x, A | B)` y `zip(strict=...)`; `from __future__ import annotations` en `safe_loader`; ruff con `target-version=py39`; gate estático `tests/core/test_python_compat.py`; README/README_DEV alineados.
 - [x] **Caché de exportación** — las claves de `ProfileController` incluyen línea, ráster, `section_feature_id`, suavizado/ventana, banda y todos los mapeos de campos de sondaje; 4 tests de regresión.
 - [x] **v3.11.0** — release publicada, ZIP verificado (311 archivos, 2,28 MiB, ayuda en 14 idiomas) y subido al portal; merge del tren en `main`.
 - [x] **Auditorías** — `docs/qa/REPO_AUDIT_2026-10-18.md` y `docs/qa/AGENT_AUDIT_2026-10-18.md`.
-- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=818` / `tests_executed=769` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
+- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=824` / `tests_executed=775` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
 - [x] **Handoff** — `task.md` reescrito; el tablero anterior quedó archivado en `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - [x] **Release** — gate de docstrings alineado con el baseline real (99,0 %) y conteos de tests manuales eliminados de `release-plugin.md`.
 

@@ -35,15 +35,26 @@ make transup
 
 ### 2. Auto-Translating New Strings (Machine Translation)
 If you introduced new strings that are not present in `master_data/`, they will appear as `type="unfinished"` inside the Qt `.ts` files.
-To automatically translate them across **all 13 supported languages** without manual dictionary editing:
+The 2026-10-19 refresh regenerated all catalogs and completed the missing v3.9–v3.11
+strings with machine assistance plus a curated glossary for UI terms. Review the
+wording of important labels before a public release.
+
 ```bash
 python scripts/i18n/auto_translate_all_missing.py
 ```
-This script will parse the missing keys, ping Google Translate in parallel threads, and rewrite the `master_data/*.json` files enforcing `sort_keys=True` to maintain tidy Git diffs.
+This legacy script pings Google Translate in parallel threads and rewrites the
+`master_data/*.json` files with `sort_keys=True`. It is not part of the project's
+runtime dependencies; install `deep-translator` locally if you use it.
 
-Once the JSON is updated, simply run `make transup` again to inject them!
+### 3. Quality Gate (required)
+Before committing an i18n change, run:
+```bash
+make i18n-check
+```
+`tests/core/test_i18n_catalogs.py` fails on `unfinished` or empty translations,
+placeholder/HTML-tag mismatches, missing v3.11 strings, or missing `.qm` files.
 
-### 3. Compilation for QGIS
+### 4. Compilation for QGIS
 To compile the raw XML `.ts` files into the binary `.qm` format that QGIS physically reads during runtime:
 ```bash
 make transcompile

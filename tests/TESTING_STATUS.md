@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->818<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->824<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-18<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->40<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->310<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->316<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->352<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
@@ -43,6 +43,7 @@
 - **tests/core/test_geology_service.py**: 4 tests
 - **tests/core/test_geology_service_optional.py**: 1 tests
 - **tests/core/test_geometry_utils.py**: 8 tests
+- **tests/core/test_i18n_catalogs.py**: 6 tests
 - **tests/core/test_layer_validator.py**: 5 tests
 - **tests/core/test_path_validator.py**: 6 tests
 - **tests/core/test_preview_service.py**: 4 tests
