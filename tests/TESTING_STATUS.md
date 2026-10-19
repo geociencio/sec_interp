@@ -144,7 +144,7 @@
 ---
 
 ## 🛠️ Environment & Tools
-- **Test Runner**: `unittest` / `pytest`
+- **Test Runner**: `unittest`
 - **Environment**: Containerized (Docker)
 - **Framework**: `qgis-manage` + `uv`
 

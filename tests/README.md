@@ -1,205 +1,114 @@
-# Testing Guide for SecInterp Plugin
+# Testing Guide for the SecInterp Plugin
 
 ## Overview
 
-This plugin includes two types of tests:
-1. **Standalone tests** - Can run without QGIS installation
-2. **Full tests** - Require QGIS environment
+The suite uses the standard-library **`unittest`** framework with a **Mock-First**
+approach: `tests/core/`, `tests/gui/` and `tests/exporters/` run without a QGIS
+installation. `tests/integration/` uses a real `QgsApplication` and runs in the QGIS
+Docker image.
+
+- **755 tests** across 117 files.
+- Test base class: `tests/base_test.py::BaseTestCase` (mock injection, temp dirs,
+  cleanup).
+- QGIS/PyQt mocks: `tests/mocks/`.
+- Current inventory: [`tests/TESTING_STATUS.md`](TESTING_STATUS.md).
 
 ---
 
-## Running Standalone Tests
-
-These tests cover parsing and calculation functions that don't depend on QGIS:
+## Running the suite
 
 ```bash
-# Activate virtual environment
-cd /home/jmbernales/qgispluginsdev/sec_interp
-source .venv/bin/activate
+# Full local suite (mock-first, no QGIS required)
+PYTHONPATH=.. uv run python3 -m unittest discover tests
 
-# Run standalone tests
-uv run pytest tests/test_utils_standalone.py -v
+# A single module or test
+PYTHONPATH=.. uv run python3 -m unittest tests.core.test_algorithms -v
+PYTHONPATH=.. uv run python3 -m unittest \
+  tests.core.test_algorithms.TestAlgorithms.test_intersection -v
 
-# Run with coverage
-uv run pytest tests/test_utils_standalone.py --cov=core.utils --cov-report=term-missing
+# By category
+PYTHONPATH=.. uv run python3 -m unittest discover tests/core
+PYTHONPATH=.. uv run python3 -m unittest discover tests/gui
+PYTHONPATH=.. uv run python3 -m unittest discover tests/exporters
+PYTHONPATH=.. uv run python3 -m unittest discover tests/agentic
+
+# Integration tests (real QGIS; Docker is recommended)
+PYTHONPATH=.. FORCE_MOCKS=0 uv run python3 -m unittest discover tests/integration
+
+# Full health check in the QGIS container
+make docker-test
 ```
 
-**What's tested**:
-- Strike parsing (numeric and quadrant notation)
-- Dip parsing (numeric and with direction)
-- Cardinal direction conversion
-- Apparent dip calculation
-- Elevation interpolation
+`forge.toml` also records the canonical commands under
+`[project] test_command` and `test_command_docker`.
 
 ---
 
-## Running Full Tests (Requires QGIS)
-
-Full tests require QGIS Python environment:
-
-```bash
-# Option 1: Using QGIS Python Console
-# Open QGIS → Plugins → Python Console
-# Run:
-import sys
-sys.path.insert(0, '/home/jmbernales/qgispluginsdev/sec_interp')
-import pytest
-pytest.main(['-v', 'tests/'])
-
-# Option 2: Using QGIS Python directly
-/usr/bin/python3-qgis -m pytest tests/ -v
-```
-
-**What's tested**:
-- All standalone tests
-- Validation functions
-- Exporters (CSV, Shapefile, PDF, etc.)
-- QGIS-dependent utilities
-
----
-
-## Test Structure
+## Test structure
 
 ```
 tests/
-├── conftest.py                  # Shared fixtures
-├── test_utils_standalone.py     # No QGIS required ✓
-├── test_utils.py                # Requires QGIS
-├── test_validation.py           # Requires QGIS
-└── test_exporters.py            # Requires QGIS
+├── base_test.py          # BaseTestCase + mock wiring
+├── mocks/                # QGIS/PyQt mock implementations
+├── core/                 # Pure logic (no QGIS)
+├── gui/                  # GUI/pages/managers (mocked)
+├── exporters/            # Export formats (mocked)
+├── integration/          # Real QgsApplication + QGIS API
+├── benchmarks/           # Performance checks
+├── agentic/              # Agentic tooling tests
+└── TESTING_STATUS.md     # Generated inventory and counts
 ```
 
 ---
 
-## Writing New Tests
+## Writing new tests
 
-### Standalone Test Example
-
-```python
-def test_my_function():
-    \"\"\"Test description.\"\"\"
-    from core.utils import my_function
-
-    result = my_function(input_data)
-    assert result == expected_value
-```
-
-### QGIS-Dependent Test Example
+Inherit from `BaseTestCase` and follow the `test_<behavior>` naming convention:
 
 ```python
-from qgis.core import QgsVectorLayer
+from tests.base_test import BaseTestCase
 
-def test_qgis_function():
-    \"\"\"Test with QGIS objects.\"\"\"
-    layer = QgsVectorLayer("Point", "test", "memory")
-    assert layer.isValid()
+
+class TestMyFeature(BaseTestCase):
+    def test_my_function_handles_empty_input(self):
+        from sec_interp.core.utils import my_function
+
+        self.assertEqual(my_function([]), [])
 ```
+
+Rules:
+
+1. **Mock-first**: never require a real QGIS installation in `tests/core/` or
+   `tests/gui/`; use `tests.base_test` and `tests.mocks`.
+2. **No invented mock methods**: a mock must mirror the real Qt/PyGIS API. If a method
+   does not exist in the real class, do not add it to satisfy production code.
+3. **WKT over geometry objects** at the core boundary.
+4. **Isolation**: each test must be independent; clean up files and signal connections.
+5. **Assertions**: use `self.assertEqual`, `self.assertTrue`, `self.assertRaises`, etc.
+6. **Process isolation**: do not mix mock-based and real-QGIS tests in the same process.
 
 ---
 
-## Test Markers
+## Coverage
 
-Use pytest markers to categorize tests:
-
-```python
-@pytest.mark.unit
-def test_unit_function():
-    pass
-
-@pytest.mark.integration
-def test_integration_workflow():
-    pass
-
-@pytest.mark.slow
-def test_slow_operation():
-    pass
-```
-
-Run specific markers:
-```bash
-pytest -m unit          # Run only unit tests
-pytest -m "not slow"    # Skip slow tests
-```
-
----
-
-## Coverage Reports
-
-Generate coverage reports:
+`coverage` is configured in `pyproject.toml` but is not a mandatory dependency. If it is
+installed:
 
 ```bash
-# Terminal report
-uv run pytest tests/test_utils_standalone.py --cov=core --cov-report=term-missing
-
-# HTML report
-uv run pytest tests/test_utils_standalone.py --cov=core --cov-report=html
-# Open htmlcov/index.html in browser
-```
-
----
-
-## Continuous Integration
-
-For CI/CD pipelines, use standalone tests:
-
-```yaml
-# .github/workflows/test.yml
-name: Tests
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - run: pip install pytest pytest-cov
-      - run: pytest tests/test_utils_standalone.py --cov
+PYTHONPATH=.. uv run coverage run -m unittest discover tests
+uv run coverage report
 ```
 
 ---
 
 ## Troubleshooting
 
-### "ModuleNotFoundError: No module named 'qgis'"
-
-**Solution**: Use standalone tests or run from QGIS Python environment
-
-### "ImportError: cannot import name 'X'"
-
-**Solution**: Check that module is in PYTHONPATH:
-```python
-import sys
-sys.path.insert(0, '/path/to/sec_interp')
-```
-
-### Tests pass locally but fail in CI
-
-**Solution**: Ensure using standalone tests in CI, or install QGIS in CI environment
-
----
-
-## Best Practices
-
-1. **Keep tests fast** - Standalone tests should run in < 1 second
-2. **Use fixtures** - Reuse test data via conftest.py
-3. **Test edge cases** - Empty data, None values, invalid input
-4. **Mock QGIS objects** - When possible, mock instead of using real QGIS
-5. **Document assumptions** - Add comments explaining test logic
-
----
-
-## Current Test Coverage
-
-**Standalone Tests** (✓ Working):
-- Strike parsing: 7 tests
-- Dip parsing: 4 tests
-- Cardinal conversion: 2 tests
-- Apparent dip: 3 tests
-- Interpolation: 4 tests
-
-**Total**: 20 tests covering core parsing and calculation functions
-
-**Next Steps**:
-- Add validation tests (requires QGIS)
-- Add exporter tests (requires QGIS)
-- Increase coverage to >70%
+- **`ModuleNotFoundError: No module named 'qgis'`**: the mock bootstrap did not run.
+  Import the test through `tests/__init__.py`/`BaseTestCase`, or use the integration
+  suite only inside the QGIS Docker image.
+- **`ImportError` for `sec_interp.*`**: run from the repository root with
+  `PYTHONPATH=..`.
+- **A mock test passes but real QGIS crashes**: verify that the mocked method exists on
+  the real Qt class and smoke-test the path in QGIS.
+- **Tests pass locally but fail in Docker**: run `make docker-test`; the integration
+  categories run with `FORCE_MOCKS=0` against the real QGIS API.

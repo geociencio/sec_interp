@@ -7,7 +7,7 @@
 
 - [x] **Memoria** — `AGENT_LESSONS.md` compactado de 98 a 27 lecciones (318 líneas, límite 350); las 71 restantes quedan archivadas en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y destiladas en `project-context`. `prune_lessons` probado y `forge.py memory check` + gate de `validate` añadidos.
 - [ ] **Validador** — incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`, `--graph` y `--conflicts`; añadir test de regresión.
-- [ ] **Workflows** — sustituir el `pytest` genérico por el comando real del proyecto (unittest) y parametrizarlo en `forge.toml`.
+- [x] **Workflows/deps** — workflows genéricos migrados a `unittest` (`run-tests`, `start-session`, `close-session`, `release-package`, index); `forge.toml` declara `test_command`/`test_command_docker`; eliminadas las deps `pytest`, `pytest-qt` y `pytest-mock` y regenerado `uv.lock`; `tests/README.md` reescrito.
 
 ## 📌 Pendientes del proyecto
 

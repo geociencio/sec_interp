@@ -47,7 +47,8 @@ Run scripts or manual refactors to normalize all `PyQt` imports.
 
 ### Phase 2: Deprecated Removal (Ongoing)
 Monitor deprecation warnings in the QGIS console and act immediately.
-*   Configure `pytest` to fail on `DeprecationWarning` from `qgis.*` modules.
+*   Configure the project's test runner to turn `DeprecationWarning` from `qgis.*`
+    modules into errors (with `unittest`, use `-W error::DeprecationWarning`).
 
 ### Phase 3: Resources (resources.py)
 Recompile `resources.qrc` using tools that support Qt abstraction, or ensure the compiler (`pyrcc5`) is compatible with the execution environment.

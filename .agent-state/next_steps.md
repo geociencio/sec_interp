@@ -13,6 +13,9 @@
   restantes quedan en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y las
   reglas reutilizables se destilaron en `project-context`. `forge.py memory check`, el gate
   de 350 líneas en `validate` y los tests de `prune_lessons` quedaron añadidos.
+- **Workflows/deps**: los workflows genéricos usan `unittest`; `forge.toml` declara
+  `test_command`/`test_command_docker`; se eliminaron `pytest`, `pytest-qt` y `pytest-mock`
+  de `pyproject.toml` y se regeneró `uv.lock`; `tests/README.md` se reescribió para unittest.
 - **Handoff**: `task.md` reescrito al estado real de v3.11.0; el tablero anterior está en
   `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - **Release**: gate de docstrings alineado al baseline real (99,0 %); eliminados los conteos
@@ -22,8 +25,7 @@
 - **Pendiente / cómo reanudar**:
   1. **Validador**: incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`,
      `--graph` y `--conflicts`.
-  2. **Workflows**: sustituir el `pytest` genérico por unittest (parametrizado en `forge.toml`).
-  3. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
+  2. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
 
 ## ✅ Session 2026-10-18 — Dependency Refresh, Security Scope, Packaging & Local Deploy (COMPLETADO)
 
