@@ -39,3 +39,22 @@ SecInterp is an advanced tool for geologists that allows for the interpolation o
 - [ ] Does the proposal respect Core/GUI separation?
 - [ ] Does it align with the "Local First" vision?
 - [ ] Is 3-level validation integrity maintained?
+
+## Operational lessons (digest)
+
+Distilled from the archived `AGENT_LESSONS.md` (full text in
+`.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md`):
+
+- **CRS/raster**: always transform line→raster before sampling; deduplicate profile
+  statistics by raster cell; cap densification (never use raw pixel size on a long line).
+- **Qt lifecycle**: `QDialog.accept()` does not fire `closeEvent`; release resources in
+  both paths. Page-internal signals belong in an idempotent `connect_signals()`, not
+  `_setup_ui`.
+- **Mocks**: mirror the real Qt API only; never invent a method to satisfy production
+  code. Verify widget-specific mock fidelity before asserting state.
+- **Data**: declare text encodings before parsing degrees (Latin-1 CSVs are real); dip
+  direction is `strike ± 90` from the source label, not the cardinal azimuth.
+- **Release/CI**: run the analyzer on the release branch, pin linters to the lock, build
+  the offline help before packaging, and target versioned artifacts explicitly.
+- **Agentic memory**: keep `AGENT_LESSONS.md` under 350 lines; archive older lessons and
+  consolidate reusable rules into skills; refresh metrics from the analyzer artifact.

@@ -1,8 +1,10 @@
 """Unit tests for the skill-conflict detector (now in validate_agent_system.py)."""
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / ".agent" / "tools"))
@@ -44,6 +46,30 @@ class TestFindConflicts(unittest.TestCase):
         ]
         issues = csc.find_conflicts(skills)
         self.assertTrue(any("duplicate description" in i for i in issues))
+
+
+class TestMemoryLimit(unittest.TestCase):
+    """The framework validator enforces the 350-line active-lesson budget."""
+
+    def test_over_limit_returns_error(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "AGENT_LESSONS.md"
+            path.write_text("\n".join(["line"] * 351))
+            with patch.object(csc.forge_paths, "LESSONS_FILE", path):
+                issues = csc.validate_memory_limits()
+
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0].severity, "ERROR")
+        self.assertIn("351", issues[0].message)
+
+    def test_within_limit_returns_empty(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "AGENT_LESSONS.md"
+            path.write_text("\n".join(["line"] * 350))
+            with patch.object(csc.forge_paths, "LESSONS_FILE", path):
+                issues = csc.validate_memory_limits()
+
+        self.assertEqual(issues, [])
 
 
 if __name__ == "__main__":

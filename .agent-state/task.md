@@ -5,7 +5,7 @@
 
 ## 🎯 Foco actual: fiabilidad del sistema agéntico (P0)
 
-- [ ] **Memoria** — consolidar las 24 lecciones >90 días, marcar `consolidated_in`, arreglar `prune_lessons` y aplicar el límite de 350 líneas. Ver `docs/qa/AGENT_AUDIT_2026-10-18.md` §3.1.
+- [x] **Memoria** — `AGENT_LESSONS.md` compactado de 98 a 27 lecciones (318 líneas, límite 350); las 71 restantes quedan archivadas en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y destiladas en `project-context`. `prune_lessons` probado y `forge.py memory check` + gate de `validate` añadidos.
 - [ ] **Validador** — incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`, `--graph` y `--conflicts`; añadir test de regresión.
 - [ ] **Workflows** — sustituir el `pytest` genérico por el comando real del proyecto (unittest) y parametrizarlo en `forge.toml`.
 
@@ -21,7 +21,7 @@
 
 - [x] **v3.11.0** — release publicada, ZIP verificado (311 archivos, 2,28 MiB, ayuda en 14 idiomas) y subido al portal; merge del tren en `main`.
 - [x] **Auditorías** — `docs/qa/REPO_AUDIT_2026-10-18.md` y `docs/qa/AGENT_AUDIT_2026-10-18.md`.
-- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=797` / `tests_executed=748` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
+- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=804` / `tests_executed=755` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
 - [x] **Handoff** — `task.md` reescrito; el tablero anterior quedó archivado en `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - [x] **Release** — gate de docstrings alineado con el baseline real (99,0 %) y conteos de tests manuales eliminados de `release-plugin.md`.
 

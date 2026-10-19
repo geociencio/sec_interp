@@ -76,7 +76,8 @@ Session observation → AGENT_LESSONS.md (raw lesson)
 To avoid **memory bloat** (a primary cause of agent performance degradation):
 
 - `AGENT_LESSONS.md` must stay **under 350 lines** of active content.
-- If the file exceeds this limit, run `uv run python scripts/memory_prune.py` to move `consolidated_in` lessons to the `[PRUNED]` index. If still over, consolidate the oldest lessons into their respective `SKILL.md` files.
+- If the file exceeds this limit, run `uv run python .agent/tools/forge.py memory prune` to move `consolidated_in` lessons to the `[PRUNED]` index. If still over, consolidate the oldest lessons into their respective `SKILL.md` files and archive the full text under `.agent-state/history/memory/`.
+- Check the limit without mutating anything with `uv run python .agent/tools/forge.py memory check`.
 - Pruned entries are retained as a one-line comment index (e.g., `# [PRUNED] 2026-01-15 TESTING/topic → qa-docker/SKILL.md`).
 - `AI_CONTEXT.md` is **reset at the start of every session** — it is never a long-term store.
 
@@ -120,10 +121,22 @@ The plural `tasks_` prefix is mandatory. Legacy variants (`task_*`, `tasks_*_clo
 `.agent-state/history/next_steps/` stores per-session handoff snapshots (`next_steps_YYYY-MM-DD[_topic].md`). These are ephemeral working states, redundant with the session logs in `docs/maintenance/` and the git history.
 
 - **Retention**: 90 days from the date encoded in the filename.
-- **Action**: Snapshots older than 90 days are deleted by `scripts/memory_prune.py` (recoverable via git).
+- **Action**: Snapshots older than 90 days are deleted by `.agent/tools/forge.py memory prune` (recoverable via git).
 - **Cadence**: Run monthly at session close, together with lesson pruning (`/close-session`).
+
+### 9.3 Lesson Archive (`.agent-state/history/memory/`)
+
+When the active lesson log is compacted, the full previous YAML block is preserved as
+`AGENT_LESSONS_YYYY-MM-DD_full.md`. The active file keeps a `[PRUNED]`/archive pointer and
+the reusable rules are distilled into the project skills. The 2026-10-19 compaction moved
+**71 lessons** (2026-03-16 → 2026-10-04) to
+`history/memory/AGENT_LESSONS_2026-10-19_full.md`, leaving 27 active lessons (318 lines).
+
+- **Retention**: permanent (history is skipped by the metrics scanner).
+- **Cadence**: compact when the active file exceeds 350 lines or at the quarterly review.
 
 ---
 
 *Created: 2026-04-27 — Gen 5 Memory Policy v1.0*
-*Next review: 2026-10-27*
+*Last compaction: 2026-10-19 — 98 → 27 active lessons, full log archived*
+*Next review: 2027-01-19*

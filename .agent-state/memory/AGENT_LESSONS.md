@@ -1,701 +1,272 @@
 # Agent Learning Memory (SecInterp)
 
-This file records technical lessons, user preferences, and solutions to complex problems.
-It uses a structured format for efficient retrieval by the agent system.
+This file records the **active** technical lessons, user preferences, and solutions to
+complex problems. It is loaded at the start of every session, so it must stay short.
 
-**Memory Policy**: Lessons older than 90 days that are already reflected in a `SKILL.md`
-are marked `[consolidated]` and will be pruned in the next review cycle.
-See `.agent-state/memory/memory_policy.md` for the full policy.
+**Memory Policy**: active content must stay **under 350 lines**; lessons older than
+90 days that are already reflected in a `SKILL.md` are marked `consolidated_in` and
+pruned by `forge.py memory prune`. See `.agent-state/memory/memory_policy.md`.
+
+**Archive**: the previous full log (98 lessons, 2026-03-16 → 2026-10-18) is preserved at
+`.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md`. `71` lessons were
+archived on 2026-10-19; the most reusable rules are distilled in the project skills
+(`project-context`, `qgis-core`, `ui-framework`, `geological-logic`).
 
 ---
 
-## 🧠 Lesson Log (YAML Structured)
+## 🧠 Active Lessons (YAML Structured)
 
 ```yaml
 lessons:
-
-  # ─── ACTIVE LESSONS (< 90 days or not yet in a SKILL.md) ───────────────────
   - date: '2026-10-18'
     category: TOOLING
-    topic: qgis-manage deploy never prunes ignored entries, so dev artifacts stay installed forever
-    lesson: "`deploy` and `package` share `.qgisignore`, and `_cleanup_destination` explicitly
-      preserves destination entries that match an ignore pattern. Anything that once slipped
-      through the ignore list (here `graphify-out/`, 23 MB) keeps being copied/preserved, so a
-      local install silently bloats to 30 MB while the CI-built ZIP looks clean."
-    action: "Before deploying, check `git status --ignored --short` against `.qgisignore`; after
-      adding a new generated directory to the repo, add it to `.qgisignore` in the same commit
-      and delete leftovers from existing QGIS profile installs by hand."
-
+    topic: qgis-manage deploy never prunes ignored entries, so dev artifacts stay installed
+      forever
+    lesson: '`deploy` and `package` share `.qgisignore`, and `_cleanup_destination`
+      explicitly preserves destination entries that match an ignore pattern. Anything
+      that once slipped through the ignore list (here `graphify-out/`, 23 MB) keeps
+      being copied/preserved, so a local install silently bloats to 30 MB while the
+      CI-built ZIP looks clean.'
+    action: Before deploying, check `git status --ignored --short` against `.qgisignore`;
+      after adding a new generated directory to the repo, add it to `.qgisignore` in
+      the same commit and delete leftovers from existing QGIS profile installs by hand.
   - date: '2026-10-18'
     category: TOOLING
     topic: a dev directory must be excluded in three separate scopes, not one
-    lesson: "`tools/` and `.agent/` were excluded from ruff, the analyzer and the ZIP, but
-      `.bandit` kept scanning them, so `make security-scan` was red on 15 findings that never
-      ship (fatal B404/B603/B108 in `install.py`). The three scope files (`.analyzerignore`,
-      `[tool.ruff] exclude`, `.bandit` `exclude_dirs`) drift independently."
-    action: "When adding a dev-only directory, update all three scope files plus `.qgisignore`
-      and run `make security-scan`, not just `ruff check`."
-
+    lesson: '`tools/` and `.agent/` were excluded from ruff, the analyzer and the ZIP,
+      but `.bandit` kept scanning them, so `make security-scan` was red on 15 findings
+      that never ship (fatal B404/B603/B108 in `install.py`). The three scope files
+      (`.analyzerignore`, `[tool.ruff] exclude`, `.bandit` `exclude_dirs`) drift independently.'
+    action: When adding a dev-only directory, update all three scope files plus `.qgisignore`
+      and run `make security-scan`, not just `ruff check`.
   - date: '2026-10-18'
     category: TOOLING
-    topic: a major dependency bump is only validated by exercising its consumer
-    lesson: "`uv sync` succeeding says nothing about behaviour. virtualenv 21 only proved itself
-      after `pre-commit clean` + a full hook reinstall, rich 15 after `ai-ctx`/`bandit` ran,
-      and imagesize 2 after a real Sphinx build."
-    action: "For each major bump, name the consumer and run it once (pre-commit clean+run,
-      `make context`, Sphinx build) before committing; `docutils` 0.23 is not installable
-      because Sphinx 9.1/myst cap it at <0.23."
-
-  - date: '2026-10-18'
-    category: TOOLING
-    topic: a 3-way merge silently duplicates a helper when both branches applied the same fix
-    lesson: The v3.11.0 train and main each cherry-picked the same Qt6 fix into
-      `gui/ui/pages/dem_page.py`, so the 3-way merge (base without the fix) kept both copies
-      of `_all_band_statistics`; tests stayed green because the second definition simply
-      shadows the first.
+    topic: a 3-way merge silently duplicates a helper when both branches applied the
+      same fix
+    lesson: The v3.11.0 train and main each cherry-picked the same Qt6 fix into `gui/ui/pages/dem_page.py`,
+      so the 3-way merge (base without the fix) kept both copies of `_all_band_statistics`;
+      tests stayed green because the second definition simply shadows the first.
     action: After merging branches that share cherry-picked fixes, diff the merged files
-      against both parents and scan for duplicated top-level defs (AST) before trusting a
-      green suite; an auto-merge with no conflict markers can still be wrong.
-
+      against both parents and scan for duplicated top-level defs (AST) before trusting
+      a green suite; an auto-merge with no conflict markers can still be wrong.
   - date: '2026-10-18'
     category: AGENTIC_SYSTEM
     topic: the scheduled release CI never runs the analyzer, so CC regressions ship
-    lesson: v3.11.0 was published from the train branch while
-      `PreviewLegendRenderer.draw_legend` had complexity 14; the release workflow runs tests, docs
-      and packaging, not `qgis-analyzer --max-cc 10`, so the pre-push gate never saw it and
-      the merge into main exposed it.
-    action: Treat a release branch as CC-unverified until the analyzer runs; run
-      `qgis-analyzer analyze . --max-cc 10` (or the pre-push hook) on the branch before
-      tagging, and budget a refactor when merging a train that skipped it.
-
-  - date: '2026-10-18'
-    category: TOOLING
-    topic: merging a pre-submodule branch can delete .agent-state through rename detection
-    lesson: The train predates the framework extraction and tracks `.agent/` as a directory;
-      merging it into main (where `.agent` is a gitlink) made git pair the deleted
-      `.agent/skills/**` files with main's renamed `.agent-state/skills/**`, leaving 47
-      `UD` conflicts that would have removed the project overlay.
-    action: Drop the legacy `.agent` tree on a temporary branch before merging, and after
-      any merge involving the submodule conversion check for `UD` entries under
-      `.agent-state`; restore them with `git checkout HEAD -- .agent-state` before commit.
+    lesson: v3.11.0 was published from the train branch while `PreviewLegendRenderer.draw_legend`
+      had complexity 14; the release workflow runs tests, docs and packaging, not `qgis-analyzer
+      --max-cc 10`, so the pre-push gate never saw it and the merge into main exposed
+      it.
+    action: Treat a release branch as CC-unverified until the analyzer runs; run `qgis-analyzer
+      analyze . --max-cc 10` (or the pre-push hook) on the branch before tagging, and
+      budget a refactor when merging a train that skipped it.
   - date: '2026-10-11'
     category: TOOLING
     topic: a Latin-1 CSV misread as UTF-8 silently corrupts parsed structural strikes
-    lesson: The sample structural DB (`basedatosestruct.csv`) is Latin-1; reading it as
-      UTF-8 turns the `°` into U+FFFD, so `parse_strike("N 15° W")` falls back to the bare
-      number and returns 15 instead of 345 — a plausible-but-wrong azimuth with no error.
-    action: Declare/verify the encoding of text data before parsing degrees (Latin-1 vs
-      UTF-8); harden quadrant parsers to refuse a token that lost its E/W instead of
-      returning a bare-number fallback.
-
-  - date: '2026-10-11'
-    category: AGENTIC_SYSTEM
-    topic: a published comparison/market doc goes stale fast — regenerate it from the registry
-    lesson: The internal competitor comparison (written at v3.9.1) listed 7 plugins and
-      claimed "QGIS 4 ahead of competitors"; one registry scan found ~30 relevant plugins,
-      a new direct competitor (OpenLog) and a QGIS-4-ready incumbent (Geoscience 2.0).
-    action: Before repeating any market/adoption claim, re-scan plugins.qgis.org (tags +
-      download counts) and the upstream repos; treat comparison docs as dated snapshots,
-      not living truth.
-
+    lesson: The sample structural DB (`basedatosestruct.csv`) is Latin-1; reading it
+      as UTF-8 turns the `°` into U+FFFD, so `parse_strike("N 15° W")` falls back to
+      the bare number and returns 15 instead of 345 — a plausible-but-wrong azimuth
+      with no error.
+    action: Declare/verify the encoding of text data before parsing degrees (Latin-1
+      vs UTF-8); harden quadrant parsers to refuse a token that lost its E/W instead
+      of returning a bare-number fallback.
   - date: '2026-10-11'
     category: ARCHITECTURE
     topic: dip direction is strike ± 90, chosen by the source's dip-direction label
-    lesson: SecInterp's StructureMeasurement keeps original_strike (an azimuth from quadrant
-      notation) and original_dip but drops the dip direction the source text carries
-      ("22 SW"). The dip direction is perpendicular to the strike (dip_dir = strike − 90) for
-      the SW side (N15W -> 255) or strike + 90 for the NE side (-> 75). The cardinal label
-      only names the side, so it is approximate, not an exact azimuth — reading "SW" as 225
-      was wrong.
-    action: For any stereonet/attitude export, derive dip_dir = strike ± 90 from the source
-      dip-direction label (or use a numeric dip-direction field when provided); never treat
-      the cardinal label as an exact azimuth, and validate on a real dataset — not demo data.
-
-  - date: '2026-10-11'
-    category: TOOLING
-    topic: check the ecosystem before building a bespoke tool (adopt vs build)
-    lesson: SecInterp's `exploration_qgis4_qa_mcp.md` proposed building a QGIS QA MCP from
-      scratch (socket + FastMCP). Web research showed that design already existed, matured,
-      was published on plugins.qgis.org and supported opencode — so the same plan was
-      fulfilled by adopting + forking + extending instead of reinventing it.
-    action: Before starting a "build from scratch" plan for generic tooling, spend one
-      research pass on the ecosystem (GitHub, plugin registries, MCP registry); if a mature
-      implementation exists, prefer adopt/extend and reserve the bespoke build for the
-      project-specific delta.
-
+    lesson: SecInterp's StructureMeasurement keeps original_strike (an azimuth from
+      quadrant notation) and original_dip but drops the dip direction the source text
+      carries ("22 SW"). The dip direction is perpendicular to the strike (dip_dir =
+      strike − 90) for the SW side (N15W -> 255) or strike + 90 for the NE side (->
+      75). The cardinal label only names the side, so it is approximate, not an exact
+      azimuth — reading "SW" as 225 was wrong.
+    action: For any stereonet/attitude export, derive dip_dir = strike ± 90 from the
+      source dip-direction label (or use a numeric dip-direction field when provided);
+      never treat the cardinal label as an exact azimuth, and validate on a real dataset
+      — not demo data.
   - date: '2026-10-11'
     category: ARCHITECTURE
     topic: QDialog.exec() in a socket-driven QGIS handler freezes the command server
     lesson: A command that opens the SecInterp dialog had to use show() (not exec()).
       exec() starts a nested Qt event loop, so the handler never returns while the window
-      is open; the fork's server guards against re-entrant dispatch, so every later command
-      would block until the dialog closed — useless for automation.
+      is open; the fork's server guards against re-entrant dispatch, so every later
+      command would block until the dialog closed — useless for automation.
     action: In MCP/socket handlers that drive a QGIS plugin, open windows non-modally
-      (show()) and mirror the plugin's own run() minus exec(); never call exec() from a
-      handler. The same applies to any modal QFileDialog — call the underlying export
+      (show()) and mirror the plugin's own run() minus exec(); never call exec() from
+      a handler. The same applies to any modal QFileDialog — call the underlying export
       method with an explicit path.
-
-  - date: '2026-10-11'
-    category: TESTING
-    topic: a forked suite that pins tool counts breaks the moment you extend the fork
-    lesson: Extending `nkarasiak/qgis-mcp` (TOOL_COUNT=125, COMPOUND_TOOL_COUNT=27) broke 4
-      upstream tests that hard-code those numbers, plus a compound-coverage invariant that
-      requires every granular command to be reachable in compound mode.
-    action: When forking a repo with count-pinning or parity tests, treat the constants as
-      part of your fork — update TOOL_COUNT/COMPOUND_TOOL_COUNT and add the new commands to
-      the compound group (satisfying the invariant) rather than deleting or xfail-ing the
-      tests — they are the cheapest guard that handler↔tool parity stays correct.
-
   - date: '2026-10-11'
     category: TOOLING
-    topic: ruff 0.17 formats Python code blocks inside Markdown files
-    lesson: After upgrading ruff to 0.17, `ruff format .` reported "383 files reformatted"
-      and rewrote 381 `.md` docs (plus root AGENTS.md), because 0.17 formats code fences in
-      Markdown. The project keeps docs/vault byte-stable via mirror gates, so a formatter
-      run silently touched documentation.
-    action: When upgrading a formatter, check it against non-code files; to keep Markdown
-      untouched add `**/*.md` to `[tool.ruff] exclude` (and remember `ruff format .` is not
-      limited to `.py`).
-
-  - date: '2026-10-11'
-    category: ENVIRONMENT
-    topic: a package-managed CLI cannot self-update and may lag the upstream distro
-    lesson: '`uv self update` failed with "uv was installed through an external package
-      manager". uv came from pacman on Manjaro, whose stable branch still served 0.12.10
-      while vanilla Arch already had 0.13.0 — so querying archlinux.org returned a version
-      the local distro did not ship.'
-    action: Before promising a CLI upgrade, detect the install source (`which` + package
-      manager) and query the ACTUAL distro repo (here the Manjaro mirror db), not upstream
-      Arch; update package-managed tools via the package manager, never self-update.
-  - date: '2026-10-11'
-    category: TOOLING
-    topic: mypy path targets are ambiguous when the repo root is itself the package
-    lesson: Running mypy from the repo root on `core exporters` reported every file twice
-      (core.x vs sec_interp.core.x) because the repo root IS the `sec_interp` package (it
-      has __init__.py), so both cwd and MYPYPATH offered a package base. The clean run is
-      from the PARENT directory; also, mypy 2.x refuses package mode (`-p pkg`) without a
-      py.typed marker.
-    action: For a plugin whose top-level folder is the package, run mypy from the parent dir
-      with `--explicit-package-bases` and path targets (and `--config-file
-      <repo>/pyproject.toml`); wire it as a Makefile target that cds there instead of
-      `mypy .` from the repo root.
-  - date: '2026-10-11'
-    category: TOOLING
-    topic: a whole-project analyzer run can silently under-report modules; cross-check the count
+    topic: a whole-project analyzer run can silently under-report modules; cross-check
+      the count
     lesson: qgis-plugin-analyzer 1.15.2 analysed only 135 modules on the whole project
       although the plugin has 171 (its real .py count minus 2 ignored root scripts);
-      1.16.0 fixed the discovery bug. Analysing a sub-directory (core/validation)
-      already listed all 12 files, so the loss happened only in whole-project
-      aggregation, and every historical metric had been computed over ~79% of the code
-      while looking "clean".
-    action: After any analyzer run, sanity-check the reported module count against
-      find <pkg> -name '*.py' (minus ignore rules); if it disagrees, the run is not
-      trustworthy for gates. Re-baseline metrics when a tool version changes coverage.
-
+      1.16.0 fixed the discovery bug. Analysing a sub-directory (core/validation) already
+      listed all 12 files, so the loss happened only in whole-project aggregation, and
+      every historical metric had been computed over ~79% of the code while looking
+      "clean".
+    action: After any analyzer run, sanity-check the reported module count against find
+      <pkg> -name '*.py' (minus ignore rules); if it disagrees, the run is not trustworthy
+      for gates. Re-baseline metrics when a tool version changes coverage.
   - date: '2026-10-11'
     category: TOOLING
-    topic: an i18n rule flagging literal args cannot follow translation done inside a helper
+    topic: an i18n rule flagging literal args cannot follow translation done inside
+      a helper
     lesson: qgis-plugin-analyzer MISSING_I18N flagged strings that are already translated
-      (e.g. _stats_edit(tooltip) -> self.tr(tooltip), _check_field(..., "Collar ID") ->
-      self.tr(...).format(label)), and attribute docstrings such as the bare string after
-      a module-level type alias (only the first module string is recognised as a docstring).
-      All 167 new findings sat in the newly-covered modules, i.e. the rule did not change.
+      (e.g. _stats_edit(tooltip) -> self.tr(tooltip), _check_field(..., "Collar ID")
+      -> self.tr(...).format(label)), and attribute docstrings such as the bare string
+      after a module-level type alias (only the first module string is recognised as
+      a docstring). All 167 new findings sat in the newly-covered modules, i.e. the
+      rule did not change.
     action: For helper-wrapped translations, add the helper call name to the profile's
-      rules.MISSING_I18N.extra_ignore_calls instead of tagging each string; keep in mind
-      that Qt-free layers (core/) cannot wrap with tr() and their user-facing messages
+      rules.MISSING_I18N.extra_ignore_calls instead of tagging each string; keep in
+      mind that Qt-free layers (core/) cannot wrap with tr() and their user-facing messages
       are English by design until a GUI-injected translator is wired.
-
-  - date: '2026-10-11'
-    category: AGENTIC_SYSTEM
-    topic: a docs-only push can surface a long-standing red CI, not a regression
-    lesson: Pushing documentation-only commits to qgis-plugin-manager and
-      qgis-plugin-analyzer triggered CI; the manager run failed on macOS/Windows while
-      ubuntu passed. The failure was pre-existing (a macOS /var -> /private/var
-      Path.resolve mismatch in tests/test_discovery.py) and present in every prior run on
-      main (all "failure"), so it was unrelated to the docs change.
-    action: Before attributing a CI failure to your change, list recent runs on the branch
-      (gh run list --branch main) and diff the failing jobs; if the same jobs failed before
-      your commit, it is pre-existing, not a regression.
-
   - date: '2026-10-11'
     category: TOOLING
     topic: analyzer rule ids can contain a colon and break naive issue-stats parsers
-    lesson: qgis-plugin-analyzer 1.15.1 introduced security rule ids of the form
-      `SECURITY:B102` (a colon inside the id), printed with their count in the
-      "Issue Statistics" block. SecInterp's `scripts/sync_metrics.py` split each line on the
-      FIRST colon, so the numeric parse failed and the entry was dropped (total_issues 32
-      instead of 34).
-    action: When parsing key/value lines whose key may contain colons, split on the LAST
-      colon (`rsplit`, 1) or read the authoritative total line or the `--json` output.
-
-  - date: '2026-10-11'
-    category: AGENTIC_SYSTEM
-    topic: a GHA job that needs a conditionally-skipped job is skipped too, and release events use the tag-commit workflow
-    lesson: In release.yml, publish-pypi had a `needs` on draft-release, but draft-release
-      only runs on tag push; on a release-published event draft-release was skipped, which
-      transitively skipped publish-pypi, so PyPI was never published by CI (1.15.0/1.15.1 were
-      uploaded manually). Also, a release event evaluates the workflow file from the tagged
-      commit, not the default branch, so editing main did not change an already-published
-      release's behaviour.
-    action: Never put a `needs` on a job guarded by a mutually-exclusive `if`; remove the
-      dependency or split the workflows. To change release-event behaviour, fix the workflow in
-      the commit the tag points to (re-tag if needed) and verify with `gh run view` which jobs
-      actually ran.
-
-  - date: '2026-10-11'
-    category: TOOLING
-    topic: a Bandit-style exec/eval check keyed on the callee name flags Qt `.exec()` methods
-    lesson: qgis-plugin-analyzer 1.15.1 matched any call whose callee name was exec or eval,
-      so QDialog.exec() (e.g. dlg.exec(), self.dlg.exec()) was reported as builtin arbitrary
-      code execution, and an inline noqa for B102 did not suppress it. Fixed in 1.15.2 by
-      flagging only bare-name (`ast.Name`) calls and ignoring attribute/method calls.
-    action: For security rules that target builtins, match `ast.Name` (the global) and ignore
-      `ast.Attribute` calls; a method named like a builtin is not the builtin. Verify with a
-      probe of both a real builtin call and a same-named method call.
-
-  - date: '2026-10-10'
-    category: TOOLING
-    topic: a freshly published release can appear "unsatisfiable" via a stale index/PyPI JSON
-    lesson: Right after `ai-context-core` 5.1.0 hit PyPI, `uv lock --upgrade-package`
-      failed with "only ai-context-core<=5.0.1 is available", and the public JSON API
-      (pypi.org/pypi/.../json) still reported 5.0.1, even though the version was live;
-      `uv lock --upgrade-package ai-context-core --refresh` then resolved 5.1.0 from
-      `https://pypi.org/simple`.
-    action: When a just-published version is reported missing, do not trust the JSON
-      CDN — retry with `uv lock --upgrade-package <pkg> --refresh` (or `--no-cache`) and
-      confirm with `uv run <cli> --version` / `uv pip show <pkg>`.
-
+    lesson: qgis-plugin-analyzer 1.15.1 introduced security rule ids of the form `SECURITY:B102`
+      (a colon inside the id), printed with their count in the "Issue Statistics" block.
+      SecInterp's `scripts/sync_metrics.py` split each line on the FIRST colon, so the
+      numeric parse failed and the entry was dropped (total_issues 32 instead of 34).
+    action: When parsing key/value lines whose key may contain colons, split on the
+      LAST colon (`rsplit`, 1) or read the authoritative total line or the `--json`
+      output.
   - date: '2026-10-04'
     category: TOOLING
-    topic: Sphinx `root_doc` alone does not limit a build to a subset of documents
-    lesson: Setting `-D root_doc=help_index` still built every `.rst` in `docs/source`
-      because Sphinx builds unreferenced "orphan" documents too; the offline help was meant
-      to contain only the User Guide. The subset only took effect after `exclude_patterns`
-      listed every other source document (gated by an env var in `conf.py`).
-    action: To ship a Sphinx subset, exclude the unwanted sources via `exclude_patterns`
-      (or a separate source dir); do not rely on `root_doc`/toctree reachability.
-  - date: '2026-10-04'
-    category: USER_PREFERENCE
-    topic: keep the generated entry filename to avoid touching application code
-    lesson: The user asked to change only what the plugin's Help button shows, not the
-      plugin code. Rather than repointing `open_help()` to a new master doc, the build renames
-      `help_index.html` → `index.html` and sed-patches the internal links, so the GUI is untouched.
-    action: When a requirement is scoped to one UI entry point, prefer adapting generated
-      output to the existing contract (same filename) over editing application code.
-
-  - date: '2026-10-04'
-    category: ARCHITECTURE
-    topic: a subfolder "compatibility pointer" becomes a broken self-reference once exported to its own repo root
-    lesson: The framework's `.agent/AGENTS.md` was a pointer whose content referenced
-      `../AGENTS.md` and `file://./AGENTS.md`; after exporting `.agent/` as the `agentic-forge`
-      repo, the file sat at the repo root so both links escaped it (broken). A subtree meant to be
-      extracted must be self-contained.
-    action: Never rely on paths that escape a framework subtree; when a folder is (or may become)
-      its own repo, keep its files self-referential and repo-relative, and genericize
-      "compatibility pointer" files into real content.
-  - date: '2026-10-04'
-    category: AGENTIC_SYSTEM
-    topic: never publish a subtree with history when the history contains internal state
-    lesson: Before F1 the project kept `memory/`, `history/`, `task.md` and `next_steps.md`
-      inside `.agent/`, so `git subtree split -P .agent` would have exposed ~60 commits of
-      internal lessons and session handoffs in a public repo even though the working tree was clean.
-    action: For a public mirror of a subtree, export with NO history (fresh `git init`) or filter
-      history explicitly; only use `git subtree split` when the target is private. Verify with
-      `git log --all -- <path>` before publishing.
-  - date: '2026-10-04'
-    category: TOOLING
-    topic: extracting modules from a monolith can keep tests green by re-exporting the moved names
-    lesson: Moving the generic metrics core out of `scripts/sync_metrics.py` into the framework
-      would have broken `tests/agentic/*`, which import `rotate_session_history`,
-      `check_internal_consistency` and the `_check_*` helpers from `sync_metrics`.
-    action: When splitting a module, have the remaining adapter `import` and re-export the moved
-      names (and keep thin local helpers); tests and callers keep working without edits, then
-      migrate the imports gradually.
-  - date: '2026-10-04'
-    category: TOOLING
-    topic: a CI packaging job that skips the docs step ships a plugin ZIP without the offline help
+    topic: a CI packaging job that skips the docs step ships a plugin ZIP without the
+      offline help
     lesson: The scheduled-release workflow ran only `qgis-manage package`, so the gitignored,
-      build-generated `help/html` (the in-plugin manual, ~14 languages) was absent and the
-      v3.9.1 ZIP came out ~0.4 MiB instead of ~3.9 MiB; `build_docs.sh` also guarded the help
-      sync on `[ -d help ]`, which is false on a fresh checkout, so even running it would skip.
-    action: Any job that packages the plugin must build the docs/help first; make the help
-      generator create `help/` itself (never guard on a pre-existing dir); audit the ZIP against
-      a known-good build size before publishing.
+      build-generated `help/html` (the in-plugin manual, ~14 languages) was absent and
+      the v3.9.1 ZIP came out ~0.4 MiB instead of ~3.9 MiB; `build_docs.sh` also guarded
+      the help sync on `[ -d help ]`, which is false on a fresh checkout, so even running
+      it would skip.
+    action: Any job that packages the plugin must build the docs/help first; make the
+      help generator create `help/` itself (never guard on a pre-existing dir); audit
+      the ZIP against a known-good build size before publishing.
   - date: '2026-10-04'
     category: AGENTIC_SYSTEM
     topic: a GitHub cron schedule can silently never fire; keep a manual dispatch path
-    lesson: The repo's `scheduled-release.yml` had run only via `workflow_dispatch` and never
-      via `schedule` (0 cron runs in history); on the due Sunday it did not fire, so the
-      incremental release would have been missed silently.
-    action: Do not rely on the GitHub scheduler for releases; verify scheduled runs actually
-      occur (`gh run list --event schedule`) and always keep a manual `workflow_dispatch` path
-      with the version pinned.
-  - date: '2026-10-04'
-    category: ARCHITECTURE
-    topic: release-train branches drift from main; check divergence before backporting
-    lesson: The cumulative release branches removed `gui/legend_widget.py` (legend side panel)
-      while `main` kept it, so the branches' docs still referenced the missing module and the
-      pre-push `check_docs` gate blocked a direct `build_docs.sh` backport.
-    action: Before backporting to a release branch, diff it against main and run the local doc
-      gate; when a branch gate fails for pre-existing reasons, fix the branch docs or drive the
-      fix from the default branch instead of skipping the hook.
-  - date: '2026-10-04'
-    category: TOOLING
-    topic: Sphinx emits an identical _static tree per language; dedup and PNG-optimize the help
-    lesson: The offline help shipped 14 byte-identical copies of `theme.css`/`jquery.js`/... (half
-      of the ~7.7 MiB was duplicate content); the build already deduplicated `_images` but not
-      `_static`.
-    action: Extend the help build to share identical `_static` files across languages (rewrite the
-      HTML refs, keep the language-specific `documentation_options`/`language_data`/`translations`)
-      and run a lossless PNG optimizer; this cut the help 8.5 -> 3.7 MiB and the ZIP 3.76 -> 2.38 MiB.
+    lesson: The repo's `scheduled-release.yml` had run only via `workflow_dispatch`
+      and never via `schedule` (0 cron runs in history); on the due Sunday it did not
+      fire, so the incremental release would have been missed silently.
+    action: Do not rely on the GitHub scheduler for releases; verify scheduled runs
+      actually occur (`gh run list --event schedule`) and always keep a manual `workflow_dispatch`
+      path with the version pinned.
   - date: '2026-09-27'
     category: TOOLING
     topic: pin CI linters to the project's lock, never run the moving latest
-    lesson: The lint job used `uvx ruff check .` (latest = 0.16.9) while the project pins
-      ruff via uv.lock (0.15.2); the newer ruff added ISC004/PLR0917 and turned `main` red
-      on every push even though the locked linter passed locally and in pre-commit.
+    lesson: The lint job used `uvx ruff check .` (latest = 0.16.9) while the project
+      pins ruff via uv.lock (0.15.2); the newer ruff added ISC004/PLR0917 and turned
+      `main` red on every push even though the locked linter passed locally and in pre-commit.
     action: In CI, run the project's locked tool (`uv run --frozen <tool>`) or the exact
       pinned version; adopt a new linter version deliberately, not implicitly via "latest".
   - date: '2026-09-27'
-    category: ENVIRONMENT
-    topic: container jobs resolve github.workspace to the host path and need git before checkout
-    lesson: In a QGIS container job, `actions/checkout` ran before git was installed, so it
-      fell back to an API tarball with no `.git`, and `${{ github.workspace }}` expanded to
-      the host path (/home/runner/work/...) that does not exist inside the container, so the
-      package import and branch checkout could not work.
-    action: For QGIS work, run on a standard ubuntu runner and drive QGIS through the project
-      Docker image; in a container job, install git before checkout and export PYTHONPATH from
-      the shell (`$(pwd)/..`), not from the context.
-  - date: '2026-09-27'
     category: TOOLING
-    topic: a broad try/except can hide a flat-enum QGIS4 error; the checker log always has a header
-    lesson: '`QgsRasterBandStats.All` (flat enum) raises on PyQt6 but was swallowed by the
-      feature''s `try/except (AttributeError, ...)`, silently disabling DEM band statistics on
-      QGIS 4; and the pyqgis4-checker always writes a log header, so `[ -s log ]` fails even
-      with zero findings.'
-    action: Detect Qt6 findings by matching real lines (`grep "Enum error"`), not file size;
-      and remember a caught AttributeError around a QGIS enum can mask a QGIS4 break — verify
-      enums against the checker / real QGIS.
-  - date: '2026-09-27'
-    category: TOOLING
-    topic: the vault gate re-tiers notes from current source size and ignores missing notes
-    lesson: check_notes.py derives each note's tier from the CURRENT source line count, so a
-      module that grew (preview_param_hasher 68→133, ui_status_manager 85→221) crossed tier
-      B→A and its previously-valid note failed the ≥400 minimum; the checker also validates
-      only existing notes, so new modules (crs_plausibility, layer_metadata, topo_renderer)
-      were silently missing.
-    action: After growth-heavy sessions, re-run `check_notes --strict` and diff expected vs
-      present notes (`build_expectations` vs vault stems); enrich grown notes and add missing
-      ones, and consider adding a coverage check to the gate.
-
-  - date: '2026-09-23'
-    category: TESTING
-    topic: Qt widget mocks are mixed fidelity; check each mapping before asserting
-    lesson: In tests, QCheckBox/QComboBox map to MockQWidget (real setChecked/isChecked)
-      while QSpinBox/QRadioButton are plain MagicMocks whose setters/getters do not
-      reflect. Asserting state against the wrong assumption fails with
-      "'method' object has no attribute 'return_value'".
-    action: Check tests/base_test.py for the concrete mock of a widget first; for
-      MagicMock widgets configure return_value and assert setter calls, and for
-      MockQWidget ones use the real setter/getter.
-  - date: '2026-09-23'
-    category: TESTING
-    topic: writing a "new" test file can silently overwrite an existing one
-    lesson: I created tests/gui/test_section_page.py with the Write tool to add
-      style tests, unaware the file already existed, so its validation tests were
-      lost. The drop only surfaced because the discovered test count barely moved.
-    action: Before creating any test/module file, verify the path does not exist
-      (ls/glob) and, when it does, read it and merge/extend instead of writing;
-      after adding tests, sanity-check that the suite count increased as expected.
+    topic: a broad try/except can hide a flat-enum QGIS4 error; the checker log always
+      has a header
+    lesson: '`QgsRasterBandStats.All` (flat enum) raises on PyQt6 but was swallowed
+      by the feature''s `try/except (AttributeError, ...)`, silently disabling DEM band
+      statistics on QGIS 4; and the pyqgis4-checker always writes a log header, so `[
+      -s log ]` fails even with zero findings.'
+    action: Detect Qt6 findings by matching real lines (`grep "Enum error"`), not file
+      size; and remember a caught AttributeError around a QGIS enum can mask a QGIS4
+      break — verify enums against the checker / real QGIS.
   - date: '2026-09-23'
     category: ARCHITECTURE
     topic: profile statistics must deduplicate by raster cell, not by Z
-    lesson: Densifying the section at the DEM resolution repeats samples within
-      the same pixel; aggregating them biases min/max/mean. Also, the section mean
-      legitimately differs from the raster's global band mean (a section covers a
-      swath, not the whole DEM).
-    action: Deduplicate consecutive samples by pixel cell (floor((x-xmin)/res))
-      before aggregating; report the section stats as such, and do not expect them
-      to match the DEM band statistics.
+    lesson: Densifying the section at the DEM resolution repeats samples within the
+      same pixel; aggregating them biases min/max/mean. Also, the section mean legitimately
+      differs from the raster's global band mean (a section covers a swath, not the
+      whole DEM).
+    action: Deduplicate consecutive samples by pixel cell (floor((x-xmin)/res)) before
+      aggregating; report the section stats as such, and do not expect them to match
+      the DEM band statistics.
   - date: '2026-09-23'
     category: TECHNICAL
     topic: cross-CRS raster sampling must reproject and bound densification
-    lesson: Sampling a DEM from section-line coordinates without honoring CRS
-      differences (normal with on-the-fly reprojection) returns 0 (structures and
-      collars drawn at base 0) and, worse, using the raster pixel size as a
-      densify interval explodes a long line into hundreds of millions of vertices
-      and freezes QGIS. Layer names can lie about CRS (a `_3857.tif` was actually
-      EPSG:4326).
-    action: Always build a line->raster QgsCoordinateTransform and transform
-      sample points; derive the sampling interval in the line CRS (or transform
-      the pixel size); cap densification. Verify raster CRS with `gdalinfo`,
-      never trust the filename.
+    lesson: Sampling a DEM from section-line coordinates without honoring CRS differences
+      (normal with on-the-fly reprojection) returns 0 (structures and collars drawn
+      at base 0) and, worse, using the raster pixel size as a densify interval explodes
+      a long line into hundreds of millions of vertices and freezes QGIS. Layer names
+      can lie about CRS (a `_3857.tif` was actually EPSG:4326).
+    action: Always build a line->raster QgsCoordinateTransform and transform sample
+      points; derive the sampling interval in the line CRS (or transform the pixel size);
+      cap densification. Verify raster CRS with `gdalinfo`, never trust the filename.
   - date: '2026-09-23'
     category: ARCHITECTURE
     topic: page-internal signals must live in an idempotent connect_signals
-    lesson: StructurePage wired layerChanged -> _on_layer_changed in _setup_ui,
-      but SignalManager.connect_all calls disconnect_all first and then
-      re-invokes each page's connect_signals(); with no connect_signals the
-      wiring was lost, so structural field combos stayed empty.
-    action: Put page-internal wiring only in an idempotent connect_signals()
-      (disconnect specific slots first), never in _setup_ui. Add a regression
-      test that mirrors the disconnect->connect cycle.
+    lesson: StructurePage wired layerChanged -> _on_layer_changed in _setup_ui, but
+      SignalManager.connect_all calls disconnect_all first and then re-invokes each
+      page's connect_signals(); with no connect_signals the wiring was lost, so structural
+      field combos stayed empty.
+    action: Put page-internal wiring only in an idempotent connect_signals() (disconnect
+      specific slots first), never in _setup_ui. Add a regression test that mirrors
+      the disconnect->connect cycle.
   - date: '2026-09-23'
     category: TESTING
-    topic: conservative extent heuristic justifies blocking on mislabelled CRS
-    lesson: A wrong CRS label cannot be read from metadata but is often
-      contradicted by the extent (a degree-looking extent declared projected). A
-      conservative rule (within lon/lat bounds AND span < 1 unit or pixel < 1 mm)
-      blocks silently-wrong output with negligible false positives.
-    action: For data-quality heuristics prefer a blocking error with clear
-      remediation over a warning, but keep thresholds conservative; recommend
-      Assign Projection (metadata only), not Reproject.
+    topic: a fabricated mock method turns a real-QGIS crash into a green suite
+    lesson: To disable a QListWidgetItem I called item.setDisabled() and taught MockQListWidgetItem
+      the same (non-existent) method, so 17 unit tests passed while real QGIS 4 crashed
+      with "QListWidgetItem object has no attribute setDisabled". QListWidgetItem has
+      no setDisabled — that is QWidget API; items use flags()/setFlags() with Qt.ItemFlag.ItemIsEnabled.
+    action: Mocks must mirror the real API surface only; never invent methods to satisfy
+      production code. When adding a widget interaction, verify the method exists on
+      the exact Qt class (and on both Qt5/Qt6) before writing the mock, and smoke-test
+      in real QGIS when the gating touches native widgets.
   - date: '2026-09-23'
     category: AGENTIC_SYSTEM
     topic: Prefer long, stable-prefix sessions to exploit provider prompt caching
     lesson: DeepSeek discounts already-seen input tokens heavily (up to ~97%), but only
-      with a stable prefix (system prompt, AGENTS.md, tool schemas) inside a long
-      single-thread session. Spawning many fresh subagent contexts (each with no shared
-      cache) and reloading large files or huge tool outputs defeats that discount.
+      with a stable prefix (system prompt, AGENTS.md, tool schemas) inside a long single-thread
+      session. Spawning many fresh subagent contexts (each with no shared cache) and
+      reloading large files or huge tool outputs defeats that discount.
     action: Prefer one long session per task; keep the system prompt/AGENTS.md stable
       mid-task; batch corrections into complete upfront prompts; use targeted reads/greps
       instead of loading whole files; reserve subagents for genuinely parallel work
       (e.g. enriching dozens of notes), not for 2-3 items the main thread can do directly.
-  - date: '2026-09-23'
-    category: TESTING
-    topic: a fabricated mock method turns a real-QGIS crash into a green suite
-    lesson: To disable a QListWidgetItem I called item.setDisabled() and taught
-      MockQListWidgetItem the same (non-existent) method, so 17 unit tests passed while
-      real QGIS 4 crashed with "QListWidgetItem object has no attribute setDisabled".
-      QListWidgetItem has no setDisabled — that is QWidget API; items use
-      flags()/setFlags() with Qt.ItemFlag.ItemIsEnabled.
-    action: Mocks must mirror the real API surface only; never invent methods to satisfy
-      production code. When adding a widget interaction, verify the method exists on the
-      exact Qt class (and on both Qt5/Qt6) before writing the mock, and smoke-test in
-      real QGIS when the gating touches native widgets.
-  - date: '2026-09-23'
-    category: TOOLING
-    topic: a package group note can silently overwrite an individual file note
-    lesson: generate_vault_v2.py wrote the Tier C group for `resources/` to the same
-      `resources.md` path as the Tier A individual note for `resources.py`, destroying
-      the latter. Collisions must be resolved across tiers, not just within individuals.
-    action: Resolve group slugs against the full individual slug set (shared
-      resolve_group_slugs() in generator and checker); colliding groups get a `_pkg`
-      suffix and the repo root maps to `root`.
-  - date: '2026-09-23'
-    category: TOOLING
-    topic: synced mirror docs must stay verbatim — give vault-owned docs new names
-    lesson: project_structure*.md are byte-identical mirrors of docs/structure/
-      enforced by sync_vault_mirrors.sh --check, so wikilinks cannot be added to them.
-      The file-to-note map was created as a new vault-owned project_structure_links.md
-      (skip-listed in check_notes.py) instead of editing the mirrors.
-    action: Never enrich a synced mirror in place; create a vault-owned sibling document
-      and link it from Index.
-  - date: '2026-09-22'
-    category: TOOLING
-    topic: A docs generator --write must skip enriched notes, not just existing files
-    lesson: generate_vault_v2.py originally wrote unconditionally and overwrote
-      hand-enriched pilot notes when generating skeletons for a layer. Guarding only on
-      `dst.exists()` is insufficient because skeletons and enriched notes share the same
-      filename. A skeleton-detection guard (regex on placeholder markers) is required to
-      let --write refresh skeletons while protecting completed notes.
-    action: In any generator that emits skeletons later enriched by hand, overwrite only
-      if the target is still a skeleton (contains placeholders), never if completed.
-  - date: '2026-09-22'
-    category: TOOLING
-    topic: Per-note size ceiling via frontmatter note_lines
-    lesson: A fixed 500-line cap was too rigid for high-importance orchestrator notes
-      that legitimately document to ~500-650 lines. The gate now reads an optional
-      frontmatter field `note_lines` (max 700) as the per-note ceiling, so exceptions are
-      self-documenting, auditable and travel with the note instead of a separate allowlist.
-    action: For bounded-but-flexible limits, encode the exception in the artifact's
-      frontmatter and have the validator enforce a hard absolute maximum.
-  - date: '2026-09-22'
-    category: TOOLING
-    topic: per-layer vault generation resolves slug collisions only within that layer
-    lesson: generate_vault_v2.py --layer core produced slug `utils` for
-      `core/utils/__init__.py` (parent-name slug), but `gui/utils.py` also wants `utils`.
-      check_notes.py's build_expectations() uses ALL sources and the canonical
-      resolve_individual_slugs(), so it expects `core_utils___init___py` and flagged
-      `utils.md` as "not in the expected note set". The per-layer generator and the
-      whole-vault checker disagree on collision-safe slugs.
-    action: Before enriching per-layer generated notes, run check_notes.py and reconcile
-      any "not in the expected note set" slugs against the canonical (all-sources) slug
-      map; rename the note file and update its [[wikilink]] back-references accordingly.
-  - date: '2026-09-21'
-    category: TOOLING
-    topic: Never run qgis-analyzer analyze and sync_metrics.py in parallel
-    lesson: Both `qgis-analyzer analyze .` and `scripts/sync_metrics.py` write the
-      same `analysis_results/project_context.json`. Running them concurrently (two
-      bash calls in one message) made one process read a half-written file and fail
-      with a JSON decode error, even though the file was valid afterwards.
-    action: Run the analyzer and sync_metrics sequentially; treat their shared
-      analysis_results/ output as a mutual-exclusion region.
   - date: '2026-09-21'
     category: ARCHITECTURE
     topic: QDialog.accept() does not fire closeEvent — cleanup must cover it too
     lesson: A cleanup placed only in `closeEvent` (or a `close()` handler) is skipped
       when the dialog is closed via `accept()`, because Qt calls `done()` directly and
-      never invokes `closeEvent`. SecInterp's OK/Save button routed through
-      `accept_handler` → `self.accept()`, so preview memory layers leaked and triggered
-      QGIS's "temporary scratch layers" warning on exit.
-    action: For any QDialog resource that must be released on close, also hook the
-      `accept()`/`accept_handler` path (or override `done()`), not just `closeEvent`.
-  - date: '2026-09-21'
-    category: ARCHITECTURE
-    topic: derived values can't be shown "in advance" — surface the last computed value
-    lesson: Adaptive VE is computed from profile geometry (topo+struct) that only exists
-      after the first preview, so the user cannot see it before any preview. The
-      requirement was satisfied by a read-only label showing the last computed VE,
-      updated after each generation.
-    action: When a value depends on data produced downstream, don't try to predict it;
-      show the last-known value near the control and update it reactively.
+      never invokes `closeEvent`. SecInterp's OK/Save button routed through `accept_handler`
+      → `self.accept()`, so preview memory layers leaked and triggered QGIS's "temporary
+      scratch layers" warning on exit.
+    action: For any QDialog resource that must be released on close, also hook the `accept()`/`accept_handler`
+      path (or override `done()`), not just `closeEvent`.
   - date: '2026-09-21'
     category: TOOLING
-    topic: Sphinx autodoc can build green while producing empty API pages
-    lesson: conf.py inserted the repository root (not its parent) into sys.path, so
-      autodoc could not import the top-level package `sec_interp`; sphinx-build still
-      exited 0 and only logged "No module named 'sec_interp'" as warnings, leaving the
-      177 API pages empty.
-    action: After touching Sphinx conf.py/sys.path, grep the build log for import
-      warnings (or spot-check a generated module HTML) before trusting a green build.
-  - date: '2026-09-21'
-    category: TOOLING
-    topic: sphinx-apidoc --force does not prune orphan stubs; sphinx-intl needs -d
-    lesson: After decomposing modules, docs/source kept .rst stubs for deleted modules
-      (profile_interface, qt6_compat, lod_calculator, ...) that produced warnings, and
-      sphinx-intl update failed with "expected str ... not NoneType" without -d docs/locales.
-    action: After a refactor, delete orphan .rst stubs; always pass -d <locale dir> to
-      sphinx-intl update (translate_docs.py update now does).
-  - date: '2026-09-21'
-    category: AGENTIC_SYSTEM
-    topic: Do not publish multilingual docs at ~0% translation coverage
-    lesson: The plugin UI is ~99-100% translated in 13 languages, but the documentation
-      .po catalogs were ~1% and the build published 14 near-English sites; tracked .mo
-      files were generated artifacts.
-    action: Publish only languages whose USER_GUIDE.po >= 80%, keep catalogs to
-      user-facing pages, and gitignore generated .mo.
-  - date: '2026-09-19'
-    category: TOOLING
-    topic: make package regenerates tracked Sphinx stubs and pushes the external docs repo
-    lesson: The release `make package` target depends on `docs compile`, so it builds
-      Sphinx and pushes to the separate `sec_interp_docs` GitHub Pages repo, while also
-      rewriting tracked `docs/source/*.rst` autodoc stubs. The working tree is dirty
-      immediately after a release.
-    action: After `make package`, review and commit the regenerated `docs/source/*.rst`
-      stubs; treat the external docs push as a real remote side effect of the release.
-  - date: '2026-09-19'
-    category: AGENTIC_SYSTEM
-    topic: release workflow zips/audits use dist/*.zip which matches all historical releases
-    lesson: The `/release-plugin` Phase 5 commands use `dist/*.zip`; since `dist/` keeps
-      every historical ZIP, the glob would audit and attach all old releases.
-    action: Always target the versioned artifact explicitly (`dist/sec_interp.X.Y.Z.zip`)
-      in the ZIP audit and in `gh release create`.
-  - date: '2026-09-19'
-    category: AGENTIC_SYSTEM
-    topic: a phase can ship unfulfilled goals under a fresh minor version
-    lesson: v3.8.0 was released after only the Core/GUI refactor, while the documented
-      v3.8.0 goals (symbology preview, adaptive VE, tech debt) remain pending. Bumping a
-      minor for an internal refactor while renaming the goals is easy to lose track of.
-    action: When releasing without completing the phase goals, either ship a patch version
-      or explicitly move the unmet goals to the next phase in `next_steps.md`.
-  - date: '2026-09-19'
-    category: ARCHITECTURE
-    topic: retiring a Qt/QGIS compat shim needs a full flat-enum scan, not just a grep
-    lesson: Retiring qt6_compat.py after the scoped-enum migration seemed safe (no flat
-      enums found), but QEvent.Resize still slipped through and only failed at runtime
-      on QGIS 4, because the mock test env and pyqgis4-checker did not cover that path.
-    action: Before removing any compat shim, enumerate every enum family the shim
-      patches and grep for each; then validate at runtime (real QGIS 4), not only
-      via unit tests or the enum checker.
+    topic: Never run qgis-analyzer analyze and sync_metrics.py in parallel
+    lesson: Both `qgis-analyzer analyze .` and `scripts/sync_metrics.py` write the same
+      `analysis_results/project_context.json`. Running them concurrently (two bash calls
+      in one message) made one process read a half-written file and fail with a JSON
+      decode error, even though the file was valid afterwards.
+    action: Run the analyzer and sync_metrics sequentially; treat their shared analysis_results/
+      output as a mutual-exclusion region.
   - date: '2026-09-19'
     category: AGENTIC_SYSTEM
     topic: agent workflows/skills drift from repo reality (stale metrics and checklists)
-    lesson: The /release-plugin workflow still required "640 tests" and missed
-      docs/docsec/CHANGELOG.md and docs/source/conf.py; the skill used a stale release
-      notes path. This drift hid real release gaps.
+    lesson: The /release-plugin workflow still required "640 tests" and missed docs/docsec/CHANGELOG.md
+      and docs/source/conf.py; the skill used a stale release notes path. This drift
+      hid real release gaps.
     action: When touching a workflow/skill, reconcile its numbers (test counts, scores)
       and file lists against the actual repo (grep the current version references).
   - date: '2026-09-19'
     category: TOOLING
     topic: pre-commit pins its own ruff, which can disagree with the installed one
-    lesson: isinstance(value, (dict, list)) passed the project ruff (>=0.15.0) but
-      the pre-commit hook (ruff v0.8.4) rejected it with UP038 and blocked the commit.
-      The hook runs its own pinned ruff version, so lint must be checked against it,
-      not just the project interpreter.
+    lesson: isinstance(value, (dict, list)) passed the project ruff (>=0.15.0) but the
+      pre-commit hook (ruff v0.8.4) rejected it with UP038 and blocked the commit. The
+      hook runs its own pinned ruff version, so lint must be checked against it, not
+      just the project interpreter.
     action: Before committing, remember the pre-commit ruff rev (v0.8.4) may flag rules
       the installed ruff does not; fix to satisfy the hook (e.g. dict | list).
-  - date: '2026-09-19'
-    category: TOOLING
-    topic: canonical formatter is ruff format, not black
-    lesson: Running black reformats to 88 cols while the repo standard (pre-commit
-      ruff-format) uses 100 cols, causing churn. black is in dev deps but not wired
-      into the hook config.
-    action: Use ruff format (never black) for this repository.
-  - date: '2026-09-19'
-    category: ARCHITECTURE
-    topic: assess type propagation before migrating a geometry signature to tuples
-    lesson: The get_line_start_point helper returns QgsPointXY whose value flows into ~20
-      QGIS-coupled service methods (measureLine, .x()/.y()). Converting it to tuples
-      is not an isolated change; it drags the whole service layer.
-    action: When reimplementing a core helper in pure math, first grep how its return
-      type propagates; if it fans out into QGIS-coupled services, defer it to the
-      service-migration phase and pick a function with a primitive return instead.
   - date: '2026-09-19'
     category: ARCHITECTURE
     topic: allowlist ratchet as an incremental migration driver
     lesson: A test that fails both on new violations and on stale allowlist entries
       turns a large decoupling effort into small, verifiable increments, forcing the
       list to shrink as files migrate.
-    action: Use a bidirectional allowlist gate for gradual Extract-then-Compute
-      migrations; each migrated file produces an immediate, testable gate shrink.
-  - date: '2026-09-17'
-    category: TOOLING
-    topic: Verify installed dependency source before writing an upstreaming plan
-    lesson: A plan to upstream SecInterp's i18n AST + CC gate into qgis-plugin-analyzer
-      turned out to be already fully implemented in 1.14.0 (verified by reading the
-      installed `analyzer/` package). The remaining work was a migration on the
-      SecInterp side, not new analyzer code.
-    action: Before planning to port/upstream logic into a dependency, inspect the
-      installed package source and CLI surface first; what looks like a gap may be a
-      version bump away from shipped.
-  - date: '2026-09-17'
-    category: TOOLING
-    topic: Untracked git hooks drift when a CLI flag contract changes
-    lesson: The pre-push hook used the legacy `qgis-analyzer analyze . --output json`,
-      where `--output` was a filename. In 1.14.0 `--output` became a directory, so the
-      hook silently wrote to `json/` while `check_cc.py` read `analysis_results/`,
-      breaking the CC gate on every push. Hooks in `.git/hooks/` are untracked and
-      invisible to normal diffs.
-    action: When bumping a CLI tool, grep `.git/hooks/*` for its invocations and
-      verify flag semantics; treat untracked hooks as part of the migration checklist.
-  - date: '2026-09-14'
-    category: TOOLING
-    topic: Analyzer version bumps shift metrics more than code changes
-    lesson: qgis-plugin-analyzer 1.14.0 cut MISSING_I18N from 72 to 2 (a narrower
-      i18n heuristic) and recomputed type-hint param coverage 94.3 → 90.4 with zero
-      code changes. The `summary` command reads stale cached results and warned
-      about drift until `analyze .` was re-run.
-    action: After any analyzer tool version bump, re-run `analyze .` (never just
-      `summary`) and reconcile agent_metrics.json against the fresh output before
-      trusting metric deltas.
-  - date: '2026-09-13'
-    category: TOOLING
-    topic: detect-secrets baseline goes stale when files are deleted
-    lesson: The .secrets.baseline still referenced .continue/agents/new-config.yaml
-      after that directory was removed, because the baseline is only regenerated by an
-      explicit scan. A stale baseline hides (or wrongly reports) secrets for files that
-      no longer exist.
-    action: After deleting files that appear in a detect-secrets baseline, regenerate it
-      with `detect-secrets scan . --baseline .secrets.baseline` before committing.
-  - date: '2026-09-13'
-    category: TOOLING
-    topic: git rm --cached only touches the index, not disk
-    lesson: The git rm --cached command untracks a file but leaves it on disk; a
-      separate rm is needed. Docker-created artifacts are often root-owned and
-      additionally require sudo to delete, so they can linger after a cleanup.
-    action: Follow git rm --cached with an explicit disk rm; expect root-owned
-      (Docker) leftovers to need sudo.
+    action: Use a bidirectional allowlist gate for gradual Extract-then-Compute migrations;
+      each migrated file produces an immediate, testable gate shrink.
   - date: '2026-09-13'
     category: AGENTIC_SYSTEM
     topic: Harness assumptions go stale (the Bitter Lesson)
@@ -705,41 +276,6 @@ lessons:
     action: Prefer runtime-native mechanisms (AGENTS.md, SKILL.md name+description,
       opencode.json subagents) over bespoke bridges. Any script that exists only to
       translate between runtimes is a liability.
-  - date: '2026-09-13'
-    category: TOOLING
-    topic: Consolidate overlapping scripts into subcommand entry points
-    lesson: Five metrics/consistency scripts overlapped in responsibility, each a
-      separate assumption to keep synchronized. Folding them into sync_metrics.py and
-      validate_agent_system.py subcommands reduced the long-tail and centralised drift.
-    action: When two scripts share a domain (metrics, validation), fold the smaller into
-      the larger as a subcommand rather than adding a new file.
-  - date: '2026-09-12'
-    category: AGENTIC_SYSTEM
-    topic: Release Timing vs Build/Upload Order
-    lesson: The scoped-enum migration (commit 7ae8ac96) was committed AFTER the v3.7.1
-      ZIP was built and uploaded, so the portal's Qt6 checker kept reporting 114 enum
-      findings even though HEAD was clean. A fix that lives in git but never in a
-      released artifact is invisible to the portal.
-    action: When a compatibility fix lands, verify the built ZIP actually contains it
-      (unzip -p on the artifact) and ship a patch release before declaring the portal
-      issue resolved.
-  - date: '2026-09-12'
-    category: AGENTIC_SYSTEM
-    topic: Metric Sync Must Update All Derived Fields
-    lesson: sync_metrics.py only refreshed the summary scores, leaving last_session
-      stale (2026-05-23) and i18n_issues_qgis_analyzer (254) contradicting
-      issue_breakdown.MISSING_I18N (72). Partial field updates silently recreate drift.
-    action: Every metric sync must also refresh i18n_issues_qgis_analyzer and rotate
-      last_session into history (sync_metrics.py --close-session). sync_metrics.py
-      --validate now checks internal consistency to catch this class of drift.
-  - date: '2026-09-12'
-    category: TOOLING
-    topic: Verify YAML Frontmatter After Bulk Edits
-    lesson: A bulk Python script to standardize the runtimes frontmatter field across
-      13 workflows merged the closing --- with the last frontmatter line, silently
-      corrupting YAML.
-    action: After any mechanical multi-file edit, re-parse frontmatter (or run
-      validate_agent_system.py --graph) before committing.
   - date: '2026-09-12'
     category: AGENTIC_SYSTEM
     topic: Single Source of Truth for Workflow Tables
@@ -748,310 +284,35 @@ lessons:
     action: The workflow/skills tables now live only in the root AGENTS.md (single source
       of truth); .agent/AGENTS.md is a pointer. Update root AGENTS.md manually when
       adding/renaming a workflow or skill (skill_sync.py retired in Gen 8).
-  - date: '2026-05-24'
-    category: TECHNICAL
-    topic: qgis-analyzer i18n False Positives
-    lesson: 'qgis-analyzer MISSING_I18N check only recognizes self.tr() as a valid i18n wrapper. QCoreApplication.translate() — the standard Qt API for non-QObject contexts (static methods, factories, super().__init__()) — is flagged as untranslated. In SecInterp, 254 of 257 total issues are these false positives.'
-  - date: '2026-05-24'
+  - date: '2026-09-12'
     category: AGENTIC_SYSTEM
-    topic: Ground-Truth Metric Staleness
-    lesson: Agentic system self-reported metrics (quality score, i18n coverage, CC average)
-      drifted from reality over multiple sessions because no automated re-scan was triggered
-      after fixes. The system declared 40.8 quality score when real score was 52.3;
-      declared i18n "complete" when qgis-analyzer still found 254 MISSING_I18N (different
-      scope than the AST checker).
-    action: Run qgis-analyzer analyze . at the start of every session and update agent_metrics.json
-      summary automatically. Never trust metrics older than one session without re-verification.
-  - date: '2026-05-24'
-    category: AGENTIC_SYSTEM
-    topic: Multi-Tool Scope Mismatch
-    lesson: verify_i18n_hygiene.py (AST-based) and qgis-analyzer i18n (heuristic) measure
-      different things. The AST checker validates self.tr() wrapping with near-zero
-      false positives. The analyzer uses broader detection that catches user-facing
-      strings in f-strings, HTML templates, and dynamic constructions. Both reported
-      0 vs 254 for the same codebase because their scope differs.
-    action: Document the scope of each quality gate explicitly. A PASS on verify_i18n_hygiene.py
-      does not mean 0 MISSING_I18N on qgis-analyzer. Both metrics must be tracked separately.
-  - date: '2026-05-24'
-    category: AGENTIC_SYSTEM
-    topic: Session Archive Location
-    lesson: The memory_policy.md referenced .agent/history/sessions/ as the episodic
-      memory store, but the actual 100+ session logs live in docs/maintenance/. This
-      path divergence went unnoticed because no automated cross-reference exists.
-    action: Update memory_policy.md to reference docs/maintenance/ as the canonical
-      session directory. Add a path validation step to /verify-standards workflow.
-  - date: '2026-05-23'
-    category: i18n
-    topic: AST-based i18n Quality Gate
-    lesson: Using a Python Abstract Syntax Tree (AST) parser allows building a highly
-      precise, customizable static translation scanner. It can distinguish docstrings,
-      HTML strings, internal dictionary keys, and developer log statements, eliminating
-      hundreds of false-positive warnings.
-    action: Use AST-based scanners like verify_i18n_hygiene.py rather than naive regexes
-      to validate i18n completeness in Python codebases.
-  - date: '2026-05-23'
-    category: i18n
-    topic: Headless tr() Resolution
-    lesson: For translation of user-facing strings inside modular factory objects or
-      non-QObject classes that lack a self.tr() context, importing and using QCoreApplication.translate()
-      ensures PyQt/PyQGIS can correctly locate translations.
-    action: Employ QCoreApplication.translate("ClassName", "String") inside functions
-      that lack a QObject parent or self.tr() context.
-  - date: '2026-05-23'
-    category: ENVIRONMENT
-    topic: Read-only Filesystem Shell
-    lesson: In container environments where the terminal/shell commands run with a read-only
-      filesystem mount for safety, specialized agentic file-writing tools (which run
-      outside the shell sandbox) can still successfully create and edit files.
-    action: Fallback to direct replace_file_content or write_to_file calls when CLI
-      tool/script executions fail due to Read-only filesystem constraints.
-  - date: '2026-05-18'
-    category: TOOLING
-    topic: QGIS Ignore Verification
-    lesson: Relying on .qgisignore in the packaging script ensures that all internal
-      agent files (.agent/, scripts/, tests/) are completely excluded, which results
-      in a highly compact zip (reduced by over 50%).
-    action: Always verify package exclusions using unzip -l on the generated zip before
-      distribution.
-  - date: '2026-05-18'
-    category: ARCHITECTURE
-    topic: Qt6 QDialog Enum Code
-    lesson: Using explicit integer literals (1 for Accepted, 0 for Rejected) for QDialog
-      execution status results is the most robust and backward-compatible bridge between
-      PyQt5 and PyQt6, avoiding Qt6-specific enum hierarchy errors.
-    action: Adopt integer literals (1 and 0) for QDialog execution status checks across
-      all GUI modules.
-  - date: '2026-05-18'
-    category: i18n
-    topic: Translation Analyzer False Positives
-    lesson: 'Many missing translation warnings from static analyzers represent technical
-      strings (formats, logs, queries) rather than user-facing text. Using explicit
-      # no-i18n tags is crucial to prevent static analysis noise.'
-    action: Systematically annotate technical string literals with exclusion tags to
-      maintain clean translation reports.
-  - date: '2026-04-29'
-    category: TOOLING
-    topic: Formatter vs Linter Conflict (W503)
-    lesson: 'Modern formatters (Ruff/Black) enforce PEP 8 "break-before" for operators,
-      while legacy linters (W503) flag it. Refactoring multi-line conditions into intermediate
-      variables or removing parentheses for single-line blocks is the most stable way
-      to satisfy both without standard deviation.
-
-      '
-    action: 'Avoid ''if ( ... )'' blocks with multi-line operators. Use intermediate
-      variables to decompose complex logic and keep conditions on a single line where
-      possible.
-
-      '
-  - date: '2026-04-29'
-    category: ARCHITECTURE
-    topic: precise noqa placement
-    lesson: 'In modular systems with lazy imports, static analysis may trigger false
-      positives (F401/F811) for local redefinitions. Placing ''# noqa'' precisely on
-      the line of the second import/definition is required to maintain the ''Extract-then-Compute''
-      pattern without linter noise.
-
-      '
-    action: 'Always place noqa tags on the specific line causing the violation instead
-      of suppressing the entire file or block.
-
-      '
-  - date: '2026-04-29'
-    category: TOOLING
-    topic: Pre-commit Auto-Reversion
-    lesson: 'Pre-commit hooks that modify files (like ruff-format) can silently revert
-      manual linting fixes if they are incompatible with the enforced project style,
-      leading to recursive build failures.
-
-      '
-    action: 'Always verify if a formatter reverts a fix and adapt the code structure
-      (e.g., using variables) to be compatible with the formatter''s standards.
-
-      '
-  - date: '2026-04-28'
-    category: TOOLING
-    topic: QGIS 4 Sphinx Mocking
-    lesson: 'When updating Sphinx documentation for QGIS 4.x readiness, adding ''qgis.PyQt'',
-      ''PyQt6'', and specific Qt modules to ''autodoc_mock_imports'' is essential to
-      prevent build errors in environments where these libraries are not installed.
-
-      '
-    action: 'Always include Qt6-related mocks in ''conf.py'' when targeting QGIS 4 compatibility
-      to ensure documentation builds are decoupled from the local Qt environment.
-
-      '
-  - date: '2026-04-28'
-    category: TESTING
-    topic: Post-Merge Stability Verification
-    lesson: 'Major branch merges (like the Cyclomatic Complexity refactoring) can introduce
-      subtle regressions in complex orchestrators even if individual tests passed in
-      the branch.
-
-      '
-    action: 'Always execute the full project test suite (''make test'' or discovery)
-      immediately after a merge to ''main'' to verify global system integrity.
-
-      '
-  - date: '2026-04-28'
-    category: ARCHITECTURE
-    topic: API-Agnostic Stability
-    lesson: 'Consistently using ''qgis.PyQt'' shims instead of direct ''PyQt5'' or ''PyQt6''
-      imports guarantees a stable codebase that operates seamlessly across QGIS 3 and
-      4 runtimes without requiring conditional branching or manual porting.
-
-      '
-    action: 'Enforce the ''qgis.PyQt'' standard in all new modules and use ''qgis-analyzer''
-      to audit and prevent direct Qt library imports.
-
-      '
-  - date: '2026-04-26'
-    category: TOOLING
-    topic: Complexity Branch Counting (or "")
-    lesson: 'qgis-plugin-analyzer 1.13.1 counts ''or ""'' expressions in function arguments
-      or return statements as additional logical branches, which can push cyclomatic
-      complexity over the limit in methods with many optional fields.
-
-      '
-    action: 'Decompose monolithic orchestrators into discrete ''Steps'' (private methods)
-      and use intermediate variables or DTO defaults instead of inline ''or'' logic
-      to maintain low CC scores.
-
-      '
-  - date: '2026-04-26'
-    category: ARCHITECTURE
-    topic: Orchestrator Decomposition
-    lesson: 'Decoupling complex data processing flows into a ''Step-by-Step'' pattern
-      within orchestrator services (core/services) improves testability and reduces
-      complexity without breaking the Extract-then-Compute paradigm.
-
-      '
-    action: 'Use private methods prefixed with _stepN_ to document the execution flow
-      of complex services, keeping the main method clean and linear.
-
-      '
-  - date: '2026-04-26'
-    category: ARCHITECTURE
-    topic: Explicit Signal Disconnection
-    lesson: 'Static analyzers like qgis-analyzer may flag signal connections as leaks
-      if disconnections are not explicit and symmetric within the same class context.
-
-      '
-    action: 'Ensure all signals connected in ''connect_signals'' are explicitly disconnected
-      by slot name in ''disconnect_signals'' using ''contextlib.suppress''.
-
-      '
-  - date: '2026-04-26'
-    category: TOOLING
-    topic: QGIS-Analyzer Static Summary
-    lesson: 'The ''summary'' command is a static JSON viewer. It does not reflect real-time
-      code changes unless ''analyze'' is executed first.
-
-      '
-    action: 'Always force a full re-analysis (''qgis-analyzer analyze .'') before verifying
-      fixes with ''summary'' to avoid phantom issue reporting.
-
-      '
-  - date: '2026-04-25'
-    category: TOOLING
-    topic: Flake8 vs Ruff Configuration Parity
-    lesson: 'Ruff and Flake8 can have different default rule scopes or ignored rules
-      (like F821, E402). If the CI/CD or QGIS repository strict analyzer uses Flake8
-      without the pyproject.toml ignores, the build will fail despite Ruff reporting
-      0 errors.
-
-      '
-    action: 'When resolving linting issues for external platforms, always run the exact
-      tool (e.g., Flake8) expected by the platform and manage exclusions through ''#
-      noqa'' comments directly in the code rather than relying exclusively on ''pyproject.toml''
-      ignores.
-
-      '
-  - date: '2026-04-05'
-    category: ARCHITECTURE
-    topic: Gen 5 Blueprint Scaffolding
-    lesson: 'Blueprint Scaffolding architecture is superior for scaling frameworks while
-      maintaining a generic core. Integrating the Reflect Loop (Agent Auditor critique)
-      significantly reduces hallucination risk in autonomous planning. MCP is the backbone
-      for standardized and secure tool orchestration.
-
-      '
-    action: 'Use the /ia-critic workflow after every major planning phase. Expand mcp_server.py
-      to cover all validation-heavy core logic.
-
-      '
-  - date: '2026-03-22'
-    category: TOOLING
-    topic: ai-context-core CLI
-    lesson: 'The CLI executable for ''ai-context-core'' is ''ai-ctx'', not ''ai-context''.
-      The v3.3.0 update fixes previous aggregation bugs where global metrics (Functions,
-      Classes, MI) were reported as zero.
-
-      '
-    action: 'Always use ''uv run ai-ctx'' for project analysis.
-
-      '
-  - date: '2026-03-16'
-    category: TOOLING
-    topic: Static Analysis Parser Failures
-    lesson: 'Tools relying on Regex for code parsing frequently fail on multi-line function
-      signatures (e.g., those formatted by ''black''). This leads to severe false positives
-      in Type Hint coverage reports.
-
-      '
-    action: 'Do not blindly trust static analysis metrics that drop inexplicably. Always
-      verify the true source code using the Python ''ast'' module before attempting
-      massive refactors.
-
-      '
-
-  # ─── PRUNED LESSONS (already in SKILL.md — kept as index only) ─────────────
-  # The following entries have been fully absorbed into specialized skills.
-  # [PRUNED] 2026-03-30 ARCHITECTURE/Manager-based GUI Orchestration → ui-framework/SKILL.md
-  # [PRUNED] 2026-03-30 ARCHITECTURE/Interface-driven Core Design → coding-standards/SKILL.md
-  # [PRUNED] 2026-03-30 i18n/Master Data SSoT Workflow → i18n-standards/SKILL.md
-  # [PRUNED] 2026-03-29 TOOLING/JSON Git-Diff Stability → coding-standards/SKILL.md
-  # [PRUNED] 2026-03-29 TOOLING/Robust XML Modification → i18n-standards/SKILL.md
-  # [PRUNED] 2026-03-25 ARCHITECTURE/Vector Layer Synchronization → qgis-core/SKILL.md
-  # [PRUNED] 2026-03-19 TESTING/Docker-based Verification (QGIS Headless) → qa-docker/SKILL.md
-  # [PRUNED] 2026-03-12 ARCHITECTURE/Deterministic Lifecycle Cleanup → qgis-core/SKILL.md
-  # [PRUNED] 2026-03-09 TESTING/Patch Specificity for Local Imports → qa-docker/SKILL.md
-  # [PRUNED] 2026-03-08 ARCHITECTURE/System Standardization & Reflection → documentation-standards/SKILL.md
-  # [PRUNED] 2026-02-28 ARCHITECTURE/Layer Caching and Mock Integrity → qa-docker/SKILL.md
-  # They are retained here as a consolidated index only.
-  #
-  # [PRUNED] 2026-03-29 TECHNICAL/Modulo Boundaries → geological-logic/SKILL.md
-  # [PRUNED] 2026-03-25 TECHNICAL/GeoPackage Append → qgis-core/SKILL.md
-  # [PRUNED] 2026-03-15 TECHNICAL/Export Setting Persistence → coding-standards/SKILL.md
-  # [PRUNED] 2026-03-15 TECHNICAL/DXF Export Limitations → qgis-core/SKILL.md
-  # [PRUNED] 2026-03-12 ARCHITECTURE/DTO vs Tuple Flow → coding-standards/SKILL.md
-  # [PRUNED] 2026-03-09 TESTING/Qt Object Mocks → qa-docker/SKILL.md
-  # [PRUNED] 2026-03-09 TESTING/Dynamic Mock Return Values → qa-docker/SKILL.md
-  # [PRUNED] 2026-03-08 TESTING/Iterative Mocking for Arithmetic → qa-docker/SKILL.md
-  # [PRUNED] 2026-02-25 TECHNICAL/Data Modeling → coding-standards/SKILL.md
-  # [PRUNED] 2026-02-19 ARCHITECTURE/Resilience & Lazy Loading → qgis-core/SKILL.md
-  # [PRUNED] 2026-02-16 TECHNICAL/Signal Tracing vs Mocks → qgis-core/SKILL.md
-  # [PRUNED] 2026-02-15 TECHNICAL/QGIS Signal Leaks → qgis-core/SKILL.md
-  # [PRUNED] 2026-02-15 QUALITY/qgis-analyzer Context → qa-docker/SKILL.md
-  # [PRUNED] 2026-02-05 USER_PREFERENCE/Development Tools → coding-standards/SKILL.md
-  # [PRUNED] 2026-02-01 TECHNICAL/QgsGeometry Mocking → qa-docker/SKILL.md
+    topic: Release Timing vs Build/Upload Order
+    lesson: The scoped-enum migration (commit 7ae8ac96) was committed AFTER the v3.7.1
+      ZIP was built and uploaded, so the portal's Qt6 checker kept reporting 114 enum
+      findings even though HEAD was clean. A fix that lives in git but never in a released
+      artifact is invisible to the portal.
+    action: When a compatibility fix lands, verify the built ZIP actually contains it
+      (unzip -p on the artifact) and ship a patch release before declaring the portal
+      issue resolved.
 ```
 
+## 🗂️ Archived / consolidated index
+
+The following lessons were consolidated into the project skills or archived because
+they describe one-off incidents already covered by a gate or a skill:
+
+- **Testing & mocks** → `qa-docker`, `testing-standards` (mixed-fidelity mocks, invented
+  Qt methods, snapshot pruning, test discovery).
+- **QGIS/CRS/geometry** → `qgis-core`, `geological-logic` (CRS reprojection, raster-cell
+  deduplication, section resolver, dip/strike conventions).
+- **Release/CI/tooling** → `release-management`, `commit-standards`, `documentation-standards`
+  (pinned linters, docs/help build order, cron dispatch, artifact auditing).
+- **Agentic system** → this file + `agentic-memory` (metric freshness, workflow drift,
+  source-of-truth tables, runtime assumptions).
+
+Full text: `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md`.
+
 ---
 
-## ⚙️ Global Preference Configuration
-
-| Preference | Value |
-|---|---|
-| **Test environment** | Manual testing on **QGIS 4** (`uv run qgis-manage deploy --no-compile --qgis-version 4`); keep 3.28 compat + LTR 3.44 matrix; Docker CI runs `qgis/qgis:latest` |
-| **Language** | Communication: Spanish / Code, Commits, Docs: English |
-| **Formatter** | `ruff format` |
-| **Package manager** | `uv` |
-| **UI approach** | Programmatic (no `.ui` files) |
-| **Testing framework** | `unittest` (Mock-First pattern) |
-| **Commit style** | Conventional Commits (see `docs/docsec/COMMIT_GUIDELINES.md`) |
-| **Workflows** | Start with `/start-session`, close with `/close-session` |
-
----
-
-*Last update: 2026-04-27 — Memory Pruning & YAML restructure (Gen 5 Memory Policy applied).*
-*Next review: 2026-07-27 — Prune all entries marked `consolidated_in` older than 90 days.*
+*Last update: 2026-10-19 — compacted from 98 to 27 active lessons.*
+*Next review: 2027-01-19 — prune consolidated lessons older than 90 days.*
