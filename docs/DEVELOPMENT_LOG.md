@@ -1,3 +1,18 @@
+## [2026-10-19] Session: Reliability Hardening — Agentic System, Cache, Python 3.9, i18n & Release Gates
+- **Achievement**: closed the P0/P1 gaps from the repository and `.agent` audits: metrics truth, memory compaction, unittest standardization, overlay validation, export-cache correctness, QGIS 3.28/Python 3.9 compatibility, complete translation catalogs and release quality gates.
+- **Changes**:
+    - **Metrics** (`80f5bcac`): `sync_metrics.py` reads `analysis_results/project_context.json`, counts all 37 issues, separates static/executed tests and validates freshness against the analyzer.
+    - **Memory** (`95b10b2f`): `AGENT_LESSONS.md` 98 → 27 active lessons (318 lines), 71 archived; `forge.py memory check` + 350-line validator gate.
+    - **Unittest/deps** (`a05814a6`): workflows/skills use unittest; removed unused `pytest`, `pytest-qt`, `pytest-mock`; lockfile refreshed to 68 packages.
+    - **Overlay validation** (`1be25720`): `forge validate`/`--graph` scan framework + `.agent-state/workflows` (18 workflows); `.agent` bumped to `f15d44a`.
+    - **Export cache** (`d8e1dcb7`): component keys include line/raster, section feature, band, LOD, smoothing and every drillhole field mapping; 4 regression tests.
+    - **Python 3.9** (`e7d265d9`): removed PEP 604 `isinstance` unions and `zip(strict=)`; `safe_loader` future annotations; static compatibility gate; ruff `py39`.
+    - **i18n** (`cf701d07`): 13 catalogs regenerated (363 messages), 0 `unfinished`, `.qm` recompiled, `make i18n-check` gate.
+    - **Release gates** (`f3f95df2`): `scheduled-release.yml` runs ruff, mypy, docs, security, i18n and analyzer before Docker/packaging; `make pre-release` mirrors them.
+- **Quality**: 780 tests OK (829 static) · ruff/format/mypy/check_docs/forge/sync/i18n PASS · 18 workflows validated · release YAML valid.
+- **Maintenance**: [session_2026-10-19_reliability_hardening.md](maintenance/session_2026-10-19_reliability_hardening.md).
+- **Follow-up**: confirm v3.11.0 portal approval; `module_size_gate` still FAIL on 5 modules; `uv` 0.13.0 blocked by pacman; next feature starts with interop §9 **B1**; `section_feature_id` still not wired into profile sampling.
+
 ## [2026-10-18] Session: Dependency Refresh, Security Scope, Packaging Hygiene & Local Deploy
 - **Achievement**: refreshed the `uv`-managed toolchain (safe batch + four major bumps, each verified against its consumer), committed the pending `.agent` submodule update, fixed two **pre-existing** scope leaks found while verifying (bandit scanning dev tooling; `.qgisignore` shipping `graphify-out`), and deployed **v3.11.0** to the local QGIS 4 profile.
 - **Changes**:

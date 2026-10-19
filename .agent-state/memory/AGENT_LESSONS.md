@@ -18,6 +18,16 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 
 ```yaml
 lessons:
+  - date: '2026-10-19'
+    category: ARCHITECTURE
+    topic: component caches must key on every input that changes the output
+    lesson: 'ProfileController cached topography, geology, structures and drillholes with partial keys; changing the DEM/line, enabling Smooth or remapping drillhole fields reused stale data in export.'
+    action: Hash every relevant input (layer IDs, section feature, band, smoothing, field mappings) and add a regression that asserts the extractor is called again when one input changes.
+  - date: '2026-10-19'
+    category: AGENTIC_SYSTEM
+    topic: a validator that scans only its own root gives a false green
+    lesson: 'forge validate checked only .agent/workflows, so the four QGIS workflows in .agent-state were never validated even though the command reported that all files passed.'
+    action: Scan framework and overlay roots for skills, workflows and scripts; add a test where a broken overlay workflow must fail the gate.
   - date: '2026-10-18'
     category: TOOLING
     topic: qgis-manage deploy never prunes ignored entries, so dev artifacts stay installed

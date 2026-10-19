@@ -11,7 +11,7 @@
         }
     },
     "summary": {
-        "total_sessions": 49,
+        "total_sessions": 50,
         "tasks_completed": 27,
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
@@ -122,17 +122,29 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-10-18",
-        "topic": "deps_refresh_packaging_deploy",
-        "tests_ok": 792,
+        "date": "2026-10-19",
+        "topic": "reliability_hardening",
+        "tests_ok": 780,
         "quality_score": 55.7,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [],
-        "status": "SUCCESS"
+        "status": "SUCCESS",
+        "tests_static": 829
     },
     "history": [
+        {
+            "date": "2026-10-18",
+            "tests_ok": 792,
+            "quality_score": 55.7,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "deps_refresh_packaging_deploy"
+        },
         {
             "date": "2026-10-18",
             "tests_ok": 792,
