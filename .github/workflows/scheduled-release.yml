@@ -77,6 +77,24 @@ jobs:
           cp /tmp/main_docs/conf.py docs/source/conf.py
           cp /tmp/main_docs/help_index.rst docs/source/help_index.rst
 
+      # The release train must not publish code that the normal CI would reject.
+      # Keep these gates before packaging; older release branches fall back to
+      # the equivalent command when a newer Make target is not available.
+      - name: Quality gates (lint, types, docs, security, i18n, analyzer)
+        if: ${{ steps.pick.outputs.version != '' }}
+        run: |
+          set -euo pipefail
+          uv run --frozen ruff check .
+          UV_FROZEN=1 make mypy
+          python3 scripts/check_docs.py
+          make security-scan
+          if grep -q '^i18n-check:' Makefile; then
+            make i18n-check
+          elif [ -f tests/core/test_i18n_catalogs.py ]; then
+            uv run python3 -m unittest tests.core.test_i18n_catalogs
+          fi
+          uv run qgis-analyzer analyze . --max-cc 10
+
       - name: Run tests (Docker, QGIS headless)
         if: ${{ steps.pick.outputs.version != '' }}
         run: |

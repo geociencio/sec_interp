@@ -307,7 +307,15 @@ mypy:
 		--explicit-package-bases sec_interp/core sec_interp/exporters
 	@echo "-------------------------------------"
 
-# Pre-release validation (includes type check + security + Qt6 enum check)
+.PHONY: analyzer
+analyzer:
+	@echo
+	@echo "-------------------------------------"
+	@echo "Static analysis (qgis-analyzer, CC gate)"
+	@echo "-------------------------------------"
+	@uv run qgis-analyzer analyze . --max-cc 10
+
+# Pre-release validation (type check + analyzer + i18n + security + Qt6 + tests)
 .PHONY: pre-release
-pre-release: mypy qt6-check security-scan docker-test
+pre-release: mypy analyzer i18n-check qt6-check security-scan docker-test
 	@echo "✅ Pre-release validation complete"
