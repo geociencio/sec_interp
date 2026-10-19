@@ -19,6 +19,11 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 ```yaml
 lessons:
   - date: '2026-10-19'
+    category: AGENTIC_SYSTEM
+    topic: framework patch releases can move private helpers used by project adapters
+    lesson: 'v1.4.1 split forge_metrics.py and moved the _check_* helpers to forge_metrics_checks, breaking sync_metrics imports and several project tests even though it was a minor release.'
+    action: After every submodule bump run forge validate, sync_metrics --validate and the full suite; import documented modules or add a compatibility test around private helpers.
+  - date: '2026-10-19'
     category: ARCHITECTURE
     topic: component caches must key on every input that changes the output
     lesson: 'ProfileController cached topography, geology, structures and drillholes with partial keys; changing the DEM/line, enabling Smooth or remapping drillhole fields reused stale data in export.'

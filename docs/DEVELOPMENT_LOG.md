@@ -1,11 +1,13 @@
-## [2026-10-19] Post-close: Agentic Forge v1.4.1 → v1.4.2
+## [2026-10-19] Session: Agentic Forge v1.4.1 → v1.4.2 Upgrade
 - **Achievement**: updated the `.agent` framework from `f15d44a` (v1.2.0-4) to **v1.4.2** (`b264e35`, via v1.4.1 `537f9fd`) without losing the project's memory/overlay/unittest fixes, which were ancestors of the release, and adapted the project adapters to the new framework module layout.
 - **Changes**:
     - **Metrics adapter**: `sync_metrics.py` imports checks from `forge_metrics_checks` and reporting from `forge_metrics_report`; the removed `_check_i18n_consistency` tests were deleted.
     - **Memory/validator tests**: `prune_lessons`/`prune_next_steps_snapshots` now receive `apply=True`; overlay tests use `workflow_graph.workflow_files/scan_workflows`; skill tests use `skill_conflicts.find_conflicts` + `validate_memory_budget`.
     - **Skills**: active workflows and `AGENTS.md` use `testing-standards`; the deprecated `qa-docker` alias remains only in historical docs. `release-plugin` prunes with `memory prune --apply`.
     - **v1.4.2 hotfix**: framework metrics scans now skip `.mypy_cache`/`.ruff_cache`/`.pytest_cache`/`__pycache__`, and TOML config errors are handled via `ValueError` with the fallback parser.
+    - **Tooling config**: `forge.toml` declares `test_command_full`, `lint_command`, `format_command` and `type_command` for `forge.py project *`.
 - **Quality**: **778 tests OK** (827 static) · `forge validate` 17 skills / 18 workflows · `sync_metrics --validate` PASS · i18n and release gates unchanged.
+- **Maintenance**: [session_2026-10-19_agentic_forge_v142.md](maintenance/session_2026-10-19_agentic_forge_v142.md).
 - **Follow-up**: keep the submodule on v1.4.2; re-run the release gate before the next package.
 
 ## [2026-10-19] Session: Reliability Hardening — Agentic System, Cache, Python 3.9, i18n & Release Gates

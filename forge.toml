@@ -13,9 +13,14 @@ state = ".agent-state"      # project-owned state (memory/task/next_steps)
 
 [project]
 name = "sec_interp"
+strict_agent_system = true
 test_dirs = ["tests"]
 test_command = "PYTHONPATH=.. uv run python3 -m unittest discover tests"
+test_command_full = "PYTHONPATH=.. uv run python3 -m unittest discover tests"
 test_command_docker = "make docker-test"
+lint_command = "uv run ruff check ."
+format_command = "uv run ruff format ."
+type_command = "make mypy"
 analyzer_command = "uv run qgis-analyzer analyze . --max-cc 10"
 max_cc = 10
 module_size_limit = 400
