@@ -6,7 +6,7 @@
 ## 🎯 Foco actual: fiabilidad del sistema agéntico (P0)
 
 - [x] **Memoria** — `AGENT_LESSONS.md` compactado de 98 a 27 lecciones (318 líneas, límite 350); las 71 restantes quedan archivadas en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y destiladas en `project-context`. `prune_lessons` probado y `forge.py memory check` + gate de `validate` añadidos.
-- [ ] **Validador** — incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`, `--graph` y `--conflicts`; añadir test de regresión.
+- [x] **Validador** — `forge validate` y `--graph` recorren framework + `.agent-state/workflows/` (18 workflows); detección de nombres duplicados y test de regresión para skills/scripts/frontmatter del overlay.
 - [x] **Workflows/deps** — workflows genéricos migrados a `unittest` (`run-tests`, `start-session`, `close-session`, `release-package`, index); `forge.toml` declara `test_command`/`test_command_docker`; eliminadas las deps `pytest`, `pytest-qt` y `pytest-mock` y regenerado `uv.lock`; `tests/README.md` reescrito.
 
 ## 📌 Pendientes del proyecto
@@ -21,7 +21,7 @@
 
 - [x] **v3.11.0** — release publicada, ZIP verificado (311 archivos, 2,28 MiB, ayuda en 14 idiomas) y subido al portal; merge del tren en `main`.
 - [x] **Auditorías** — `docs/qa/REPO_AUDIT_2026-10-18.md` y `docs/qa/AGENT_AUDIT_2026-10-18.md`.
-- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=804` / `tests_executed=755` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
+- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=809` / `tests_executed=760` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
 - [x] **Handoff** — `task.md` reescrito; el tablero anterior quedó archivado en `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - [x] **Release** — gate de docstrings alineado con el baseline real (99,0 %) y conteos de tests manuales eliminados de `release-plugin.md`.
 

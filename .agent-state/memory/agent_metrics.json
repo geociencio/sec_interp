@@ -63,8 +63,8 @@
             }
         ],
         "test_count": 792,
-        "tests_static": 804,
-        "tests_executed": 755
+        "tests_static": 809,
+        "tests_executed": 760
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -91,7 +91,7 @@
         "tests_local": {
             "date": "2026-10-19",
             "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
-            "result": "755 ran OK",
+            "result": "760 ran OK",
             "note": "Local mock-first suite; tests_static is the static 'def test_' count and Docker runs the grouped CI categories."
         },
         "ai_context": {

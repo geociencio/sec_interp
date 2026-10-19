@@ -7,8 +7,8 @@
   `--from-context`/`--tests-executed` y hace que `--validate` compruebe frescura contra el
   analizador, no solo coherencia interna. En el framework se añadieron `memory check` y el
   gate de 350 líneas.
-- **Métricas**: **37 issues** (incluye `UNPRECISE_LAYER`), **49 sesiones**, `tests_static=804`,
-  `tests_executed=755`; `tests_ok`/`test_count=792` quedan como baseline legacy documentado.
+- **Métricas**: **37 issues** (incluye `UNPRECISE_LAYER`), **49 sesiones**, `tests_static=809`,
+  `tests_executed=760`; `tests_ok`/`test_count=792` quedan como baseline legacy documentado.
 - **Memoria**: `AGENT_LESSONS.md` compactado de **98 a 27 lecciones (318 líneas)**; las 71
   restantes quedan en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y las
   reglas reutilizables se destilaron en `project-context`. `forge.py memory check`, el gate
@@ -16,16 +16,17 @@
 - **Workflows/deps**: los workflows genéricos usan `unittest`; `forge.toml` declara
   `test_command`/`test_command_docker`; se eliminaron `pytest`, `pytest-qt` y `pytest-mock`
   de `pyproject.toml` y se regeneró `uv.lock`; `tests/README.md` se reescribió para unittest.
+- **Validador**: `forge validate` y `--graph` recorren framework + `.agent-state/workflows/`
+  (18 workflows), detectan nombres duplicados y validan skills/scripts/frontmatter del overlay;
+  añadidos 5 tests de regresión.
 - **Handoff**: `task.md` reescrito al estado real de v3.11.0; el tablero anterior está en
   `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - **Release**: gate de docstrings alineado al baseline real (99,0 %); eliminados los conteos
   manuales de tests de `release-plugin.md` y `AGENTS.md`.
-- **Verificación**: suite completa OK (755 ejecutados) · `sync_metrics --validate` PASS ·
-  `forge validate` PASS · `memory check` PASS · ruff/format/docs PASS.
+- **Verificación**: suite completa OK (760 ejecutados) · `sync_metrics --validate` PASS ·
+  `forge validate` PASS · `memory check` PASS · `forge validate --graph` PASS · ruff/format/docs PASS.
 - **Pendiente / cómo reanudar**:
-  1. **Validador**: incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`,
-     `--graph` y `--conflicts`.
-  2. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
+  1. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
 
 ## ✅ Session 2026-10-18 — Dependency Refresh, Security Scope, Packaging & Local Deploy (COMPLETADO)
 
