@@ -17,6 +17,8 @@ Subcommands (chosen by first matching flag):
 Modifiers:
     --json              print sync summary as JSON
     --quiet             suppress progress output
+    --from-context      skip the analyzer run and read analysis_results/project_context.json
+    --tests-executed N  record the executed test count (the static count is always computed)
     --fix               (with --validate) auto-correct known stale values
     --close-session     rotate last_session into history (with --topic NAME)
     --compact           (with --report) compact report output
@@ -66,12 +68,74 @@ def _strip_ansi(text: str) -> str:
     return _ANSI_RE.sub("", text)
 
 
-def run_qgis_analyzer() -> dict:
+def read_analyzer_context() -> dict:
+    """Read scores and issue counts from the analyzer JSON artifact.
+
+    ``project_context.json`` is the authoritative output of
+    ``qgis-analyzer``: it contains every issue type (including the ones the
+    console summary may omit) and the exact scores. Reading it avoids parsing
+    the human-readable console output, which is fragile.
+
+    Returns:
+        A dict with ``scores``, ``issues`` (aggregated by type), ``total_issues``,
+        ``research`` and ``analyzed_at``. Empty when the artifact is missing or
+        unreadable.
+
+    """
+    if not ANALYZER_RESULTS.exists():
+        return {}
+
+    try:
+        data = json.loads(ANALYZER_RESULTS.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    metrics = data.get("metrics", {})
+    findings = (
+        data.get("qgis_compliance", {})
+        .get("best_practices", {})
+        .get("issues", [])
+    )
+    issues: dict[str, int] = {}
+    for finding in findings:
+        issue_type = finding.get("type", "UNKNOWN")
+        issues[issue_type] = issues.get(issue_type, 0) + 1
+
+    research = data.get("research_summary", {})
+    return {
+        "scores": {
+            "module_stability": metrics.get("quality_score"),
+            "maintainability": metrics.get("maintainability_score"),
+            "security": metrics.get("security_score"),
+        },
+        "issues": issues,
+        "total_issues": sum(issues.values()),
+        "research": {
+            "type_hint_params": research.get("type_hint_coverage"),
+            "type_hint_returns": research.get("return_hint_coverage"),
+            "docstring_coverage": research.get("docstring_coverage"),
+        },
+        "analyzed_at": data.get("analyzed_at"),
+    }
+
+
+def run_qgis_analyzer(use_context_only: bool = False) -> dict:
     """Run qgis-analyzer and extract scores + issue counts + CC gate.
 
     The ``--max-cc`` flag makes the analyzer exit non-zero when any function
     exceeds the threshold, which is exposed here as the ``cc_gate`` field.
+
+    Args:
+        use_context_only: Skip the analyzer run and read the existing
+            ``project_context.json`` (useful for local re-syncs).
+
     """
+    if use_context_only:
+        context = read_analyzer_context()
+        if not context:
+            return {"error": "project_context.json not found"}
+        return {**context, "cc_gate": None}
+
     try:
         result = subprocess.run(
             ["uv", "run", "qgis-analyzer", "analyze", ".", "--max-cc", str(CC_THRESHOLD)],
@@ -87,6 +151,8 @@ def run_qgis_analyzer() -> dict:
     except subprocess.TimeoutExpired:
         return {"error": "qgis-analyzer timed out"}
 
+    # Read the artifact after the run so it reflects the new analysis.
+    context = read_analyzer_context()
     scores = {}
     issues = {}
 
@@ -157,6 +223,22 @@ def run_qgis_analyzer() -> dict:
             except (ValueError, IndexError):
                 pass
 
+    # Prefer the machine-readable artifact: it carries every issue type and
+    # the canonical scores, while the console summary can omit categories.
+    if context:
+        scores.update(
+            {key: value for key, value in context.get("scores", {}).items() if value is not None}
+        )
+        if context.get("issues"):
+            issues = dict(context["issues"])
+        research.update(
+            {
+                key: value
+                for key, value in context.get("research", {}).items()
+                if value is not None
+            }
+        )
+
     total_issues = sum(issues.values())
 
     return {
@@ -165,6 +247,7 @@ def run_qgis_analyzer() -> dict:
         "total_issues": total_issues,
         "research": research,
         "cc_gate": cc_gate,
+        "analyzed_at": context.get("analyzed_at") if context else None,
     }
 
 
@@ -234,6 +317,7 @@ def update_metrics_json(metrics: dict) -> bool:
     analyzer = metrics.get("qgis_analyzer", {})
     cc = metrics.get("cc", {})
     i18n_ast = metrics.get("i18n", {})
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     summary = data.setdefault("summary", {})
     summary["quality_score_latest"] = analyzer.get("scores", {}).get(
@@ -242,15 +326,34 @@ def update_metrics_json(metrics: dict) -> bool:
         "maintainability", summary.get("maintainability_score", "?"))
     summary["security_score"] = analyzer.get("scores", {}).get(
         "security", summary.get("security_score", "?"))
-    summary["cyclomatic_complexity_gate"] = (
-        "PASS" if cc.get("passed") else ("FAIL" if cc.get("passed") is False else "UNKNOWN")
+    summary["quality_score_latest_note"] = (
+        f"Module Stability Score from qgis-analyzer (synced {today})."
     )
+    cc_passed = cc.get("passed")
+    if cc_passed is not None:
+        summary["cyclomatic_complexity_gate"] = "PASS" if cc_passed else "FAIL"
     summary["i18n_hygiene_gate"] = (
         "PASS" if i18n_ast.get("passed") else ("FAIL" if i18n_ast.get("passed") is False else "UNKNOWN")
     )
-    summary["test_count"] = count_total_tests()
-    summary["tests_ok"] = summary["test_count"]
+
+    # ``test_count``/``tests_ok`` are the legacy static baseline used by the
+    # cross-file validator; ``tests_static`` is the current static count and
+    # ``tests_executed`` records what the suite actually ran.
+    tests_static = count_total_tests()
+    tests_executed = metrics.get("tests_executed")
+    if tests_executed is None:
+        tests_executed = summary.get("tests_executed")
+    summary["tests_static"] = tests_static
+    summary["tests_executed"] = tests_executed
+    summary["test_count"] = summary.get("test_count", tests_static)
+    summary["tests_ok"] = summary.get("tests_ok", tests_static)
+    summary["tests_ok_note"] = (
+        "tests_ok/test_count are the legacy static baseline kept for cross-file "
+        "consistency; tests_static is the current static 'def test_' count and "
+        "tests_executed is the runtime suite (local or Docker)."
+    )
     summary["total_issues"] = analyzer.get("total_issues", summary.get("total_issues", "?"))
+    summary["total_sessions"] = len(data.get("history", []))
 
     module_sizes = metrics.get("module_sizes", {})
     if module_sizes:
@@ -268,19 +371,22 @@ def update_metrics_json(metrics: dict) -> bool:
     if "docstring_coverage" in research:
         summary["docstring_coverage"] = research["docstring_coverage"]
 
-    # Record issue breakdown (empty dict when the analyzer is clean)
-    issues = analyzer.get("issues", {})
+    # Record every issue type reported by the analyzer (including the ones the
+    # console summary omits, such as UNPRECISE_LAYER).
+    issues = dict(analyzer.get("issues", {}))
+    issues.setdefault("MISSING_I18N", 0)
     summary["issue_breakdown"] = issues
-    summary["i18n_issues_qgis_analyzer"] = issues.get("MISSING_I18N", 0)
+    summary["i18n_issues_qgis_analyzer"] = issues["MISSING_I18N"]
 
     # Refresh the qgis-analyzer ground-truth source so it stays coherent with
     # the summary scores (the internal consistency check compares them).
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     ground_truth = data.setdefault("ground_truth_sources", {})
     gt_analyzer = ground_truth.setdefault("qgis_analyzer", {})
     gt_analyzer["date"] = today
     gt_analyzer["command"] = "uv run qgis-analyzer analyze . --max-cc 10"
     gt_analyzer["output"] = "analysis_results/"
+    if analyzer.get("analyzed_at"):
+        gt_analyzer["analyzed_at"] = analyzer["analyzed_at"]
     if analyzer.get("scores"):
         gt_analyzer["scores"] = {
             "module_stability": analyzer["scores"].get("module_stability"),
@@ -289,27 +395,120 @@ def update_metrics_json(metrics: dict) -> bool:
         }
     gt_analyzer["issues"] = {
         **issues,
-        "MISSING_I18N": issues.get("MISSING_I18N", 0),
         "total": sum(issues.values()),
     }
+
+    if tests_executed is not None:
+        ground_truth["tests_local"] = {
+            "date": today,
+            "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
+            "result": f"{tests_executed} ran OK",
+            "note": (
+                "Local mock-first suite; tests_static is the static 'def test_' "
+                "count and Docker runs the grouped CI categories."
+            ),
+        }
 
     ground_truth["sync_metrics"] = {
         "date": today,
         "command": "uv run python scripts/sync_metrics.py",
-        "cc_gate": "PASS" if cc.get("passed") else "FAIL",
+        "cc_gate": (
+            "PASS" if cc.get("passed") is True
+            else "FAIL" if cc.get("passed") is False
+            else "UNCHANGED"
+        ),
         "i18n_gate": "PASS" if i18n_ast.get("passed") else "FAIL",
     }
 
-    data["meta"]["last_updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    data.setdefault("meta", {})["last_updated"] = today
+    data["meta"]["last_updated_by"] = "sync_metrics.py (metrics truth reconciliation)"
 
     METRICS_FILE.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n")
     return True
+
+
+def refresh_total_sessions() -> None:
+    """Recompute ``summary.total_sessions`` from the history array."""
+    try:
+        data = json.loads(METRICS_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    data.setdefault("summary", {})["total_sessions"] = len(data.get("history", []))
+    METRICS_FILE.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n")
+
+
+def validate_against_analyzer_context() -> list[str]:
+    """Compare ``agent_metrics.json`` with the analyzer JSON artifact.
+
+    ``forge metrics validate`` checks cross-file consistency against
+    ``agent_metrics.json``; this check validates that the file itself still
+    matches the latest analyzer output (scores and every issue type).
+
+    Returns:
+        A list of human-readable mismatches; empty when the file is fresh.
+
+    """
+    if not METRICS_FILE.exists() or not ANALYZER_RESULTS.exists():
+        return []
+
+    try:
+        data = json.loads(METRICS_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"cannot read agent_metrics.json: {exc}"]
+
+    context = read_analyzer_context()
+    if not context:
+        return []
+
+    summary = data.get("summary", {})
+    mismatches: list[str] = []
+
+    if summary.get("total_issues") != context["total_issues"]:
+        mismatches.append(
+            f"summary.total_issues ({summary.get('total_issues')}) != "
+            f"project_context issues ({context['total_issues']})"
+        )
+
+    gt_total = (
+        data.get("ground_truth_sources", {})
+        .get("qgis_analyzer", {})
+        .get("issues", {})
+        .get("total")
+    )
+    if gt_total is not None and gt_total != context["total_issues"]:
+        mismatches.append(
+            f"ground_truth_sources.qgis_analyzer.issues.total ({gt_total}) != "
+            f"project_context issues ({context['total_issues']})"
+        )
+
+    for summary_key, score_key in (
+        ("quality_score_latest", "module_stability"),
+        ("maintainability_score", "maintainability"),
+        ("security_score", "security"),
+    ):
+        found = summary.get(summary_key)
+        expected = context.get("scores", {}).get(score_key)
+        if found is not None and expected is not None and found != expected:
+            mismatches.append(
+                f"summary.{summary_key} ({found}) != project_context {score_key} ({expected})"
+            )
+
+    return mismatches
 
 
 def sync_main():
     quiet = "--quiet" in sys.argv
     json_output = "--json" in sys.argv
     close_session = "--close-session" in sys.argv
+    from_context = "--from-context" in sys.argv
+
+    tests_executed = None
+    if "--tests-executed" in sys.argv:
+        try:
+            tests_executed = int(sys.argv[sys.argv.index("--tests-executed") + 1])
+        except (IndexError, ValueError):
+            print("❌ --tests-executed requires an integer", file=sys.stderr)
+            sys.exit(2)
 
     topic = None
     if "--topic" in sys.argv:
@@ -320,9 +519,12 @@ def sync_main():
 
     if not quiet:
         print("🔄 Syncing ground-truth metrics...")
-        print("   → qgis-analyzer analyze . --max-cc " + str(CC_THRESHOLD))
+        if from_context:
+            print("   → analysis_results/project_context.json (no analyzer run)")
+        else:
+            print("   → qgis-analyzer analyze . --max-cc " + str(CC_THRESHOLD))
 
-    analyzer = run_qgis_analyzer()
+    analyzer = run_qgis_analyzer(use_context_only=from_context)
 
     if not quiet:
         print("   → check_module_sizes")
@@ -337,21 +539,30 @@ def sync_main():
         "cc": cc,
         "i18n": i18n,
         "module_sizes": module_sizes,
+        "tests_executed": tests_executed,
     }
 
     updated = update_metrics_json(metrics)
 
     if close_session and not rotate_session_history(topic):
         updated = False
+    if updated:
+        refresh_total_sessions()
 
     if json_output:
         summary = {
             "quality_score": analyzer.get("scores", {}).get("module_stability"),
             "maintainability": analyzer.get("scores", {}).get("maintainability"),
             "security": analyzer.get("scores", {}).get("security"),
-            "cc_gate": "PASS" if cc.get("passed") else "FAIL",
+            "cc_gate": (
+                "PASS" if cc.get("passed") is True
+                else "FAIL" if cc.get("passed") is False
+                else "UNCHANGED"
+            ),
             "i18n_gate": "PASS" if i18n.get("passed") else "FAIL",
             "total_issues": analyzer.get("total_issues"),
+            "tests_static": count_total_tests(),
+            "tests_executed": tests_executed,
             "updated": updated,
         }
         print(json.dumps(summary, indent=2))
@@ -370,7 +581,12 @@ def sync_main():
             print(f"⚠️  Issues: {sum(issues.values())} total")
             for k, v in issues.items():
                 print(f"   {k}: {v}")
-        print(f"🔒 CC Gate:     {'✅ PASS' if cc.get('passed') else '❌ FAIL'}")
+        cc_label = (
+            "✅ PASS" if cc.get("passed") is True
+            else "❌ FAIL" if cc.get("passed") is False
+            else "⏭️  UNCHANGED"
+        )
+        print(f"🔒 CC Gate:     {cc_label}")
         print(f"🌐 i18n Gate:    {'✅ PASS' if i18n.get('passed') else '❌ FAIL'}")
         size_passed = module_sizes.get("passed")
         if size_passed is False:
@@ -471,6 +687,12 @@ def main() -> None:
     if "--report" in argv:
         generate_report(compact="--compact" in argv)
     elif "--validate" in argv:
+        mismatches = validate_against_analyzer_context()
+        if mismatches:
+            print("❌ agent_metrics.json is stale against analysis_results/project_context.json:")
+            for mismatch in mismatches:
+                print(f"  - {mismatch}")
+            sys.exit(1)
         validate_main()
     elif "--testing-status" in argv:
         testing_status_main()

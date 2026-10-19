@@ -1,4 +1,26 @@
-# Next Steps (Updated 2026-10-18)
+# Next Steps (Updated 2026-10-19)
+
+## ✅ Session 2026-10-19 — Agentic Metrics Truth & Handoff (COMPLETADO)
+
+- **Qué se hizo**: `scripts/sync_metrics.py` ahora lee `analysis_results/project_context.json`
+  (todos los tipos de issue), separa `tests_static` de `tests_executed`, añade
+  `--from-context`/`--tests-executed` y hace que `--validate` compruebe frescura contra el
+  analizador, no solo coherencia interna.
+- **Métricas**: **37 issues** (incluye `UNPRECISE_LAYER`), **49 sesiones**, `tests_static=797`,
+  `tests_executed=748`; `tests_ok`/`test_count=792` quedan como baseline legacy documentado.
+- **Handoff**: `task.md` reescrito al estado real de v3.11.0; el tablero anterior está en
+  `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
+- **Release**: gate de docstrings alineado al baseline real (99,0 %); eliminados los conteos
+  manuales de tests de `release-plugin.md` y `AGENTS.md`.
+- **Verificación**: suite completa OK (748 ejecutados) · `sync_metrics --validate` PASS ·
+  `forge validate` PASS · ruff/format/docs PASS.
+- **Pendiente / cómo reanudar**:
+  1. **Memoria**: consolidar las 24 lecciones >90 días, marcar `consolidated_in`, arreglar
+     `prune_lessons` y aplicar el límite de 350 líneas (ver `docs/qa/AGENT_AUDIT_2026-10-18.md` §3.1).
+  2. **Validador**: incluir los 4 workflows de `.agent-state/workflows/` en `forge validate`,
+     `--graph` y `--conflicts`.
+  3. **Workflows**: sustituir el `pytest` genérico por unittest (parametrizado en `forge.toml`).
+  4. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
 
 ## ✅ Session 2026-10-18 — Dependency Refresh, Security Scope, Packaging & Local Deploy (COMPLETADO)
 
