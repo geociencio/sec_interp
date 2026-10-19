@@ -5,7 +5,7 @@
 - **Plugin**: v3.11.0 is published and merged into `main`; portal approval is still pending.
 - **Reliability hardening closed**: export cache keys, Python 3.9 support, i18n refresh
   (0 `unfinished`, `.qm` recompiled), release quality gates, agentic metrics/memory/validator.
-- **Agentic Forge v1.4.1** (`537f9fd`): framework updated; project adapters use
+- **Agentic Forge v1.4.2** (`b264e35`): framework updated; project adapters use
   `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
   `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
   the deprecated `qa-docker` alias.

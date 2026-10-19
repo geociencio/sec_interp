@@ -102,10 +102,11 @@ before returning to feature work. No release or version bump.
    passed to `extract_profile`/`calculate_lod_interval`; the multi-line selector does not
    change the sampled section yet.
 
-## Post-close update — Agentic Forge v1.4.1
+## Post-close update — Agentic Forge v1.4.1 → v1.4.2
 
-- Submodule fast-forwarded from `f15d44a` (v1.2.0-4) to **`537f9fd` (v1.4.1)**; our
-  memory/overlay/unittest commits were ancestors of the release, so no work was lost.
+- Submodule fast-forwarded from `f15d44a` (v1.2.0-4) to **`b264e35` (v1.4.2)** via
+  `537f9fd` (v1.4.1); our memory/overlay/unittest commits were ancestors of the release,
+  so no work was lost.
 - Adapted `scripts/sync_metrics.py` to the new module split
   (`forge_metrics_checks` / `forge_metrics_report`), the memory tests to the new dry-run
   default (`--apply`), and the validator tests to `workflow_graph` / `skill_conflicts`.
@@ -113,3 +114,6 @@ before returning to feature work. No release or version bump.
   and the root `AGENTS.md`; `release-plugin` now runs `memory prune --apply`.
 - Two obsolete `_check_i18n_consistency` tests were removed; the suite is now **778 OK**
   (827 static).
+- v1.4.2 is a quality-gate hotfix: framework metric scans skip cache directories
+  (`.mypy_cache`, `.ruff_cache`, `.pytest_cache`, `__pycache__`) and TOML config errors are
+  caught via `ValueError`; no further project adapter changes were needed.
