@@ -1,5 +1,17 @@
 # Next Steps (Updated 2026-10-19)
 
+## ✅ Session 2026-10-19 — Export Cache Keys (COMPLETADO)
+
+- **Qué se hizo**: `ProfileController` ahora hashea por componente todos los inputs que
+  afectan a la salida: línea, ráster, `section_feature_id`, banda, `max_points`,
+  suavizado/ventana y todos los mapeos de campos de sondaje. Antes, cambiar el DEM o la
+  línea, activar Smooth o remapear un campo reutilizaba datos cacheados en la exportación.
+- **Tests**: 4 regresiones en `tests/core/test_controller_cache_keys.py`; suite **764 OK**.
+- **Docs**: `core/AGENTS.md` alineado con el runner `unittest`.
+- **Estado actual**: `tests_static=813`, `tests_executed=764`; `agent_metrics.json` al día.
+- **Pendiente / cómo reanudar**:
+  1. **Proyecto**: portal QGIS v3.11.0, `module_size_gate` (5 módulos), `uv` 0.13.0 e interop §9 (B1).
+
 ## ✅ Session 2026-10-19 — Agentic Metrics Truth & Handoff (COMPLETADO)
 
 - **Qué se hizo**: `scripts/sync_metrics.py` ahora lee `analysis_results/project_context.json`

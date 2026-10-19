@@ -17,7 +17,8 @@
 ```
 
 The `core/` layer must be **100% QGIS-agnostic** and **100% thread-safe**.
-It must be testable with `uv run pytest tests/core/` — no QGIS installation required.
+It must be testable with `PYTHONPATH=.. uv run python3 -m unittest discover tests/core`
+— no QGIS installation required.
 
 ---
 
