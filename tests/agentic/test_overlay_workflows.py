@@ -42,11 +42,16 @@ class TestOverlayWorkflowValidation(unittest.TestCase):
         _write(framework / "start-session.md", _workflow())
         return framework, overlay
 
+    def _validate(self, framework: Path, overlay: Path):
+        files = sorted([*framework.glob("*.md"), *overlay.glob("*.md")])
+        with patch.object(vas.workflow_graph, "workflow_files", return_value=files):
+            return vas.validate_workflows({"qa-docker"})
+
     def test_overlay_workflow_skill_is_validated(self):
         with tempfile.TemporaryDirectory() as d:
             framework, overlay = self._roots(d)
             _write(overlay / "release-plugin.md", _workflow("missing-skill"))
-            issues = vas.validate_workflows({"qa-docker"}, set(), [framework, overlay])
+            issues = self._validate(framework, overlay)
 
         self.assertTrue(any("unknown skill" in issue.message for issue in issues))
         self.assertTrue(any("release-plugin.md" in issue.file for issue in issues))
@@ -55,9 +60,9 @@ class TestOverlayWorkflowValidation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             framework, overlay = self._roots(d)
             _write(overlay / "broken.md", "# no frontmatter\n")
-            issues = vas.validate_workflows({"qa-docker"}, set(), [framework, overlay])
+            issues = self._validate(framework, overlay)
 
-        self.assertTrue(any("Missing YAML frontmatter" in issue.message for issue in issues))
+        self.assertTrue(any("YAML frontmatter" in issue.message for issue in issues))
 
     def test_overlay_script_reference_is_validated(self):
         with tempfile.TemporaryDirectory() as d:
@@ -66,7 +71,7 @@ class TestOverlayWorkflowValidation(unittest.TestCase):
                 overlay / "scripted.md",
                 _workflow(extra="```bash\npython scripts/not_a_real_script.py\n```"),
             )
-            issues = vas.validate_workflows({"qa-docker"}, set(), [framework, overlay])
+            issues = self._validate(framework, overlay)
 
         self.assertTrue(any("unknown script" in issue.message for issue in issues))
 
@@ -75,7 +80,7 @@ class TestOverlayWorkflowValidation(unittest.TestCase):
             framework, overlay = self._roots(d)
             _write(framework / "duplicate.md", _workflow())
             _write(overlay / "duplicate.md", _workflow())
-            issues = vas.validate_workflows({"qa-docker"}, set(), [framework, overlay])
+            issues = self._validate(framework, overlay)
 
         self.assertTrue(any("Duplicate workflow name" in issue.message for issue in issues))
 
@@ -90,12 +95,11 @@ class TestOverlayWorkflowGraph(unittest.TestCase):
             overlay = root / "state" / "workflows"
             _write(framework / "start-session.md", _workflow())
             _write(overlay / "release-plugin.md", _workflow("qa-docker"))
+            files = [framework / "start-session.md", overlay / "release-plugin.md"]
 
-            with patch.object(
-                vas.forge_paths, "workflow_dirs", return_value=[framework, overlay]
-            ):
-                names = vas.get_all_workflows()
-                nodes, broken = vas.scan_workflows()
+            with patch.object(vas.workflow_graph, "workflow_files", return_value=files):
+                names = {path.stem for path in vas.workflow_graph.workflow_files()}
+                nodes, broken = vas.workflow_graph.scan_workflows()
 
         self.assertEqual(names, {"start-session", "release-plugin"})
         self.assertEqual({node.name for node in nodes}, {"start-session", "release-plugin"})

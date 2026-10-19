@@ -1,7 +1,7 @@
 ---
 description: Drive a live QGIS session via the forked QGIS-MCP server to smoke-test SecInterp
 agent: qgis_driver
-skills: [qgis-core, qa-docker]
+skills: [qgis-core, testing-standards]
 validation: |
   - SecInterp plugin is enabled and the MCP server (fork) is running on 127.0.0.1:9877
   - The compound `secinterp` tool answers `status`

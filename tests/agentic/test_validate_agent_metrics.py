@@ -14,24 +14,6 @@ import sync_metrics as vam  # noqa: E402
 
 
 class TestInternalConsistencyHelpers(unittest.TestCase):
-    def test_i18n_consistency_detects_mismatch(self):
-        summary = {
-            "i18n_issues_qgis_analyzer": 254,
-            "issue_breakdown": {"MISSING_I18N": 72},
-        }
-        issues = []
-        vam._check_i18n_consistency(summary, issues)
-        self.assertEqual(len(issues), 1)
-
-    def test_i18n_consistency_ok_when_matching(self):
-        summary = {
-            "i18n_issues_qgis_analyzer": 72,
-            "issue_breakdown": {"MISSING_I18N": 72},
-        }
-        issues = []
-        vam._check_i18n_consistency(summary, issues)
-        self.assertEqual(issues, [])
-
     def test_issue_total_matches_breakdown(self):
         summary = {
             "total_issues": 75,
@@ -74,7 +56,7 @@ class TestInternalConsistencyHelpers(unittest.TestCase):
             }
         }
         issues = []
-        vam._check_score_sources(summary, data, issues)
+        vam._check_ground_truth_scores(summary, data, issues)
         self.assertEqual(len(issues), 1)
 
     def test_session_date_older_than_history(self):

@@ -40,16 +40,17 @@ if _TOOLS_DIR.is_dir():
 
 import forge_paths  # noqa: E402
 from forge_metrics import (  # noqa: E402,F401
-    _check_i18n_consistency,
-    _check_issue_total,
-    _check_score_sources,
-    _check_session_date,
-    _check_test_count,
     check_internal_consistency,
-    generate_report,
     rotate_session_history,
     validate_main,
 )
+from forge_metrics_checks import (  # noqa: E402,F401
+    _check_ground_truth_scores,
+    _check_issue_total,
+    _check_session_date,
+    _check_test_count,
+)
+from forge_metrics_report import generate_report  # noqa: E402,F401
 
 # ── Configuration ──────────────────────────────────────────────────────────
 PROJECT_ROOT = forge_paths.PROJECT_ROOT

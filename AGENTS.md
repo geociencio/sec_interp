@@ -404,7 +404,6 @@ Skills live in `.agent/skills/*/SKILL.md` (framework) and `.agent-state/skills/*
 | [geological-logic](.agent-state/skills/geological-logic/SKILL.md) | Drillhole data, section interpolation, 3-level validation. | Geological algorithms, data validation, drillhole processing. |
 | [i18n-standards](.agent/skills/i18n-standards/SKILL.md) | Internationalization (i18n) standards and best practices. | User-facing strings, translation tools, triaging MISSING_I18N flags, `/i18n-maintenance`. |
 | [project-context](.agent-state/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
-| [qa-docker](.agent/skills/qa-docker/SKILL.md) | Dockerized testing and Mock-first QGIS testing. | Writing/executing tests, using mocks, Docker infrastructure. |
 | [qgis-core](.agent-state/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
 | [qgis-migration-4x](.agent-state/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |
 | [release-management](.agent/skills/release-management/SKILL.md) | QGIS plugin release process with quality validation. | Releases, versioning, `/release-plugin`. |

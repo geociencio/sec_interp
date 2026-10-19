@@ -1,3 +1,12 @@
+## [2026-10-19] Post-close: Agentic Forge v1.4.1
+- **Achievement**: updated the `.agent` framework from `f15d44a` (v1.2.0-4) to **v1.4.1** (`537f9fd`) without losing the project's memory/overlay/unittest fixes, which were ancestors of the release, and adapted the project adapters to the new framework module layout.
+- **Changes**:
+    - **Metrics adapter**: `sync_metrics.py` imports checks from `forge_metrics_checks` and reporting from `forge_metrics_report`; the removed `_check_i18n_consistency` tests were deleted.
+    - **Memory/validator tests**: `prune_lessons`/`prune_next_steps_snapshots` now receive `apply=True`; overlay tests use `workflow_graph.workflow_files/scan_workflows`; skill tests use `skill_conflicts.find_conflicts` + `validate_memory_budget`.
+    - **Skills**: active workflows and `AGENTS.md` use `testing-standards`; the deprecated `qa-docker` alias remains only in historical docs. `release-plugin` prunes with `memory prune --apply`.
+- **Quality**: **778 tests OK** (827 static) · `forge validate` 17 skills / 18 workflows · `sync_metrics --validate` PASS · i18n and release gates unchanged.
+- **Follow-up**: keep the submodule on v1.4.1; re-run the release gate before the next package.
+
 ## [2026-10-19] Session: Reliability Hardening — Agentic System, Cache, Python 3.9, i18n & Release Gates
 - **Achievement**: closed the P0/P1 gaps from the repository and `.agent` audits: metrics truth, memory compaction, unittest standardization, overlay validation, export-cache correctness, QGIS 3.28/Python 3.9 compatibility, complete translation catalogs and release quality gates.
 - **Changes**:

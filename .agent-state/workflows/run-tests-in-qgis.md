@@ -1,7 +1,7 @@
 ---
 description: How to run tests inside QGIS (integration testing)
 agent: qa_engineer
-skills: [qa-docker]
+skills: [testing-standards]
 validation: |
   - Verify that QGIS is installed correctly
   - Confirm that tests are discovered and executed
@@ -14,7 +14,7 @@ This workflow describes how to run tests inside the QGIS environment using the r
 
 ## When to Use This
 
-🤖 **Agent Action**: Use **qa-docker** skill to determine if tests require real QGIS or mocks.
+🤖 **Agent Action**: Use **testing-standards** to determine if tests require real QGIS or mocks.
 
 Use QGIS in-process testing when:
 - Testing GUI components that require `iface`

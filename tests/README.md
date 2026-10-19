@@ -7,7 +7,7 @@ approach: `tests/core/`, `tests/gui/` and `tests/exporters/` run without a QGIS
 installation. `tests/integration/` uses a real `QgsApplication` and runs in the QGIS
 Docker image.
 
-- **780 tests** across 122 files.
+- **778 tests** across 122 files.
 - Test base class: `tests/base_test.py::BaseTestCase` (mock injection, temp dirs,
   cleanup).
 - QGIS/PyQt mocks: `tests/mocks/`.

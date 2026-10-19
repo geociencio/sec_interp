@@ -1,4 +1,4 @@
-"""Unit tests for the skill-conflict detector (now in validate_agent_system.py)."""
+"""Unit tests for the skill-conflict detector and the lesson line budget."""
 
 import sys
 import tempfile
@@ -10,7 +10,8 @@ _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / ".agent" / "tools"))
 sys.path.insert(0, str(_ROOT / "scripts"))
 
-import validate_agent_system as csc  # noqa: E402
+import skill_conflicts as csc  # noqa: E402
+import validate_agent_system as vas  # noqa: E402
 
 
 def _skill(name, description="a description"):
@@ -55,8 +56,8 @@ class TestMemoryLimit(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "AGENT_LESSONS.md"
             path.write_text("\n".join(["line"] * 351))
-            with patch.object(csc.forge_paths, "LESSONS_FILE", path):
-                issues = csc.validate_memory_limits()
+            with patch.object(vas.forge_paths, "LESSONS_FILE", path):
+                issues = vas.validate_memory_budget()
 
         self.assertEqual(len(issues), 1)
         self.assertEqual(issues[0].severity, "ERROR")
@@ -66,8 +67,8 @@ class TestMemoryLimit(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "AGENT_LESSONS.md"
             path.write_text("\n".join(["line"] * 350))
-            with patch.object(csc.forge_paths, "LESSONS_FILE", path):
-                issues = csc.validate_memory_limits()
+            with patch.object(vas.forge_paths, "LESSONS_FILE", path):
+                issues = vas.validate_memory_budget()
 
         self.assertEqual(issues, [])
 

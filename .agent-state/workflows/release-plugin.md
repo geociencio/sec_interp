@@ -1,7 +1,7 @@
 ---
 description: Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard
 agent: qa_engineer
-skills: [release-management, qgis-migration-4x, qa-docker, commit-standards, i18n-standards, changelog-generator]
+skills: [release-management, qgis-migration-4x, testing-standards, commit-standards, i18n-standards, changelog-generator]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Any quality gate fails (ruff, mypy, docs, i18n, security, analyzer) → Block release and fix it"
@@ -112,7 +112,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 1. **Clean Memory**:
    // turbo
    ```bash
-   uv run python .agent/tools/forge.py memory prune
+   uv run python .agent/tools/forge.py memory prune --apply
    ```
 
 2. **Build Optimized ZIP**:

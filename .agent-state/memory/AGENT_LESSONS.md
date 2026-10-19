@@ -311,8 +311,8 @@ lessons:
 The following lessons were consolidated into the project skills or archived because
 they describe one-off incidents already covered by a gate or a skill:
 
-- **Testing & mocks** → `qa-docker`, `testing-standards` (mixed-fidelity mocks, invented
-  Qt methods, snapshot pruning, test discovery).
+- **Testing & mocks** → `testing-standards` (mixed-fidelity mocks, invented Qt methods,
+  snapshot pruning, test discovery).
 - **QGIS/CRS/geometry** → `qgis-core`, `geological-logic` (CRS reprojection, raster-cell
   deduplication, section resolver, dip/strike conventions).
 - **Release/CI/tooling** → `release-management`, `commit-standards`, `documentation-standards`

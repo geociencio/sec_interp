@@ -5,8 +5,12 @@
 - **Plugin**: v3.11.0 is published and merged into `main`; portal approval is still pending.
 - **Reliability hardening closed**: export cache keys, Python 3.9 support, i18n refresh
   (0 `unfinished`, `.qm` recompiled), release quality gates, agentic metrics/memory/validator.
-- **Tests**: 780 OK (829 static). `ruff`, `format`, `mypy`, `check_docs`, `forge validate`
-  (14 skills / 18 workflows), `sync_metrics --validate`, `i18n-check` and release YAML pass.
+- **Agentic Forge v1.4.1** (`537f9fd`): framework updated; project adapters use
+  `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
+  `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
+  the deprecated `qa-docker` alias.
+- **Tests**: 778 OK (827 static). `ruff`, `format`, `mypy`, `check_docs`, `forge validate`
+  (17 skills / 18 workflows), `sync_metrics --validate`, `i18n-check` and release YAML pass.
 - **Reference**: `docs/maintenance/session_2026-10-19_reliability_hardening.md`.
 
 ## 📌 Pending

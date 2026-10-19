@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->829<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->827<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-10-18<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-10-19<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -13,7 +13,7 @@
 
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
-| **Agentic Tooling** | <!-- AGENT_COUNT -->45<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
+| **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->316<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->352<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
@@ -143,7 +143,7 @@
 - **tests/agentic/test_overlay_workflows.py**: 5 tests
 - **tests/agentic/test_release_workflow.py**: 5 tests
 - **tests/agentic/test_sync_metrics.py**: 11 tests
-- **tests/agentic/test_validate_agent_metrics.py**: 10 tests
+- **tests/agentic/test_validate_agent_metrics.py**: 8 tests
 <!-- END_INVENTORY -->
 
 ---

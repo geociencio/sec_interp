@@ -43,7 +43,7 @@
         "large_modules": [
             {
                 "path": "core/controller.py",
-                "lines": 428
+                "lines": 466
             },
             {
                 "path": "exporters/interpretation_3d_exporter.py",
@@ -63,8 +63,8 @@
             }
         ],
         "test_count": 792,
-        "tests_static": 829,
-        "tests_executed": 780
+        "tests_static": 827,
+        "tests_executed": 778
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -86,12 +86,12 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-18T21:10:12.755808+00:00"
+            "analyzed_at": "2026-10-19T02:20:52.806843+00:00"
         },
         "tests_local": {
             "date": "2026-10-19",
             "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
-            "result": "780 ran OK",
+            "result": "778 ran OK",
             "note": "Local mock-first suite; tests_static is the static 'def test_' count and Docker runs the grouped CI categories."
         },
         "ai_context": {
@@ -124,14 +124,14 @@
     "last_session": {
         "date": "2026-10-19",
         "topic": "reliability_hardening",
-        "tests_ok": 780,
+        "tests_ok": 778,
         "quality_score": 55.7,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [],
         "status": "SUCCESS",
-        "tests_static": 829
+        "tests_static": 827
     },
     "history": [
         {

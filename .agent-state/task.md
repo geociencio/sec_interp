@@ -3,7 +3,7 @@
 > Historial detallado: `.agent-state/history/tasks/` y `docs/maintenance/`.
 > Este tablero solo refleja el estado activo; las sesiones cerradas no se acumulan aquí.
 
-## 🎯 Foco actual: fiabilidad del sistema agéntico (P0)
+## 🎯 Foco actual: deuda del proyecto (post-hardening)
 
 - [x] **Memoria** — `AGENT_LESSONS.md` compactado de 98 a 27 lecciones (318 líneas, límite 350); las 71 restantes quedan archivadas en `.agent-state/history/memory/AGENT_LESSONS_2026-10-19_full.md` y destiladas en `project-context`. `prune_lessons` probado y `forge.py memory check` + gate de `validate` añadidos.
 - [x] **Validador** — `forge validate` y `--graph` recorren framework + `.agent-state/workflows/` (18 workflows); detección de nombres duplicados y test de regresión para skills/scripts/frontmatter del overlay.
@@ -25,7 +25,8 @@
 - [x] **Caché de exportación** — las claves de `ProfileController` incluyen línea, ráster, `section_feature_id`, suavizado/ventana, banda y todos los mapeos de campos de sondaje; 4 tests de regresión.
 - [x] **v3.11.0** — release publicada, ZIP verificado (311 archivos, 2,28 MiB, ayuda en 14 idiomas) y subido al portal; merge del tren en `main`.
 - [x] **Auditorías** — `docs/qa/REPO_AUDIT_2026-10-18.md` y `docs/qa/AGENT_AUDIT_2026-10-18.md`.
-- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 49 sesiones y `tests_static=829` / `tests_executed=780` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
+- [x] **Agentic Forge v1.4.1** — submódulo actualizado (`537f9fd`); adaptados `sync_metrics.py` a `forge_metrics_checks`/`forge_metrics_report`, los tests de memoria al modo dry-run (`--apply`) y los tests del validador a `workflow_graph`/`skill_conflicts`; `qa-docker` sustituido por `testing-standards`.
+- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 50 sesiones y `tests_static=827` / `tests_executed=778` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
 - [x] **Handoff** — `task.md` reescrito; el tablero anterior quedó archivado en `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - [x] **Release** — gate de docstrings alineado con el baseline real (99,0 %) y conteos de tests manuales eliminados de `release-plugin.md`.
 
@@ -33,7 +34,6 @@
 
 - 7 archivos de `core/` en la allowlist de QGIS: `config.py`, `data_cache.py`, `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`, `utils/i18n.py`, `utils/io.py`.
 - Traducciones de documentación: `USER_GUIDE` fr (28 %) / de (18 %).
-- i18n del plugin: catálogos `.ts` desincronizados respecto a v3.9–v3.11 (ver auditoría del repositorio, §6).
 
 ## 🏁 Cerrado
 

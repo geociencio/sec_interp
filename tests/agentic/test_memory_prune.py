@@ -22,14 +22,14 @@ class TestPruneNextStepsSnapshots(unittest.TestCase):
             old.write_text("# old")
             recent.write_text("# recent")
 
-            removed = mp.prune_next_steps_snapshots(directory)
+            removed = mp.prune_next_steps_snapshots(directory, apply=True)
 
             self.assertEqual(removed, 1)
             self.assertFalse(old.exists())
             self.assertTrue(recent.exists())
 
     def test_missing_directory_returns_zero(self):
-        removed = mp.prune_next_steps_snapshots(Path("/nonexistent/dir"))
+        removed = mp.prune_next_steps_snapshots(Path("/nonexistent/dir"), apply=True)
         self.assertEqual(removed, 0)
 
     def test_non_snapshot_files_ignored(self):
@@ -37,7 +37,7 @@ class TestPruneNextStepsSnapshots(unittest.TestCase):
             directory = Path(d)
             (directory / "not_a_snapshot.md").write_text("# keep me")
 
-            removed = mp.prune_next_steps_snapshots(directory)
+            removed = mp.prune_next_steps_snapshots(directory, apply=True)
 
             self.assertEqual(removed, 0)
             self.assertTrue((directory / "not_a_snapshot.md").exists())
@@ -77,7 +77,7 @@ class TestPruneLessons(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = self._lessons_file(Path(d))
             with patch.object(mp, "LESSONS_FILE", path):
-                pruned = mp.prune_lessons()
+                pruned = mp.prune_lessons(apply=True, lessons_file=path)
             content = path.read_text()
 
         self.assertEqual(pruned, 1)
@@ -89,7 +89,12 @@ class TestPruneLessons(unittest.TestCase):
 
     def test_missing_lessons_file_returns_zero(self):
         with patch.object(mp, "LESSONS_FILE", Path("/nonexistent/AGENT_LESSONS.md")):
-            self.assertEqual(mp.prune_lessons(), 0)
+            self.assertEqual(
+                mp.prune_lessons(
+                    apply=True, lessons_file=Path("/nonexistent/AGENT_LESSONS.md")
+                ),
+                0,
+            )
 
 
 class TestLessonLineLimit(unittest.TestCase):
