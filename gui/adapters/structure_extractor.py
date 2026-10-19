@@ -265,10 +265,10 @@ class StructureExtractor:
         names = feature.fields().names()
         raw_values = feature.attributes()
         sanitized: dict[str, Any] = {}
-        for name, val in zip(names, raw_values, strict=False):
+        for name, val in zip(names, raw_values):
             if val is None or str(val) == "NULL":
                 sanitized[name] = None
-            elif isinstance(val, int | float | str | bool):
+            elif isinstance(val, (int, float, str, bool)):
                 sanitized[name] = val
             else:
                 sanitized[name] = str(val)

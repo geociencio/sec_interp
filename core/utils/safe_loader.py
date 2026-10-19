@@ -4,6 +4,8 @@ Provides utilities to catch import and initialization errors, allowing
 the core plugin to remain functional even if some modules fail.
 """
 
+from __future__ import annotations
+
 import importlib
 from collections.abc import Callable
 from typing import Any, TypeVar

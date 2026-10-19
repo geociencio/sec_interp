@@ -405,8 +405,8 @@ class PreviewLayerFactory:
 
         render_points = []
         for p in trace_points:
-            dist = getattr(p, "dist_along", p[0] if isinstance(p, list | tuple) else 0.0)
-            z = getattr(p, "z", p[1] if isinstance(p, list | tuple) else 0.0)
+            dist = getattr(p, "dist_along", p[0] if isinstance(p, (list, tuple)) else 0.0)
+            z = getattr(p, "z", p[1] if isinstance(p, (list, tuple)) else 0.0)
             render_points.append((dist, z))
 
         line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))

@@ -3,7 +3,7 @@
 ![QGIS](https://img.shields.io/badge/QGIS-3.28%2B-green.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
 ![Version](https://img.shields.io/badge/Version-3.9.1-orange.svg)
-![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![QGIS Compliance](https://img.shields.io/badge/QGIS--Compliance-85.0%2F100-green)
 ![Code Quality](https://img.shields.io/badge/Code--Quality-99.9%2F100-brightgreen)
@@ -72,7 +72,7 @@ See [CHANGELOG.md](docs/CHANGELOG.md) for complete details.
 Before installing **SecInterp**, ensure your system meets the following requirements:
 
 *   **QGIS**: 3.28 LTR or superior (including QGIS 4.x).
-*   **Python**: 3.10 or superior (included with QGIS).
+*   **Python**: 3.9 or superior (the version bundled with QGIS 3.28; the development environment uses 3.12).
 *   **Dependencies**: The plugin uses standard QGIS and PyQt libraries (fully compatible with both Qt5 and Qt6 via `qgis.PyQt`). Advanced analysis and development tools (like the **QGIS Plugin Analyzer** tool, executed via the `qgis-analyzer` command, and `ai-context-core`) are only required for developers and auditors.
 
 ---

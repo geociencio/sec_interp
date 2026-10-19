@@ -118,7 +118,7 @@ class PreviewParams:
 
         """
         # Basic type and range validation
-        if not isinstance(self.buffer_dist, int | float) or self.buffer_dist < 0:
+        if not isinstance(self.buffer_dist, (int, float)) or self.buffer_dist < 0:
             raise ValueError("Buffer distance must be a non-negative number")
 
         if not isinstance(self.band_num, int) or self.band_num < 1:

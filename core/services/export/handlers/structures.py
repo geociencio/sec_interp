@@ -23,7 +23,7 @@ def _resolve_raster_resolution(raster_layer: Any | None) -> float:
     if not raster_layer or not raster_layer.isValid():
         return 1.0
     candidate = raster_layer.rasterUnitsPerPixelX()
-    if isinstance(candidate, int | float) and math.isfinite(candidate) and candidate > 0:
+    if isinstance(candidate, (int, float)) and math.isfinite(candidate) and candidate > 0:
         return float(candidate)
     logger.warning("Invalid raster resolution %r; using 1.0 for dip line length.", candidate)
     return 1.0

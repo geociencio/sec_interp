@@ -85,7 +85,7 @@ class DrillholeTraceVectorExporter(BaseExporter):
             if isinstance(item, DrillholeProjection):
                 hole_id = item.hole_id
                 traces = item.points_3d
-            elif isinstance(item, list | tuple):
+            elif isinstance(item, (list, tuple)):
                 # Handle variable tuple length (legacy 5 vs new 3)
                 if len(item) == NEW_DATA_LENGTH:
                     hole_id, traces, _ = item
@@ -116,7 +116,7 @@ class DrillholeTraceVectorExporter(BaseExporter):
             # Handle SpatialMeta object or tuple/list
             if hasattr(p, "dist_along") and hasattr(p, "z"):
                 points.append(QgsPointXY(p.dist_along, p.z))
-            elif isinstance(p, list | tuple) and len(p) >= COORD_PAIR_LENGTH:
+            elif isinstance(p, (list, tuple)) and len(p) >= COORD_PAIR_LENGTH:
                 points.append(QgsPointXY(p[0], p[1]))
 
         if not points:
@@ -189,7 +189,7 @@ class DrillholeIntervalVectorExporter(BaseExporter):
             if isinstance(item, DrillholeProjection):
                 hole_id = item.hole_id
                 segments = item.segments
-            elif isinstance(item, list | tuple):
+            elif isinstance(item, (list, tuple)):
                 # Handle variable tuple length (legacy 5 vs new 3)
                 # Segments are always the last element
                 if len(item) == NEW_DATA_LENGTH or len(item) >= LEGACY_DATA_LENGTH:

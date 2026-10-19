@@ -3,6 +3,9 @@ name = "sec-interp"
 version = "3.11.0"
 description = "QGIS Plugin for geological interpretation and data extraction"
 readme = "README.md"
+# Development/tooling runtime. The plugin itself supports Python 3.9, the version
+# bundled with QGIS 3.28 (OSGeo4W); compatibility is gated by
+# tests/core/test_python_compat.py.
 requires-python = ">=3.12"
 license = { text = "GPL-2.0-or-later" }
 
@@ -59,7 +62,7 @@ package = false
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py39"
 exclude = [
     ".git",
     "__pycache__",

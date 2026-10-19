@@ -200,10 +200,12 @@ class GeologyExtractor:
 
         if smoothing_window_m > 0:
             smoothed = smooth_profile_by_distance(master_profile_data, smoothing_window_m)
+            if len(master_grid_dists) != len(smoothed):
+                raise GeometryError(self.tr("Smoothed profile length mismatch"))
             master_profile_data = smoothed
             master_grid_dists = [
                 (dist, pt, elev)
-                for (dist, pt, _old), (_d, elev) in zip(master_grid_dists, smoothed, strict=True)
+                for (dist, pt, _old), (_d, elev) in zip(master_grid_dists, smoothed)
             ]
 
         return master_profile_data, master_grid_dists

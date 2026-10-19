@@ -103,7 +103,7 @@ class DrillholeTrace3DExporter(BaseExporter):
         if isinstance(hole_data, DrillholeProjection):
             return hole_data.hole_id, hole_data.points_3d
 
-        if isinstance(hole_data, list | tuple):
+        if isinstance(hole_data, (list, tuple)):
             hole_id = hole_data[0]
             if len(hole_data) == NEW_DATA_LENGTH:
                 # New format with SpatialMeta objects
@@ -118,7 +118,7 @@ class DrillholeTrace3DExporter(BaseExporter):
 
     def _get_trace_points(self, spatial_data: Any, use_projected: bool) -> list[QgsPoint]:
         """Convert spatial data to QgsPoint list based on projection."""
-        if isinstance(spatial_data, list | tuple) and len(spatial_data) == LEGACY_DATA_LENGTH:
+        if isinstance(spatial_data, (list, tuple)) and len(spatial_data) == LEGACY_DATA_LENGTH:
             # Legacy/Integration Test format
             _, _, traces_3d, traces_3d_proj, _ = spatial_data
             points_source = traces_3d_proj if use_projected else traces_3d
@@ -194,7 +194,7 @@ class DrillholeInterval3DExporter(BaseExporter):
         if isinstance(hole_data, DrillholeProjection):
             hole_id = hole_data.hole_id
             segments = hole_data.segments
-        elif isinstance(hole_data, list | tuple):
+        elif isinstance(hole_data, (list, tuple)):
             # segments are always the last element in both 3 and 5 element formats
             hole_id = hole_data[0]
             segments = hole_data[-1]

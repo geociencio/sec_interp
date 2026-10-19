@@ -135,7 +135,7 @@ class DialogSettingsPersistence:
         for key, value in data.items():
             if key in layer_keys:
                 self._save_layer_value(key, value)
-            elif isinstance(value, dict | list):
+            elif isinstance(value, (dict, list)):
                 self._set_setting(key, json.dumps(value))
             else:
                 self._set_setting(key, value)

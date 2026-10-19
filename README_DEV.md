@@ -5,7 +5,7 @@
 - El entorno virtual sirve para tareas de desarrollo (linting, tests, análisis estático) y se recomienda el uso de `uv` para máxima velocidad y reproducibilidad.
 
 ## Requisitos del Sistema
-- **Python**: 3.10 o superior (QGIS 3.34+ usa Python 3.12+ en algunas distros).
+- **Python**: 3.9+ en el runtime del plugin (QGIS 3.28 usa Python 3.9); el entorno de desarrollo usa 3.12.
 - **QGIS**: 3.28 LTR o superior instalado en el sistema.
 - **uv**: Instalado en el sistema (`curl -LsSf https://astral.sh/uv/install.sh | sh`).
 

@@ -81,7 +81,7 @@ class DrillholeGenerationTask(QgsTask):
                     self.result = ([], [])
 
                 res_type = type(self.result)
-                res_len = len(self.result) if isinstance(self.result, tuple | list) else "N/A"
+                res_len = len(self.result) if isinstance(self.result, (tuple, list)) else "N/A"
                 logger.debug(
                     f"Emitting finished_with_results deferred. Type: {res_type}, Len: {res_len}"
                 )

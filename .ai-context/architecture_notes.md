@@ -31,7 +31,7 @@ Consequences:
   thread. Core services must be thread-safe.
 
 ## Conventions
-- Python 3.12, `from __future__ import annotations`, full type annotations,
+- Python 3.9+ runtime (QGIS 3.28), 3.12 for development; `from __future__ import annotations`, full type annotations,
   Google-style docstrings, `ruff format` (100 cols) is the canonical formatter.
 - Naming: `PascalCase` classes, `snake_case` functions, `UPPER_SNAKE` constants.
 - Errors: custom hierarchy under `core/exceptions.py` (`SecInterpError` +

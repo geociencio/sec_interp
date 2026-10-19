@@ -209,11 +209,11 @@ def extract_feature_attributes(feature: Any) -> dict[str, Any]:
     raw_values = feature.attributes()
     sanitized: dict[str, Any] = {}
 
-    for name, val in zip(names, raw_values, strict=False):
+    for name, val in zip(names, raw_values):
         # Convert QVariant/NULL/etc to pure Python
         if val is None or str(val) == "NULL":
             sanitized[name] = None
-        elif isinstance(val, int | float | str | bool):
+        elif isinstance(val, (int, float, str, bool)):
             sanitized[name] = val
         else:
             # Fallback for complex types (dates, etc) to string
