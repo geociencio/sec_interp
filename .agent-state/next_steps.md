@@ -1,8 +1,8 @@
-# Next Steps (Updated 2026-10-19)
+# Next Steps (Updated 2026-10-23)
 
 ## ✅ Current state
 
-- **Plugin**: v3.11.0 is published and merged into `main`; portal approval is still pending.
+- **Plugin**: v3.11.0 is published, merged into `main`, and **approved in the QGIS plugin repository** (the public listing is no longer 3.10.0).
 - **Reliability hardening closed**: export cache keys, Python 3.9 support, i18n refresh
   (0 `unfinished`, `.qm` recompiled), release quality gates, agentic metrics/memory/validator.
 - **Agentic Forge v1.4.2** (`b264e35`): framework updated; project adapters use
@@ -15,14 +15,13 @@
 
 ## 📌 Pending
 
-1. **Portal QGIS** — confirm v3.11.0 approval (page still lists 3.10.0).
-2. **`module_size_gate`** — 5 modules > 400 lines: `gui/adapters/geometry.py` (597),
-   `gui/preview_layer_factory.py` (534), `exporters/interpretation_3d_exporter.py` (471),
-   `gui/preview_renderer.py` (438), `core/controller.py` (427).
-3. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
-4. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
+1. **`module_size_gate`** — 5 modules > 400 lines: `gui/adapters/geometry.py` (598),
+   `gui/preview_layer_factory.py` (535), `exporters/interpretation_3d_exporter.py` (472),
+   `core/controller.py` (466), `gui/preview_renderer.py` (439).
+2. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
+3. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.
-5. **Optional** — native review of the machine-assisted translations; refresh `help/html`
+4. **Optional** — native review of the machine-assisted translations; refresh `help/html`
    to v3.11.0 with `make deploy` (without `--no-compile`).
 
 ## ⚠️ Known separate bug

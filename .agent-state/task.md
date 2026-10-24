@@ -1,4 +1,4 @@
-# Active Task Board (Updated 2026-10-19)
+# Active Task Board (Updated 2026-10-23)
 
 > Historial detallado: `.agent-state/history/tasks/` y `docs/maintenance/`.
 > Este tablero solo refleja el estado activo; las sesiones cerradas no se acumulan aquí.
@@ -11,13 +11,14 @@
 
 ## 📌 Pendientes del proyecto
 
-- [ ] **Portal QGIS** — confirmar aprobación de v3.11.0 (la página aún lista 3.10.0).
 - [ ] **`module_size_gate`** — 5 módulos > 400 líneas (detalle en `.agent-state/memory/agent_metrics.json`).
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).
 - [ ] **Interop §9** — empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
 - [ ] **Opcional** — borrar la rama `backup/main-pre-v3.11.0` cuando se valide `main`.
 
-## ✅ Cerrado recientemente (2026-10-18/19)
+## ✅ Cerrado recientemente (2026-10-18/23)
+
+- [x] **Portal QGIS** — v3.11.0 aprobada/en verde en el repositorio de plugins (2026-10-23); el badge de versión del README se actualizó de 3.9.1 a 3.11.0 y enlaza a la ficha.
 
 - [x] **Release gate** — `scheduled-release.yml` ejecuta ruff, mypy, docs, security, i18n y analyzer antes de empaquetar; `make pre-release` incluye analyzer + i18n-check y 5 tests guardan el orden.
 - [x] **i18n** — los 13 catálogos se regeneraron a 363 mensajes, se completaron las cadenas v3.9–v3.11 (0 `unfinished`), se recompilaron los `.qm` y se añadió el gate `make i18n-check` (`tests/core/test_i18n_catalogs.py`).

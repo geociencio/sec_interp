@@ -1,3 +1,8 @@
+## [2026-10-23] Milestone: v3.11.0 Approved in the QGIS Plugin Repository
+- **Achievement**: the QGIS plugin repository marked **v3.11.0** green/approved; it is now the public version (the listing previously served 3.10.0).
+- **Docs**: README version badge corrected from 3.9.1 to **3.11.0** and linked to the plugin page; `task.md`/`next_steps.md` portal item closed.
+- **Follow-up**: `module_size_gate` (5 modules), `uv` 0.13.0 (pacman) and interop plan §9 **B1**.
+
 ## [2026-10-19] Session: Agentic Forge v1.4.1 → v1.4.2 Upgrade
 - **Achievement**: updated the `.agent` framework from `f15d44a` (v1.2.0-4) to **v1.4.2** (`b264e35`, via v1.4.1 `537f9fd`) without losing the project's memory/overlay/unittest fixes, which were ancestors of the release, and adapted the project adapters to the new framework module layout.
 - **Changes**:

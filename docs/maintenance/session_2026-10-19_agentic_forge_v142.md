@@ -51,7 +51,7 @@ compatible. No plugin-runtime changes.
 
 ## Pending
 
-1. Portal QGIS: confirm v3.11.0 approval.
+1. ~~Portal QGIS~~ — **v3.11.0 approved in the QGIS plugin repository** (2026-10-23).
 2. `module_size_gate`: 5 modules > 400 lines.
 3. `uv` 0.12.10 → 0.13.0 (blocked by pacman).
 4. Interop plan §9: start with **B1**.
