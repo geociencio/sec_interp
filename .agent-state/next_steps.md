@@ -20,12 +20,14 @@
 - **Preview layer factory**: `gui/preview_layer_factory.py` is now a **202-line facade**;
   builders live in `gui/preview_layers/{topography,geology,structures,drillholes,interpretations}.py`
   (25–157 lines). Merged into `main` at `bf3692a9`.
+- **3D interpretation exporter**: `exporters/interpretation_3d_exporter.py` is now a
+  **155-line facade**; helpers live in `exporters/interpretation_3d/{fields,geometry,style}.py`
+  (67–178 lines). Branch `refactor/module-size-interpretation-3d-exporter` (local, not merged yet).
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending
 
-1. **`module_size_gate`** — 2 modules > 400 lines: `exporters/interpretation_3d_exporter.py`
-   (472), `gui/preview_renderer.py` (439).
+1. **`module_size_gate`** — 1 module > 400 lines: `gui/preview_renderer.py` (439).
 2. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
 3. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.

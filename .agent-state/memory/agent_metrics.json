@@ -18,33 +18,29 @@
         "avg_retries_per_session": 1.18,
         "tests_ok": 792,
         "tests_ok_note": "tests_ok/test_count are the legacy static baseline kept for cross-file consistency; tests_static is the current static 'def test_' count and tests_executed is the runtime suite (local or Docker).",
-        "quality_score_latest": 56.3,
+        "quality_score_latest": 56.5,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-24).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 97.4,
         "type_hint_coverage_returns": 99.7,
-        "docstring_coverage": 99.0,
+        "docstring_coverage": 99.1,
         "cyclomatic_complexity_gate": "PASS",
         "i18n_issues_qgis_analyzer": 0,
         "i18n_note": "qgis-analyzer 1.15.2 MISSING_I18N rule (AST-based) reports 0 violations. PerformanceTimer timing labels are suppressed via pyproject.toml [tool.qgis-analyzer.profiles.default.rules.MISSING_I18N] extra_ignore_calls.",
-        "total_issues": 37,
+        "total_issues": 36,
         "i18n_hygiene_gate": "PASS",
         "issue_breakdown": {
             "MISSING_DOCSTRING": 9,
-            "GOD_OBJECT": 20,
+            "GOD_OBJECT": 19,
             "NON_PYTHONIC_LOOP": 4,
             "SPAGHETTI_CODE": 1,
             "UNPRECISE_LAYER": 1,
             "POTENTIAL_MISSING_SLOT": 2,
             "MISSING_I18N": 0
         },
-        "module_size_gate": "FAIL (2 modules > 400 lines)",
+        "module_size_gate": "FAIL (1 modules > 400 lines)",
         "large_modules": [
-            {
-                "path": "exporters/interpretation_3d_exporter.py",
-                "lines": 472
-            },
             {
                 "path": "gui/preview_renderer.py",
                 "lines": 439
@@ -60,21 +56,21 @@
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 56.3,
+                "module_stability": 56.5,
                 "maintainability": 99.9,
                 "security": 100.0
             },
             "issues": {
                 "MISSING_DOCSTRING": 9,
-                "GOD_OBJECT": 20,
+                "GOD_OBJECT": 19,
                 "NON_PYTHONIC_LOOP": 4,
                 "SPAGHETTI_CODE": 1,
                 "UNPRECISE_LAYER": 1,
                 "POTENTIAL_MISSING_SLOT": 2,
                 "MISSING_I18N": 0,
-                "total": 37
+                "total": 36
             },
-            "analyzed_at": "2026-10-24T15:39:30.485361+00:00"
+            "analyzed_at": "2026-10-24T15:48:53.412404+00:00"
         },
         "tests_local": {
             "date": "2026-10-24",

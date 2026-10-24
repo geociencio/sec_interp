@@ -1,3 +1,11 @@
+## [2026-10-24] Session: 3D Interpretation Exporter Module-Size Refactor
+- **Achievement**: replaced the 472-line `exporters/interpretation_3d_exporter.py` with a **155-line facade** and three focused helper modules, preserving the public methods and the private hooks used by tests/integration. Module-size gate now lists 1 module (was 2).
+- **Changes**:
+    - **Split** (`08af6693`): `interpretation_3d/fields.py` (field definitions + vector writer), `interpretation_3d/geometry.py` (2D→3D rings/projection/validation) and `interpretation_3d/style.py` (QML, 2D category renderer, rule-based 3D renderer). Modules are 67–178 lines.
+    - **Compatibility**: `export`, `_write_shapefile`, `_prepare_fields`, `_calculate_section_geometry` and `_collect_projected_features` remain as facade methods, so existing mocks and integration tests keep working.
+- **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · quality **56.5** (was 56.3) · issues 37 → 36 · module size 2 → 1.
+- **Follow-up**: only `gui/preview_renderer.py` (439) remains above 400.
+
 ## [2026-10-24] Session: Preview Layer Factory Module-Size Refactor
 - **Achievement**: replaced the 535-line `gui/preview_layer_factory.py` with a **202-line facade** and five focused builders, keeping the factory helpers, renderers, patch points and behavior intact. Module-size gate now lists 2 modules (was 3).
 - **Changes**:
