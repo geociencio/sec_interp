@@ -16,7 +16,7 @@
   and four processors live in `core/services/profile/`. Merged into `main` at `434421db`.
 - **Geometry refactor**: `gui/adapters/geometry.py` is now a **69-line facade**; the
   implementation lives in `geometry_{crs,lines,sampling,stats,sections}.py` (69–174
-  lines). Branch `refactor/module-size-geometry` (local, not merged yet).
+  lines). Merged into `main` at `ee93def5`.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending

@@ -18,7 +18,7 @@
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
-- [x] **Refactor `gui/adapters/geometry.py`** — 598 → **69 líneas** (fachada); 5 módulos (`geometry_crs`, `geometry_lines`, `geometry_sampling`, `geometry_stats`, `geometry_sections`) entre 69 y 174 líneas; suite **808 OK** (857 static); module-size gate 4 → 3 módulos. Rama local `refactor/module-size-geometry`.
+- [x] **Refactor `gui/adapters/geometry.py`** — 598 → **69 líneas** (fachada); 5 módulos (`geometry_crs`, `geometry_lines`, `geometry_sampling`, `geometry_stats`, `geometry_sections`) entre 69 y 174 líneas; suite **808 OK** (857 static); module-size gate 4 → 3 módulos. Mergeado en `main` en `ee93def5`.
 - [x] **Refactor `core/controller.py`** — 465 → **295 líneas**; caché y procesadores movidos a `core/services/profile/`; 21 tests nuevos; suite **807 OK** (856 static); module-size gate 5 → 4 módulos. Mergeado en `main` en `434421db`.
 
 - [x] **Portal QGIS** — v3.11.0 aprobada/en verde en el repositorio de plugins (2026-10-23); el badge de versión del README se actualizó de 3.9.1 a 3.11.0 y enlaza a la ficha.
