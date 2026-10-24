@@ -19,10 +19,11 @@ en las claves de caché, pero **no cambia la sección muestreada**:
    plan es conectarlo de extremo a extremo.
 
 **Resultado esperado**: con una capa de línea multi-feature, el combo muestra solo
-features de **exactamente 2 vértices** como `fid — label` (las de 3+ se descartan).
-Seleccionar el feature B produce topografía, geología, estructuras, sondajes,
-estadísticas DEM, validación y export basados en B; el LOD se calcula con la longitud de
-B; el feature A y B no comparten caché.
+features de **exactamente 2 vértices** como `fid — label` (las de 3+ se descartan). El
+campo usado para `label` es **seleccionable** (`Automático` o cualquier campo de la capa)
+y se persiste con el proyecto. Seleccionar el feature B produce topografía, geología,
+estructuras, sondajes, estadísticas DEM, validación y export basados en B; el LOD se
+calcula con la longitud de B; el feature A y B no comparten caché.
 
 ---
 
@@ -72,21 +73,28 @@ No existe ningún `QComboBox` de features en `gui/`.
 
 ## 3. Diseño propuesto
 
-### 3.1 Nuevo selector de feature (fid-label)
+### 3.1 Nuevo selector de feature y campo de etiqueta
 
 El **combo de capa ya existe** (`SectionPage.line_combo`); no se toca. Se añade un
-segundo combo para elegir la feature de esa capa.
+selector compuesto para elegir la feature y el campo de etiqueta.
 
 Crear `gui/ui/pages/section_feature_selector.py`:
 
 ```python
-class SectionFeatureSelector(QComboBox):
+class SectionFeatureSelector(QWidget):
     featureChanged = pyqtSignal()
 
     def set_layer(self, layer) -> None: ...
     def selected_feature_id(self) -> int | None: ...
     def select_feature(self, feature_id: int | None) -> bool: ...
+    def label_field(self) -> str | None: ...          # None = automático
+    def set_label_field(self, field_name: str | None) -> bool: ...
 ```
+
+El widget contiene dos combos:
+
+1. **Feature**: `fid — label`.
+2. **Campo de etiqueta**: `Automático` + todos los campos de la capa.
 
 #### Regla de filtrado (obligatoria)
 
@@ -102,12 +110,14 @@ solo el tipo. La validación de CRS proyectado y longitud > 0 sigue en `SectionP
 
 #### Etiqueta `fid — label`
 
-Cada entrada muestra el `fid` y una etiqueta legible:
+El combo de campo ofrece:
 
-1. Evaluar `layer.displayExpression()` con
-   `QgsExpressionContextUtils.createFeatureBasedContext(feature, layer)`.
-2. Si no hay expresión o falla, usar el valor de `layer.displayField()` si está definido.
-3. Si no hay etiqueta, usar solo el `fid`.
+- **Automático** (`None`): resuelve la etiqueta en este orden:
+  1. `layer.displayExpression()` evaluada con contexto de feature;
+  2. `layer.displayField()`;
+  3. `fid`.
+- **Campo seleccionado**: usa el valor de ese campo en la feature; si es nulo/vacío,
+  cae a `fid`.
 
 Texto final:
 
@@ -116,16 +126,20 @@ Texto final:
 "{fid}"             en caso contrario
 ```
 
-La etiqueta es dato del usuario; no se traduce.
+La etiqueta es dato del usuario; no se traduce. Cambiar de campo **solo actualiza el
+texto del combo**: no cambia `section_feature_id`, no altera el hash de preview ni
+invalida la caché.
 
 #### Resto de comportamiento
 
-- `set_layer(None|inválida|sin features de 2 puntos)` → combo vacío, deshabilitado,
-  `selected_feature_id() -> None`.
-- Una sola feature válida → seleccionarla y dejar el combo deshabilitado (no hay elección).
+- `set_layer(None|inválida|sin features de 2 puntos)` → ambos combos vacíos,
+  deshabilitados, `selected_feature_id() -> None`.
+- Una sola feature válida → seleccionarla y dejar el combo de feature deshabilitado.
 - Varias features válidas → habilitado, primera seleccionada.
 - Cap de seguridad: máximo 500 features válidas listadas; si hay más, listar las
-  primeras y avisar por `logger` (las capas de sección no deberían acercarse).
+  primeras y avisar por `logger`.
+- El combo de campos se repuebla al cambiar de capa; si el campo persistido ya no existe,
+  cae a `Automático`.
 - `select_feature(fid)` devuelve `False` si el fid no está entre las features válidas.
 - `set_layer` bloquea señales durante el repoblado para evitar emisiones en cascada.
 
@@ -138,17 +152,22 @@ queda fuera de la página para no superar 300 líneas.
 - `self.section_feature_id` pasa a ser el valor de `feature_selector.selected_feature_id()`.
 - `_on_line_layer_changed()`:
   - `feature_selector.set_layer(line_combo.currentLayer())`;
+  - restaurar el campo de etiqueta guardado si existe;
   - `section_feature_id = feature_selector.selected_feature_id()` (primer fid válido);
   - `update_dem_stats()`;
   - `dataChanged.emit()`.
 - `connect_signals`: conectar `line_combo.layerChanged` a `_on_line_layer_changed` y
   `feature_selector.featureChanged` a un slot que actualice id, stats y `dataChanged`.
+  El cambio de campo de etiqueta no dispara `dataChanged`.
   `disconnect_signals` debe desconectar ambos (hoy hay un patrón duplicado; limpiar sin
   romper el contrato de la página).
 - `load`: tras restaurar la capa, `select_feature(data.get("section_feature_id"))`; si el
   fid ya no existe, seleccionar el primer **fid válido** (no un feature de 3+ puntos).
+  Restaurar `data.get("section_feature_label_field")` si el campo existe; si no,
+  `Automático`.
 - `reset`: `feature_selector.set_layer(None)` y `section_feature_id = None`.
-- `get_data`/`dump`: sin cambios de esquema (siguen publicando `int|None`).
+- `get_data`/`dump`: añadir `section_feature_label_field` (str|None) a `dump`; `get_data`
+  puede incluirlo para el estado de UI, aunque `PreviewParams` no lo necesita.
 - `validate`: si hay capa pero no hay ninguna feature de 2 puntos, devolver error
   explícito; si el fid seleccionado no existe, error. No se valida el primer feature
   “a ciegas” cuando es de 3+ puntos.
@@ -195,8 +214,8 @@ no requiere cambios.
 
 | Test | Cobertura |
 |---|---|
-| `tests/gui/test_section_feature_selector.py` | **filtro 2 vs 3+ vértices**, 0/1/N válidas, fid-label, `selected_feature_id`, `select_feature` inválido, cap, señales |
-| `tests/gui/test_section_page.py` | cambio de capa repuebla, cambio de feature actualiza id/stats/dataChanged, load/reset, validate sin features válidas |
+| `tests/gui/test_section_feature_selector.py` | **filtro 2 vs 3+ vértices**, 0/1/N válidas, **campo de etiqueta Automático/campo**, valor nulo→fid, `selected_feature_id`, `select_feature` inválido, cap, señales |
+| `tests/gui/test_section_page.py` | cambio de capa repuebla, cambio de feature actualiza id/stats/dataChanged, **persistencia de `section_feature_label_field`**, load/reset, validate sin features válidas |
 | `tests/gui/test_preview_task_orchestrator.py` | geología y sondajes reciben `feature_id` |
 | `tests/core/test_preview_service.py` | LOD, topo y structures reciben `feature_id` |
 | `tests/core/test_controller_characterization.py` o nuevo `test_profile_feature_id.py` | los cuatro handlers pasan el id al extractor |
@@ -215,6 +234,8 @@ no requiere cambios.
   programáticas; la UI nunca deja `None` si hay features válidas.
 - Regresión de filtro: una capa con solo features de 3+ puntos deja el combo vacío y
   `SectionPage.validate()` devuelve error.
+- Etiqueta: con `section_feature_label_field="name"`, el texto es `9 — Línea Norte`;
+  cambiar el campo no altera `section_feature_id` ni vuelve a muestrear.
 
 ### Gates
 
@@ -247,6 +268,8 @@ Cada fase es un commit atómico; la rama se mergea solo con todos los gates verd
 |---|---|
 | Capas con miles de features | Cap de 500 **válidas**; escanear con `QgsFeatureRequest`, no bloquear la UI |
 | Features de 3+ puntos | Se descartan al poblar el combo; test explícito 2 vs 3 |
+| Campo de etiqueta borrado/renombrado | `set_label_field` devuelve `False`; `load` cae a `Automático` sin romper el proyecto |
+| Campo con valores nulos/duplicados | Prefijo `fid` siempre presente; nulo cae a `fid` |
 | `displayExpression` inválida o costosa | Evaluar con `QgsExpression` dentro de try/except; fallback a `displayField`/fid |
 | Sin features válidas | Combo vacío + `SectionPage.validate()` devuelve error claro |
 | FIDs cambian al editar la capa | `load`/`validate` detectan fid ausente y vuelven al primer fid válido |
@@ -267,7 +290,10 @@ Cada fase es un commit atómico; la rama se mergea solo con todos los gates verd
   DEM, validación y export.
 - El LOD usa la longitud del feature seleccionado.
 - A y B tienen cachés separadas; no hay datos de A en B.
-- `section_feature_id` se persiste/restaura; un fid inválido no rompe la UI.
+- `section_feature_id` y `section_feature_label_field` se persisten/restauran; un fid o
+  campo inválido no rompe la UI.
+- El usuario puede elegir `Automático` o cualquier campo; cambiar solo la etiqueta no
+  invalida el preview.
 - Una capa sin features de 2 puntos deja el combo vacío y la validación falla.
 - `feature_id=None` mantiene el comportamiento histórico para llamadas programáticas;
   la UI fija el primer fid válido.
