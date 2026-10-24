@@ -9,10 +9,7 @@ from __future__ import annotations
 import contextlib
 from typing import Any
 
-from qgis.core import (
-    QgsProject,
-    QgsWkbTypes,
-)
+from qgis.core import QgsProject
 from qgis.gui import QgsMapCanvas
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor, QPainter
@@ -28,6 +25,17 @@ from sec_interp.logger_config import get_logger
 from .preview_axes_manager import PreviewAxesManager
 from .preview_layer_factory import PreviewLayerFactory
 from .preview_legend_renderer import PreviewLegendRenderer
+from .preview_renderer_cleanup import (
+    cleanup_layers,
+    cleanup_rubber_bands,
+    get_valid_layer_ids,
+)
+from .preview_renderer_layers import (
+    add_drillhole_layers,
+    add_struct_layer,
+    calculate_extent,
+    collect_data_layers,
+)
 
 logger = get_logger(__name__)
 
@@ -240,91 +248,32 @@ class PreviewRenderer:
         hidden_interp_ids: set[str] | None = None,
     ) -> list:
         """Collect all data layers in order."""
-        style = layer_styles or {}
-        # Topography & Geology
-        topo_layer = self.layer_factory.create_topo_layer(
+        return collect_data_layers(
+            self,
             topo_data,
+            geol_data,
+            struct_data,
             vert_exag,
             max_points,
             use_adaptive,
+            dip_len,
+            drill_data,
+            interp_data,
             topo_color_mode,
             topo_ramp_name,
             topo_single_color,
-            line_width=style.get("topo_line_width"),
+            topo_smooth_data,
+            layer_styles,
+            hidden_interp_ids,
         )
-        if topo_layer:
-            self.has_topography = True
-
-        topo_smooth = self.layer_factory.create_smoothed_topo_layer(
-            topo_smooth_data, vert_exag, max_points
-        )
-        topo_fill = self.layer_factory.create_topo_fill_layer(topo_data, vert_exag, max_points)
-        geol_layer = self.layer_factory.create_geol_layer(geol_data, vert_exag, max_points)
-
-        # Specialized layers
-        struct_layer = self._add_struct_layer(
-            struct_data, topo_data, geol_data, vert_exag, dip_len, style
-        )
-        drill_layers = self._add_drillhole_layers(drill_data, vert_exag, style)
-        interp_layer = self.layer_factory.create_interp_layer(
-            interp_data,
-            vert_exag,
-            default_color=style.get("interp_color"),
-            hidden_ids=hidden_interp_ids,
-        )
-
-        # Combine in Z-order (top to bottom)
-        candidates = [
-            struct_layer,
-            geol_layer,
-            topo_smooth,
-            topo_layer,
-            topo_fill,
-            *drill_layers,
-            interp_layer,
-        ]
-        return [L for L in candidates if L is not None]
 
     def _add_struct_layer(self, data, topo, geol, exag, dip_len, style=None) -> Any | None:
         """Create structural layer if data exists."""
-        ref = topo if topo else ([p for s in geol for p in s.points] if geol else None)
-        style = style or {}
-        layer = self.layer_factory.create_struct_layer(
-            data,
-            ref,
-            exag,
-            dip_len,
-            color=style.get("struct_color"),
-            width=style.get("struct_width"),
-        )
-        if layer:
-            self.has_structures = True
-        return layer
+        return add_struct_layer(self, data, topo, geol, exag, dip_len, style)
 
     def _add_drillhole_layers(self, data, exag, style=None) -> list:
         """Create drillhole layers if data exists."""
-        layers = []
-        if not data:
-            return layers
-
-        style = style or {}
-        t_layer = self.layer_factory.create_drillhole_trace_layer(
-            data,
-            exag,
-            color=style.get("drill_trace_color"),
-            width=style.get("drill_trace_width"),
-            labels=style.get("drill_labels", True),
-        )
-        if t_layer:
-            layers.append(t_layer)
-
-        i_layer = self.layer_factory.create_drillhole_interval_layer(data, exag)
-        if i_layer:
-            layers.append(i_layer)
-
-        if layers:
-            self.has_drillholes = True
-        return layers
+        return add_drillhole_layers(self, data, exag, style)
 
     def draw_legend(self, painter: QPainter, rect: QRectF) -> None:
         """Draw legend on the given painter honoring the configured layout."""
@@ -371,68 +320,16 @@ class PreviewRenderer:
 
     def _cleanup_layers(self, layers: list | None = None) -> None:
         """Safely remove transient layers from the project."""
-        if layers is None:
-            layers = self.layers
-
-        project = QgsProject.instance()
-        if not project or not layers:
-            return
-
-        valid_ids = self._get_valid_layer_ids(layers)
-        if valid_ids:
-            logger.debug(
-                f"PreviewRenderer: Requesting removal of {len(valid_ids)} transient layers"
-            )
-            try:
-                project.removeMapLayers(valid_ids)
-                logger.debug("PreviewRenderer map layer cleanup successful")
-            except Exception as e:
-                logger.warning(f"Non-critical error during layer cleanup: {e}")
-
-        self.layers = []
-        self.layer_factory.active_units = {}
-        self._cleanup_rubber_bands()
-        logger.debug("PreviewRenderer cleanup completed")
+        cleanup_layers(self, layers)
 
     def _get_valid_layer_ids(self, layers: list) -> list[str]:
         """Extract valid IDs from a list of layers, handling stale objects."""
-        valid_ids = []
-        for layer in layers:
-            try:
-                if layer and hasattr(layer, "id"):
-                    valid_ids.append(layer.id())
-            except (RuntimeError, AttributeError):
-                continue
-        return valid_ids
+        return get_valid_layer_ids(layers)
 
     def _cleanup_rubber_bands(self) -> None:
-        """Thoroughly cleanup interpretation rubber bands to release C++ memory."""
-        if not self.canvas or not self.canvas.scene():
-            self.interpretation_rubbers = []
-            return
-
-        scene = self.canvas.scene()
-        for rb in self.interpretation_rubbers:
-            if not rb:
-                continue
-            try:
-                rb.hide()
-                rb.reset(QgsWkbTypes.GeometryType.PolygonGeometry)
-                scene.removeItem(rb)
-            except Exception as e:
-                logger.warning(f"Failed to remove rubber band: {e}")
-
-        self.interpretation_rubbers = []
-
-        logger.debug("PreviewRenderer cleanup completed")
+        """Thoroughly cleanup interpretation rubber bands."""
+        cleanup_rubber_bands(self)
 
     def _calculate_extent(self, layers: list) -> Any | None:
         """Combine extents of all given layers."""
-        extent = None
-        for layer in layers:
-            layer_extent = layer.extent()
-            if extent is None:
-                extent = layer_extent
-            else:
-                extent.combineExtentWith(layer_extent)
-        return extent
+        return calculate_extent(layers)
