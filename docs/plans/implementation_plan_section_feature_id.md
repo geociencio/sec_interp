@@ -69,6 +69,34 @@ calcula con la longitud de B; el feature A y B no comparten caché.
 
 No existe ningún `QComboBox` de features en `gui/`.
 
+### 2.4 Referencia: GeoProfile
+
+[`silver9704/GeoProfile`](https://github.com/silver9704/GeoProfile) implementa el mismo
+problema con otro enfoque:
+
+- `QgsFieldComboBox` con un pseudo-campo **Feature ID** + los campos de la capa.
+- Un `QComboBox` de valores (fid o valor del campo) para elegir la sección.
+- `line_to_multipoints()` rechaza multipart con más de una línea y exige exactamente
+  2 vértices (`len(polyline) != 2` → error).
+- Añade **Invert line** para invertir el sentido del perfil.
+
+Qué tomamos:
+
+- La invariante de **2 vértices** y el rechazo de multipart con varias partes.
+- La idea de exponer un campo seleccionable.
+
+Qué cambiamos:
+
+- Nuestro combo será `fid — label`, no una lista de valores del campo; el fid siempre
+  está presente y evita ambigüedad entre valores duplicados.
+- El campo seleccionado controla **solo la etiqueta**; no cambia la selección, el hash
+  ni la caché.
+- **Invert line** queda fuera de este fix; es una feature independiente que puede
+  añadirse después si se necesita.
+
+No se copia código de GeoProfile (GPLv3); se reutiliza el patrón de interacción y la
+regla de validación.
+
 ---
 
 ## 3. Diseño propuesto
@@ -101,6 +129,7 @@ El widget contiene dos combos:
 Solo se listan features que representan una sección válida de **exactamente 2 vértices**:
 
 - `geometry` nula/inválida → descartar.
+- Multipart con más de una parte → descartar (como GeoProfile).
 - `vertices == 2` → incluir.
 - `vertices >= 3` → **descartar** (no aparece en el combo).
 - `vertices < 2` → descartar.
