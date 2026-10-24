@@ -18,7 +18,7 @@
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
-- [x] **Refactor `gui/preview_layer_factory.py`** — 535 → **202 líneas** (fachada); 5 builders (`topography`, `geology`, `structures`, `drillholes`, `interpretations`) entre 25 y 157 líneas; suite **808 OK** (857 static); module-size gate 3 → 2 módulos. Rama local `refactor/module-size-preview-layer-factory`.
+- [x] **Refactor `gui/preview_layer_factory.py`** — 535 → **202 líneas** (fachada); 5 builders (`topography`, `geology`, `structures`, `drillholes`, `interpretations`) entre 25 y 157 líneas; suite **808 OK** (857 static); module-size gate 3 → 2 módulos. Mergeado en `main` en `bf3692a9`.
 - [x] **Refactor `gui/adapters/geometry.py`** — 598 → **69 líneas** (fachada); 5 módulos (`geometry_crs`, `geometry_lines`, `geometry_sampling`, `geometry_stats`, `geometry_sections`) entre 69 y 174 líneas; suite **808 OK** (857 static); module-size gate 4 → 3 módulos. Mergeado en `main` en `ee93def5`.
 - [x] **Refactor `core/controller.py`** — 465 → **295 líneas**; caché y procesadores movidos a `core/services/profile/`; 21 tests nuevos; suite **807 OK** (856 static); module-size gate 5 → 4 módulos. Mergeado en `main` en `434421db`.
 

@@ -19,7 +19,7 @@
   lines). Merged into `main` at `ee93def5`.
 - **Preview layer factory**: `gui/preview_layer_factory.py` is now a **202-line facade**;
   builders live in `gui/preview_layers/{topography,geology,structures,drillholes,interpretations}.py`
-  (25–157 lines). Branch `refactor/module-size-preview-layer-factory` (local, not merged yet).
+  (25–157 lines). Merged into `main` at `bf3692a9`.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending
