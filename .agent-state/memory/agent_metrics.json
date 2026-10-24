@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent-state/memory/memory_policy.md",
-        "last_updated": "2026-10-19",
+        "last_updated": "2026-10-24",
         "last_updated_by": "sync_metrics.py (metrics truth reconciliation)",
         "tools": {
             "qgis-plugin-analyzer": "1.16.0",
@@ -19,7 +19,7 @@
         "tests_ok": 792,
         "tests_ok_note": "tests_ok/test_count are the legacy static baseline kept for cross-file consistency; tests_static is the current static 'def test_' count and tests_executed is the runtime suite (local or Docker).",
         "quality_score_latest": 55.7,
-        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-19).",
+        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-24).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 97.2,
@@ -68,7 +68,7 @@
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
-            "date": "2026-10-19",
+            "date": "2026-10-24",
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
@@ -86,10 +86,10 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-19T02:20:52.806843+00:00"
+            "analyzed_at": "2026-10-24T01:40:57.126700+00:00"
         },
         "tests_local": {
-            "date": "2026-10-19",
+            "date": "2026-10-24",
             "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
             "result": "778 ran OK",
             "note": "Local mock-first suite; tests_static is the static 'def test_' count and Docker runs the grouped CI categories."
@@ -108,9 +108,9 @@
             "note": "ai-ctx 5.1.0 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
         },
         "sync_metrics": {
-            "date": "2026-10-19",
+            "date": "2026-10-24",
             "command": "uv run python scripts/sync_metrics.py",
-            "cc_gate": "UNCHANGED",
+            "cc_gate": "PASS",
             "i18n_gate": "PASS"
         }
     },
