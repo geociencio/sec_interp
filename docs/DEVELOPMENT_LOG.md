@@ -1,3 +1,11 @@
+## [2026-10-24] Session: Geometry Adapter Module-Size Refactor
+- **Achievement**: replaced the 598-line `gui/adapters/geometry.py` with a **69-line compatibility facade** and five focused modules, keeping every public import and behavior intact. Module-size gate now lists 3 modules (was 4).
+- **Changes**:
+    - **Split** (`cddd765d`): `geometry_crs` (CRS/interval), `geometry_lines` (vertices/densify/segment range), `geometry_sampling` (point/line raster sampling), `geometry_stats` (per-cell min/max/mean) and `geometry_sections` (section feature/context). Modules are 69–174 lines.
+    - **Tests**: updated the two patch targets (`geometry_crs.QgsCoordinateTransform`, `geometry_sampling.build_sampling_transform`) and added a regression for `sample_elevation_along_line`.
+- **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · quality **56.1** (was 56.0) · module size 4 → 3.
+- **Follow-up**: next is `gui/preview_layer_factory.py` (535); `GOD_OBJECT` remains deferred.
+
 ## [2026-10-24] Session: Controller Module-Size Refactor
 - **Achievement**: reduced `core/controller.py` from **465 to 295 lines** without changing the public API, cache semantics or translations. The module-size gate now lists 4 modules instead of 5; `ProfileController` keeps thin translation wrappers.
 - **Changes**:

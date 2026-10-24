@@ -18,7 +18,7 @@
         "avg_retries_per_session": 1.18,
         "tests_ok": 792,
         "tests_ok_note": "tests_ok/test_count are the legacy static baseline kept for cross-file consistency; tests_static is the current static 'def test_' count and tests_executed is the runtime suite (local or Docker).",
-        "quality_score_latest": 56.0,
+        "quality_score_latest": 56.1,
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-24).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
@@ -39,15 +39,11 @@
             "POTENTIAL_MISSING_SLOT": 2,
             "MISSING_I18N": 0
         },
-        "module_size_gate": "FAIL (4 modules > 400 lines)",
+        "module_size_gate": "FAIL (3 modules > 400 lines)",
         "large_modules": [
             {
                 "path": "exporters/interpretation_3d_exporter.py",
                 "lines": 472
-            },
-            {
-                "path": "gui/adapters/geometry.py",
-                "lines": 598
             },
             {
                 "path": "gui/preview_layer_factory.py",
@@ -59,8 +55,8 @@
             }
         ],
         "test_count": 792,
-        "tests_static": 856,
-        "tests_executed": 807
+        "tests_static": 857,
+        "tests_executed": 808
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
@@ -68,7 +64,7 @@
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
-                "module_stability": 56.0,
+                "module_stability": 56.1,
                 "maintainability": 99.9,
                 "security": 100.0
             },
@@ -82,12 +78,12 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-24T15:22:06.707300+00:00"
+            "analyzed_at": "2026-10-24T15:32:15.605277+00:00"
         },
         "tests_local": {
             "date": "2026-10-24",
             "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
-            "result": "807 ran OK",
+            "result": "808 ran OK",
             "note": "Local mock-first suite; tests_static is the static 'def test_' count and Docker runs the grouped CI categories."
         },
         "ai_context": {

@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->856<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->857<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-24<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -15,7 +15,7 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->345<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->352<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->353<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -84,7 +84,7 @@
 - **tests/gui/test_drillhole_page.py**: 6 tests
 - **tests/gui/test_geology_extractor.py**: 2 tests
 - **tests/gui/test_geology_task.py**: 2 tests
-- **tests/gui/test_geometry_adapter.py**: 11 tests
+- **tests/gui/test_geometry_adapter.py**: 12 tests
 - **tests/gui/test_gui_utils.py**: 3 tests
 - **tests/gui/test_interpretation_export.py**: 1 tests
 - **tests/gui/test_interpretation_tool.py**: 22 tests
