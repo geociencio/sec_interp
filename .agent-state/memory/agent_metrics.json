@@ -22,7 +22,7 @@
         "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-24).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
-        "type_hint_coverage_params": 97.4,
+        "type_hint_coverage_params": 96.3,
         "type_hint_coverage_returns": 99.7,
         "docstring_coverage": 99.1,
         "cyclomatic_complexity_gate": "PASS",
@@ -39,13 +39,8 @@
             "POTENTIAL_MISSING_SLOT": 2,
             "MISSING_I18N": 0
         },
-        "module_size_gate": "FAIL (1 modules > 400 lines)",
-        "large_modules": [
-            {
-                "path": "gui/preview_renderer.py",
-                "lines": 439
-            }
-        ],
+        "module_size_gate": "PASS",
+        "large_modules": [],
         "test_count": 792,
         "tests_static": 857,
         "tests_executed": 808
@@ -70,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 36
             },
-            "analyzed_at": "2026-10-24T15:48:53.412404+00:00"
+            "analyzed_at": "2026-10-24T15:52:13.067529+00:00"
         },
         "tests_local": {
             "date": "2026-10-24",

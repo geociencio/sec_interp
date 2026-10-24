@@ -1,3 +1,10 @@
+## [2026-10-24] Session: Preview Renderer Module-Size Refactor & Gate Closure
+- **Achievement**: reduced `gui/preview_renderer.py` from 438 to **335 lines** by extracting layer collection and cleanup helpers. With this change the **`module_size_gate` is PASS** for the first time since the audit: **0 modules >400**.
+- **Changes**:
+    - **Split** (`418417b3`): `preview_renderer_layers.py` (data-layer collection, structural/drillhole layers, extents) and `preview_renderer_cleanup.py` (project layers and rubber bands); `PreviewRenderer` keeps the public API and private wrappers used by tests.
+- **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · quality **56.5** · issues 36 · module size **PASS (0)**.
+- **Follow-up**: `GOD_OBJECT` remains deferred (19 project-wide); next project work is `uv` 0.13.0, interop §9 **B1**, or the optional docs/i18n review.
+
 ## [2026-10-24] Session: 3D Interpretation Exporter Module-Size Refactor
 - **Achievement**: replaced the 472-line `exporters/interpretation_3d_exporter.py` with a **155-line facade** and three focused helper modules, preserving the public methods and the private hooks used by tests/integration. Module-size gate now lists 1 module (was 2).
 - **Changes**:

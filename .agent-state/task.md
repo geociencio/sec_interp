@@ -11,13 +11,14 @@
 
 ## 📌 Pendientes del proyecto
 
-- [ ] **`module_size_gate`** — 1 módulo > 400 líneas restante (`core/controller.py` 295, `gui/adapters/geometry.py` 69, `gui/preview_layer_factory.py` 202 e `interpretation_3d_exporter.py` 155 ya resueltos).
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).
 - [ ] **Interop §9** — empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
 - [ ] **Opcional** — borrar la rama `backup/main-pre-v3.11.0` cuando se valide `main`.
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
+- [x] **`module_size_gate` — PASS (0 módulos >400)** — cerrados controller (465→295), geometry (598→69), preview layer factory (535→202), 3D exporter (472→155) y preview renderer (438→335); suite **808 OK** (857 static); quality **56.5**.
+- [x] **Refactor `gui/preview_renderer.py`** — 438 → **335 líneas**; collectors/cleanup en `preview_renderer_layers.py` (123) y `preview_renderer_cleanup.py` (68); suite **808 OK**; module-size gate 1 → **0**. Rama local `refactor/module-size-preview-renderer`.
 - [x] **Refactor `exporters/interpretation_3d_exporter.py`** — 472 → **155 líneas** (fachada); helpers en `exporters/interpretation_3d/{fields,geometry,style}.py` entre 67 y 178 líneas; suite **808 OK** (857 static); module-size gate 2 → 1 módulo. Mergeado en `main` en `91639cc3`.
 - [x] **Refactor `gui/preview_layer_factory.py`** — 535 → **202 líneas** (fachada); 5 builders (`topography`, `geology`, `structures`, `drillholes`, `interpretations`) entre 25 y 157 líneas; suite **808 OK** (857 static); module-size gate 3 → 2 módulos. Mergeado en `main` en `bf3692a9`.
 - [x] **Refactor `gui/adapters/geometry.py`** — 598 → **69 líneas** (fachada); 5 módulos (`geometry_crs`, `geometry_lines`, `geometry_sampling`, `geometry_stats`, `geometry_sections`) entre 69 y 174 líneas; suite **808 OK** (857 static); module-size gate 4 → 3 módulos. Mergeado en `main` en `ee93def5`.

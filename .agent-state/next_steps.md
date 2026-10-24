@@ -23,15 +23,19 @@
 - **3D interpretation exporter**: `exporters/interpretation_3d_exporter.py` is now a
   **155-line facade**; helpers live in `exporters/interpretation_3d/{fields,geometry,style}.py`
   (67–178 lines). Merged into `main` at `91639cc3`.
+- **Preview renderer**: `gui/preview_renderer.py` is now a **335-line façade**; layer
+  collection and cleanup live in `preview_renderer_layers.py` (123) and
+  `preview_renderer_cleanup.py` (68). Branch `refactor/module-size-preview-renderer`
+  (local, not merged yet).
+- **`module_size_gate`: PASS** — 0 modules >400 after all five refactors.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending
 
-1. **`module_size_gate`** — 1 module > 400 lines: `gui/preview_renderer.py` (439).
-2. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
-3. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
+1. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
+2. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.
-4. **Optional** — native review of the machine-assisted translations; refresh `help/html`
+3. **Optional** — native review of the machine-assisted translations; refresh `help/html`
    to v3.11.0 with `make deploy` (without `--no-compile`).
 
 ## ⚠️ Known separate bug
