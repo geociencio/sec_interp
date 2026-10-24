@@ -61,18 +61,21 @@ uv run qgis-manage deploy --no-compile --qgis-version 4
 
 ## Manual testing
 
-The user was running manual tests when the session closed; no findings were reported.
-Suggested checks are in the handoff: multi-feature layer, 2/3/1-point filtering,
-label field, preview/export consistency, LOD, DEM stats, persistence and cache isolation.
+**Confirmed by the user after the close**: all manual tests work as expected.
+
+- `secc1.shp` has 7 features; 4 have exactly 2 vertices and are listed (`a1`, `a4`,
+  `b1`, `b2`), while `a2` (3), `a3` (4) and `a6` (5) are discarded by the 2-vertex rule.
+- Selector, preview, LOD, export and persistence behaved as expected.
+- The empty `id` field explains why `Auto`/`id` labels show only the fid; `lin`, `lugar`
+  or `num` are the useful label fields in this sample.
 
 ## Pending
 
-1. Manual test findings (if any) and a possible follow-up fix.
-2. Push `main` (7 commits ahead; no push yet).
-3. `uv` 0.12.10 → 0.13.0 (blocked by pacman).
-4. Interop §9 → **B1**.
-5. Deferred `ProfileController` `GOD_OBJECT` (21 attributes).
-6. `Invert line` (future feature).
+1. Push `main` (no push yet).
+2. `uv` 0.12.10 → 0.13.0 (blocked by pacman).
+3. Interop §9 → **B1**.
+4. Deferred `ProfileController` `GOD_OBJECT` (21 attributes).
+5. `Invert line` (future feature).
 
 ## Notes
 

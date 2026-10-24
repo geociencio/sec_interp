@@ -11,13 +11,13 @@
 
 ## 📌 Pendientes del proyecto
 
-- [ ] **Validación manual QGIS 4** — probar el selector de sección desplegado (2 vs 3 puntos, campo de etiqueta, LOD, export, persistencia); recoger hallazgos antes de push.
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).
 - [ ] **Interop §9** — empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
 - [ ] **Opcional** — borrar la rama `backup/main-pre-v3.11.0` cuando se valide `main`.
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
+- [x] **Validación manual QGIS 4** — selector desplegado y probado: `secc1.shp` muestra 4 de 7 líneas (las de 2 vértices); preview, LOD, export y persistencia OK.
 - [x] **`section_feature_id` fix** — selector `fid — label` con filtro de 2 vértices y campo de etiqueta seleccionable; propagación a topo/geología/estructuras/sondajes, LOD y tasks async; suite **827 OK** (876 static); mergeada en `main` en `83e86a2c`.
 - [x] **`module_size_gate` — PASS (0 módulos >400)** — cerrados controller (465→295), geometry (598→69), preview layer factory (535→202), 3D exporter (472→155) y preview renderer (438→335); suite **808 OK** (857 static); quality **56.5**.
 - [x] **Refactor `gui/preview_renderer.py`** — 438 → **335 líneas**; collectors/cleanup en `preview_renderer_layers.py` (123) y `preview_renderer_cleanup.py` (68); suite **808 OK**; module-size gate 1 → **0**. Mergeado en `main` en `2e05e4f8`.

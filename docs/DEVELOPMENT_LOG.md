@@ -1,9 +1,9 @@
 ## [2026-10-24] Session Close: Section Feature Selection
 - **Closed**: selector `fid — label` (only exactly-2-vertex lines, selectable label field) and full `section_feature_id` propagation to preview/export/LOD/tasks; **Invert line** deferred.
 - **Quality**: **827 tests OK** (876 static) · CC/i18n/module-size PASS · security 100 · issues 36 · quality 56.4.
-- **Deploy**: QGIS 4 `uv run qgis-manage deploy --no-compile --qgis-version 4`; manual validation in progress.
+- **Deploy**: QGIS 4 `uv run qgis-manage deploy --no-compile --qgis-version 4`; manual validation confirmed OK (`secc1.shp`: 4/7 lines by design).
 - **Maintenance**: [session_2026-10-24_section_feature_selection.md](maintenance/session_2026-10-24_section_feature_selection.md).
-- **Pending**: finish manual tests, push `main` (7 commits ahead), interop §9 B1, deferred `ProfileController` GOD_OBJECT.
+- **Pending**: push `main`, interop §9 B1, deferred `ProfileController` GOD_OBJECT.
 
 ## [2026-10-24] Fix: Section Feature Selection (`section_feature_id`)
 - **Achievement**: `SectionPage` now lists only 2-vertex section lines in an `fid — label` combo, with a selectable label field (`Auto` or any attribute); `section_feature_id` is forwarded end-to-end to topography, geology, structures, drillholes, LOD and async tasks.
