@@ -1,3 +1,9 @@
+## [2026-10-24] Session Close: Module-Size Gate Completion
+- **Achievement**: closed the five `module_size_gate` violations and left `main` clean and pushed. Controller 465→295, geometry 598→69, preview factory 535→202, 3D exporter 472→155 and renderer 438→335; **0 modules >400**.
+- **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · security 100 · issues 36 · quality score 56.5 (Module Stability / MI, diagnostic).
+- **Maintenance**: [session_2026-10-24_module_size_gate_completion.md](maintenance/session_2026-10-24_module_size_gate_completion.md).
+- **Follow-up**: `uv` 0.13.0 (pacman), interop §9 **B1**, deferred `ProfileController` `GOD_OBJECT` (21 attrs), optional translation/help review.
+
 ## [2026-10-24] Session: Preview Renderer Module-Size Refactor & Gate Closure
 - **Achievement**: reduced `gui/preview_renderer.py` from 438 to **335 lines** by extracting layer collection and cleanup helpers. With this change the **`module_size_gate` is PASS** for the first time since the audit: **0 modules >400**.
 - **Changes**:

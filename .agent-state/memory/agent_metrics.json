@@ -11,7 +11,7 @@
         }
     },
     "summary": {
-        "total_sessions": 51,
+        "total_sessions": 52,
         "tasks_completed": 27,
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 36
             },
-            "analyzed_at": "2026-10-24T15:52:13.067529+00:00"
+            "analyzed_at": "2026-10-24T17:55:17.116345+00:00"
         },
         "tests_local": {
             "date": "2026-10-24",
@@ -101,18 +101,30 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-10-19",
-        "topic": "agentic_forge_v142",
-        "tests_ok": 778,
-        "quality_score": 55.7,
+        "date": "2026-10-24",
+        "topic": "module_size_gate_completion",
+        "tests_ok": 808,
+        "quality_score": 56.5,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [],
         "status": "SUCCESS",
-        "tests_static": 827
+        "tests_static": 857
     },
     "history": [
+        {
+            "date": "2026-10-19",
+            "tests_ok": 778,
+            "quality_score": 55.7,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "tests_static": 827,
+            "session": "agentic_forge_v142"
+        },
         {
             "date": "2026-10-19",
             "tests_ok": 778,

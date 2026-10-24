@@ -18,6 +18,16 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 
 ```yaml
 lessons:
+  - date: '2026-10-24'
+    category: TESTING
+    topic: module-size refactors break tests that patch private methods unless wrappers stay
+    lesson: 'Moving renderer/exporter logic to helper modules changed the patch targets; keeping thin private wrappers on the original class preserved the existing tests and integration hooks without rewriting them.'
+    action: Before splitting a module, list every monkeypatched method and keep a delegating wrapper at the original call site; only update tests when the public contract actually changes.
+  - date: '2026-10-24'
+    category: TOOLING
+    topic: qgis-analyzer quality_score is a size-driven MI average, not a release gate
+    lesson: 'The 56.5 quality score is the mean Maintainability Index per module; even a 100-line CC10 module scores ~55, so module_size_gate PASS, CC PASS and security 100 can coexist with a low score.'
+    action: Report quality_score as Module Stability/diagnostic; use tests, CC, i18n, security and module-size gates for release decisions, and never chase a 100 score by splitting every file.
   - date: '2026-10-19'
     category: AGENTIC_SYSTEM
     topic: framework patch releases can move private helpers used by project adapters

@@ -27,7 +27,8 @@
   collection and cleanup live in `preview_renderer_layers.py` (123) and
   `preview_renderer_cleanup.py` (68). Merged into `main` at `2e05e4f8`.
 - **`module_size_gate`: PASS** — 0 modules >400 after all five refactors.
-- **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
+- **Reference**: `docs/plans/implementation_plan_module_size_controller.md` ·
+  `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
 
 ## 📌 Pending
 
