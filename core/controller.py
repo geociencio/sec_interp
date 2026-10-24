@@ -19,11 +19,12 @@ from sec_interp.core.domain import (
 )
 from sec_interp.core.exceptions import ProcessingError
 from sec_interp.core.services.profile.cache import (
-    drillholes_cache_key,
     geology_cache_key,
-    structures_cache_key,
     topography_cache_key,
 )
+from sec_interp.core.services.profile.drillholes import process_drillholes
+from sec_interp.core.services.profile.errors import ProfileServiceError
+from sec_interp.core.services.profile.structures import process_structures
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
@@ -278,51 +279,23 @@ class ProfileController(TranslatableMixin):
         if not params.struct_layer:
             return None
 
-        struct_key = structures_cache_key(params)
-        struct_data = self.data_cache.get("struct", struct_key)
+        try:
+            struct_data = process_structures(
+                params,
+                self.structure_extractor,
+                self.structure_service,
+                self.data_cache,
+                cache_meta,
+            )
+        except ProfileServiceError:
+            messages.append(self.tr("Structures: Service failed to load"))
+            return None
+
         if struct_data:
-            logger.debug("Cache hit: Structure")
             messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
-        else:
-            line_lyr = params.line_layer
-            struct_lyr = params.struct_layer
-            raster_lyr = params.raster_layer
-
-            if not line_lyr or not struct_lyr:
-                return None
-
-            if not self.structure_service or not self.structure_extractor:
-                messages.append(self.tr("Structures: Service failed to load"))
-                return None
-
-            ctx = self.structure_extractor.extract_section_and_structures(
-                line_lyr, struct_lyr, params.buffer_dist
-            )
-            if ctx is None:
-                return None
-
-            elevation_sampler = self.structure_extractor.make_elevation_sampler(
-                raster_lyr, line_lyr, params.band_num
-            )
-
-            # 1+2. Detach and project structures
-            struct_data = self.structure_service.project_structures(
-                line_points=ctx.line_points,
-                struct_data=ctx.structures,
-                elevation_sampler=elevation_sampler,
-                line_az=ctx.line_azimuth,
-                dip_field=params.dip_field,
-                strike_field=params.strike_field,
-            )
-
-            if struct_data:
-                self.data_cache.set("struct", struct_key, struct_data, cache_meta)
-                messages.append(self.tr("Structures: {0} points").format(len(struct_data)))
-            else:
-                messages.append(
-                    self.tr("Structures: None in {0}m buffer").format(params.buffer_dist)
-                )
-        return struct_data  # type: ignore[no-any-return]
+        elif struct_data is not None:
+            messages.append(self.tr("Structures: None in {0}m buffer").format(params.buffer_dist))
+        return struct_data
 
     def _process_drillholes(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
@@ -341,57 +314,14 @@ class ProfileController(TranslatableMixin):
         if not params.collar_layer:
             return None
 
-        drill_key = drillholes_cache_key(params)
-        drillhole_data = self.data_cache.get("drill", drill_key)
-
-        if drillhole_data:
-            logger.debug("Cache hit: Drillholes")
-            return drillhole_data  # type: ignore[no-any-return]
-
-        collar_lyr = params.collar_layer
-        if not collar_lyr:
-            return None
-
-        if not self.drillhole_service or not self.drillhole_extractor:
+        try:
+            return process_drillholes(
+                params,
+                self.drillhole_extractor,
+                self.drillhole_service,
+                self.data_cache,
+                cache_meta,
+            )
+        except ProfileServiceError:
             messages.append(self.tr("Drillholes: Service failed to load"))
             return None
-
-        survey_fields = {
-            "id": params.survey_id_field,
-            "depth": params.survey_depth_field,
-            "azim": params.survey_azim_field,
-            "incl": params.survey_incl_field,
-        }
-        interval_fields = {
-            "id": params.interval_id_field,
-            "from": params.interval_from_field,
-            "to": params.interval_to_field,
-            "lith": params.interval_lith_field,
-        }
-
-        context = self.drillhole_extractor.extract_context(
-            params.line_layer,
-            params.buffer_dist,
-            params.collar_layer,
-            params.collar_id_field,
-            params.collar_use_geometry,
-            params.collar_x_field,
-            params.collar_y_field,
-            params.collar_z_field,
-            params.collar_depth_field,
-            params.survey_layer,
-            survey_fields,
-            params.interval_layer,
-            interval_fields,
-            params.raster_layer,
-            params.band_num,
-        )
-        if context is None:
-            return None
-
-        _, drillhole_data = self.drillhole_service.process_context(context)
-
-        if drillhole_data:
-            self.data_cache.set("drill", drill_key, drillhole_data, cache_meta)
-
-        return drillhole_data  # type: ignore[no-any-return]
