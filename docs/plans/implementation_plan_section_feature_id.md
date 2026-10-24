@@ -1,6 +1,6 @@
 # Implementation Plan — Fix `section_feature_id` in the sampled section
 
-**Status**: IMPLEMENTADO en `fix/section-feature-id` (pendiente de merge)
+**Status**: MERGEADO en `main` en `83e86a2c`
 **Created**: 2026-10-24
 **Scope**: selección de feature en `SectionPage`, propagación a preview/export y LOD
 **Branch**: `fix/section-feature-id` (desde `main`)
@@ -346,4 +346,4 @@ Implementado en `fix/section-feature-id`:
   **GOD_OBJECT 19**, **issues 36**, quality **56.4** (MI, diagnóstico).
 - `Invert line` queda para una feature futura.
 
-Pendiente: commit, gates finales y merge a `main`.
+Mergeado en `main` en `83e86a2c`; `Invert line` queda como feature futura.

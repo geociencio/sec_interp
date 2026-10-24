@@ -32,7 +32,7 @@
   field (`Auto` or any attribute). The id is forwarded to topography/geology/
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
   geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
-  pending merge.
+  merged into `main` at `83e86a2c`.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md` ·
   `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
 
