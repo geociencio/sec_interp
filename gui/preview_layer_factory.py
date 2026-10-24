@@ -2,42 +2,36 @@
 
 from __future__ import annotations
 
-import math
 from typing import TYPE_CHECKING, Any
 
-from qgis.core import (
-    QgsFeature,
-    QgsGeometry,
-    QgsLineSymbol,
-    QgsPointXY,
-    QgsSingleSymbolRenderer,
-    QgsVectorLayer,
-)
+from qgis.core import QgsPointXY, QgsVectorLayer
 from qgis.PyQt.QtGui import QColor
 
-from sec_interp.core.domain import (
-    DrillholeProjection,
-    GeologyData,
-    ProfileData,
-    StructureData,
-)
+from sec_interp.core.domain import GeologyData, ProfileData, StructureData
 from sec_interp.core.domain.entities import InterpretationPolygon
-from sec_interp.core.utils.geometry_utils.optimization import PreviewOptimizer
+from sec_interp.gui.preview_layers.drillholes import (
+    create_drillhole_interval_layer,
+    create_drillhole_trace_layer,
+)
+from sec_interp.gui.preview_layers.geology import create_geol_layer
+from sec_interp.gui.preview_layers.interpretations import create_interp_layer
+from sec_interp.gui.preview_layers.structures import create_struct_layer
+from sec_interp.gui.preview_layers.topography import (
+    create_smoothed_topo_layer,
+    create_topo_fill_layer,
+    create_topo_layer,
+)
 from sec_interp.gui.utils import create_memory_layer as make_memory_layer
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
     from qgis.core import QgsVectorDataProvider
 
-    from sec_interp.gui.renderers.color_manager import ColorManager  # noqa: F401
-    from sec_interp.gui.renderers.drillhole_renderer import (  # noqa: F401
-        DrillholeRenderer,
-    )
-    from sec_interp.gui.renderers.geology_renderer import GeologyRenderer  # noqa: F401
-    from sec_interp.gui.renderers.structure_renderer import (  # noqa: F401
-        StructureRenderer,
-    )
-    from sec_interp.gui.renderers.topo_renderer import TopoRenderer  # noqa: F401
+    from sec_interp.gui.renderers.color_manager import ColorManager
+    from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
+    from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
+    from sec_interp.gui.renderers.structure_renderer import StructureRenderer
+    from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
 logger = get_logger(__name__)
 
@@ -58,20 +52,14 @@ class PreviewLayerFactory:
 
     def __init__(self) -> None:
         """Initialize the layer factory with specialized renderers."""
-        from sec_interp.gui.renderers.color_manager import ColorManager  # noqa: F811
-        from sec_interp.gui.renderers.drillhole_renderer import (  # noqa: F811
-            DrillholeRenderer,
-        )
-        from sec_interp.gui.renderers.geology_renderer import (  # noqa: F811
-            GeologyRenderer,
-        )
+        from sec_interp.gui.renderers.color_manager import ColorManager
+        from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
+        from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
         from sec_interp.gui.renderers.interpretation_renderer import (
             InterpretationRenderer,
         )
-        from sec_interp.gui.renderers.structure_renderer import (  # noqa: F811
-            StructureRenderer,
-        )
-        from sec_interp.gui.renderers.topo_renderer import TopoRenderer  # noqa: F811
+        from sec_interp.gui.renderers.structure_renderer import StructureRenderer
+        from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
         self.color_manager: ColorManager = ColorManager()
         self.topo_renderer: TopoRenderer = TopoRenderer()
@@ -100,17 +88,7 @@ class PreviewLayerFactory:
         name: str,
         fields: str | None = None,
     ) -> tuple[QgsVectorLayer | None, QgsVectorDataProvider | None]:
-        """Create a memory layer with project CRS.
-
-        Args:
-            geometry_type: Geometry type (e.g., "Point", "LineString").
-            name: Display name for the layer.
-            fields: Optional field definition URI string.
-
-        Returns:
-            Tuple of (Layer, DataProvider).
-
-        """
+        """Create a memory layer with project CRS."""
         uri = geometry_type
         if fields:
             uri += f"?{fields}"
@@ -132,52 +110,18 @@ class PreviewLayerFactory:
         single_color: str | None = None,
         line_width: float | None = None,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for topographic profile with polychromatic elevation styling."""
-        MIN_REQUIRED_POINTS = 2
-        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
-            return None
-
-        # Apply LOD decimation
-        if use_adaptive_sampling:
-            render_data = PreviewOptimizer.adaptive_sample(topo_data, max_points=max_points)
-        else:
-            render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
-
-        # Create layer with elevation field for polychromy
-        layer, provider = self.create_memory_layer("LineString", "Topography", "field=elev:double")
-        if not layer:
-            return None
-
-        # Create segments for each pair of points to allow per-segment coloring
-        features = []
-
-        for i in range(len(render_data) - 1):
-            p1 = render_data[i]
-            p2 = render_data[i + 1]
-
-            line_points = self._to_qgs_points(self._apply_exaggeration([p1, p2], vert_exag))
-            line_geom = QgsGeometry.fromPolylineXY(line_points)
-
-            feat = QgsFeature(layer.fields())
-            feat.setGeometry(line_geom)
-            # Use average elevation for the segment color
-            avg_elev = (p1[1] + p2[1]) / 2.0
-            feat.setAttribute("elev", avg_elev)
-            features.append(feat)
-
-        if not features:
-            return None
-
-        provider.addFeatures(features)
-        self.topo_renderer.apply_style(
-            layer,
-            color_mode=color_mode,
-            ramp_name=ramp_name,
-            single_color=single_color,
-            line_width=line_width,
+        """Create a temporary layer for the topographic profile."""
+        return create_topo_layer(
+            self,
+            topo_data,
+            vert_exag,
+            max_points,
+            use_adaptive_sampling,
+            color_mode,
+            ramp_name,
+            single_color,
+            line_width,
         )
-        layer.updateExtents()
-        return layer
 
     def create_smoothed_topo_layer(
         self,
@@ -186,27 +130,8 @@ class PreviewLayerFactory:
         max_points: int = 1000,
         color: str = "#e57373",
     ) -> QgsVectorLayer | None:
-        """Create a smoothed topography overlay line (soft red by default)."""
-        MIN_REQUIRED_POINTS = 2
-        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
-            return None
-
-        render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
-        layer, provider = self.create_memory_layer("LineString", "Smoothed Topography")  # no-i18n
-        if not layer:
-            return None
-
-        points = self._to_qgs_points(self._apply_exaggeration(render_data, vert_exag))
-        geometry = QgsGeometry.fromPolylineXY(points)
-        feature = QgsFeature(layer.fields())
-        feature.setGeometry(geometry)
-        provider.addFeatures([feature])
-
-        symbol = QgsLineSymbol.createSimple({"width": "1.2", "capstyle": "round"})
-        symbol.setColor(QColor(color))
-        layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        layer.updateExtents()
-        return layer
+        """Create a smoothed topography overlay line."""
+        return create_smoothed_topo_layer(self, topo_data, vert_exag, max_points, color)
 
     def create_topo_fill_layer(
         self,
@@ -215,84 +140,17 @@ class PreviewLayerFactory:
         max_points: int = 1000,
         base_elevation: float | None = None,
     ) -> QgsVectorLayer | None:
-        """Create a solid 'curtain' fill layer under the topography for depth."""
-        MIN_REQUIRED_POINTS = 2
-        if not topo_data or len(topo_data) < MIN_REQUIRED_POINTS:
-            return None
-
-        render_data = PreviewOptimizer.decimate(topo_data, max_points=max_points)
-
-        from qgis.PyQt.QtCore import QCoreApplication
-
-        layer, provider = self.create_memory_layer(
-            "Polygon",
-            QCoreApplication.translate("PreviewLayerFactory", "Topography Fill"),
-        )
-        if not layer:
-            return None
-
-        # Calculate base line (bottom of the section)
-        elevs = [p[1] for p in topo_data]
-        if base_elevation is None:
-            base_elevation = min(elevs) - (max(elevs) - min(elevs)) * 0.2
-
-        base_y = base_elevation * vert_exag
-
-        # Construct polygon points
-        poly_points = []
-        # Top edge (the profile)
-        for d, e in render_data:
-            poly_points.append(QgsPointXY(d, e * vert_exag))
-
-        # Bottom edge (closing the curtain)
-        poly_points.append(QgsPointXY(render_data[-1][0], base_y))
-        poly_points.append(QgsPointXY(render_data[0][0], base_y))
-        poly_points.append(QgsPointXY(render_data[0][0], render_data[0][1] * vert_exag))
-
-        geom = QgsGeometry.fromPolygonXY([poly_points])
-        feat = QgsFeature()
-        feat.setGeometry(geom)
-        provider.addFeatures(
-            [feat]
-        )  # Corrected from 'features' to '[feat]' as 'features' is not defined here.
-        self.struct_renderer.apply_style(
-            layer
-        )  # Simple fill style could be here too, but for now reuse
-        layer.updateExtents()
-        return layer
+        """Create a solid curtain fill under the topography."""
+        return create_topo_fill_layer(self, topo_data, vert_exag, max_points, base_elevation)
 
     def create_geol_layer(
-        self, geol_data: GeologyData, vert_exag: float = 1.0, max_points: int = 1000
+        self,
+        geol_data: GeologyData,
+        vert_exag: float = 1.0,
+        max_points: int = 1000,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for geological profile."""
-        if not geol_data:
-            return None
-
-        layer, provider = self.create_memory_layer("LineString", "Geology", "field=unit:string")
-        if not layer:
-            return None
-
-        unique_units = {s.unit_name for s in geol_data}
-        self.color_manager.register_units(unique_units)
-        features = []
-        MIN_REQUIRED_POINTS = 2
-        for segment in geol_data:
-            if not segment.points or len(segment.points) < MIN_REQUIRED_POINTS:
-                continue
-
-            render_points = PreviewOptimizer.decimate(segment.points, max_points=max_points)
-            line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
-            line_geom = QgsGeometry.fromPolylineXY(line_points)
-
-            feat = QgsFeature(layer.fields())
-            feat.setGeometry(line_geom)
-            feat.setAttribute("unit", segment.unit_name)
-            features.append(feat)
-
-        provider.addFeatures(features)
-        self.geol_renderer.apply_style(layer, unique_units=unique_units)
-        layer.updateExtents()
-        return layer
+        """Create a temporary layer for the geological profile."""
+        return create_geol_layer(self, geol_data, vert_exag, max_points)
 
     def create_struct_layer(
         self,
@@ -303,49 +161,16 @@ class PreviewLayerFactory:
         color: str | None = None,
         width: float | None = None,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for structural dips."""
-        if not struct_data:
-            return None
-
-        layer, provider = self.create_memory_layer("LineString", "Structures")
-        if not layer:
-            return None
-
-        if dip_line_length is not None and dip_line_length > 0:
-            line_length = dip_line_length
-        else:
-            if reference_data:
-                elevs = [e for _, e in reference_data]
-                e_range = max(elevs) - min(elevs)
-            else:
-                e_range = 100
-            line_length = e_range * 0.1
-
-        features = []
-        for m in struct_data:
-            elev = m.elevation
-            dist = m.distance
-            app_dip = m.apparent_dip
-
-            rad_dip = math.radians(abs(app_dip))
-            dx = line_length * math.cos(rad_dip)
-            dy = line_length * math.sin(rad_dip)
-
-            if app_dip < 0:
-                dx = -dx
-
-            points = [(dist, elev), (dist + dx, elev - dy)]
-            line_points = self._to_qgs_points(self._apply_exaggeration(points, vert_exag))
-
-            line_geom = QgsGeometry.fromPolylineXY(line_points)
-            feat = QgsFeature()
-            feat.setGeometry(line_geom)
-            features.append(feat)
-
-        provider.addFeatures(features)
-        self.struct_renderer.apply_style(layer, color=color, width=width)
-        layer.updateExtents()
-        return layer
+        """Create a temporary layer for structural dips."""
+        return create_struct_layer(
+            self,
+            struct_data,
+            reference_data,
+            vert_exag,
+            dip_line_length,
+            color,
+            width,
+        )
 
     def create_drillhole_trace_layer(
         self,
@@ -355,133 +180,16 @@ class PreviewLayerFactory:
         width: float | None = None,
         labels: bool = True,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for drillhole traces."""
-        logger.debug(
-            f"create_drillhole_trace_layer called with {len(drillhole_data) if drillhole_data else 0} holes"
-        )
-        if not drillhole_data:
-            logger.warning("No drillhole data provided for trace layer")
-            return None
-
-        from qgis.PyQt.QtCore import QCoreApplication
-
-        layer, provider = self.create_memory_layer(
-            "LineString",
-            QCoreApplication.translate("PreviewLayerFactory", "Drillhole Traces"),
-            "field=hole_id:string",
-        )
-        if not layer:
-            return None
-
-        features = []
-        for hole_data in drillhole_data:
-            hole_id, trace_points = self._extract_trace_data(hole_data)
-            feat = self._create_trace_feature(hole_id, trace_points, layer.fields(), vert_exag)
-            if feat:
-                features.append(feat)
-
-        logger.info(f"Adding {len(features)} drillhole trace features to layer")
-
-        provider.addFeatures(features)
-        self.drill_renderer.apply_style(
-            layer, role="trace", color=color, width=width, labels=labels
-        )
-        layer.updateExtents()
-        return layer
-
-    def _extract_trace_data(self, hole_data: Any) -> tuple[Any, Any]:
-        """Extract hole_id and trace_points from hole_data."""
-        if isinstance(hole_data, DrillholeProjection):
-            return hole_data.hole_id, hole_data.points_3d
-        return hole_data[0], hole_data[1]
-
-    def _create_trace_feature(
-        self, hole_id: Any, trace_points: Any, fields: Any, vert_exag: float
-    ) -> QgsFeature | None:
-        """Create a single trace feature if enough points exist."""
-        MIN_TRACE_POINTS = 2
-        if not trace_points or len(trace_points) < MIN_TRACE_POINTS:
-            return None
-
-        render_points = []
-        for p in trace_points:
-            dist = getattr(p, "dist_along", p[0] if isinstance(p, (list, tuple)) else 0.0)
-            z = getattr(p, "z", p[1] if isinstance(p, (list, tuple)) else 0.0)
-            render_points.append((dist, z))
-
-        line_points = self._to_qgs_points(self._apply_exaggeration(render_points, vert_exag))
-        line_geom = QgsGeometry.fromPolylineXY(line_points)
-
-        feat = QgsFeature(fields)
-        feat.setGeometry(line_geom)
-        feat.setAttribute("hole_id", hole_id)
-        return feat
+        """Create a temporary layer for drillhole traces."""
+        return create_drillhole_trace_layer(self, drillhole_data, vert_exag, color, width, labels)
 
     def create_drillhole_interval_layer(
-        self, drillhole_data: list, vert_exag: float = 1.0
+        self,
+        drillhole_data: list,
+        vert_exag: float = 1.0,
     ) -> QgsVectorLayer | None:
-        """Create temporary layer for drillhole intervals."""
-        if not drillhole_data:
-            return None
-
-        all_segments = self._collect_all_segments(drillhole_data)
-        if not all_segments:
-            return None
-
-        from qgis.PyQt.QtCore import QCoreApplication
-
-        layer, provider = self.create_memory_layer(
-            "LineString",
-            QCoreApplication.translate("PreviewLayerFactory", "Drillhole Intervals"),
-            "field=unit:string",
-        )
-        if not layer:
-            return None
-
-        unique_units = set()
-        features = self._create_interval_features(
-            all_segments, layer.fields(), vert_exag, unique_units
-        )
-
-        provider.addFeatures(features)
-        self.color_manager.register_units(unique_units, source="drillholes")
-        self.drill_renderer.apply_style(layer, role="interval", unique_units=unique_units)
-        layer.updateExtents()
-        return layer
-
-    def _collect_all_segments(self, drillhole_data: list) -> list:
-        """Collect all segments from a list of drillhole_data items."""
-        all_segments = []
-        for hole_data in drillhole_data:
-            if isinstance(hole_data, DrillholeProjection):
-                segments = hole_data.segments
-            else:
-                MIN_HOLE_DATA_FOR_SEGMENTS = 3
-                segments = hole_data[-1] if len(hole_data) >= MIN_HOLE_DATA_FOR_SEGMENTS else []
-
-            if segments and isinstance(segments, list):
-                all_segments.extend(segments)
-        return all_segments
-
-    def _create_interval_features(
-        self, all_segments: list, fields: Any, vert_exag: float, unique_units: set
-    ) -> list[QgsFeature]:
-        """Create QgsFeature objects for valid segments."""
-        features = []
-        MIN_SEGMENT_POINTS = 2
-        for segment in all_segments:
-            if not segment.points or len(segment.points) < MIN_SEGMENT_POINTS:
-                continue
-
-            unique_units.add(segment.unit_name)
-            line_points = self._to_qgs_points(self._apply_exaggeration(segment.points, vert_exag))
-            line_geom = QgsGeometry.fromPolylineXY(line_points)
-
-            feat = QgsFeature(fields)
-            feat.setGeometry(line_geom)
-            feat.setAttribute("unit", segment.unit_name)
-            features.append(feat)
-        return features
+        """Create a temporary layer for drillhole intervals."""
+        return create_drillhole_interval_layer(self, drillhole_data, vert_exag)
 
     def create_interp_layer(
         self,
@@ -490,45 +198,5 @@ class PreviewLayerFactory:
         default_color: str | None = None,
         hidden_ids: set[str] | None = None,
     ) -> QgsVectorLayer | None:
-        """Create a memory layer for interpretation polygons (hidden ones skipped)."""
-        if not interp_data:
-            return None
-        hidden = {str(i) for i in (hidden_ids or set())}
-        visible = [i for i in interp_data if str(getattr(i, "id", "")) not in hidden]
-        if not visible:
-            return None
-        interp_data = visible
-
-        layer, provider = self.create_memory_layer(
-            "Polygon", "Interpretations", "field=id:string&field=name:string"
-        )
-        if not layer:
-            return None
-
-        features = []
-        MIN_POLYGON_POINTS = 3
-        for interp in interp_data:
-            if not interp.vertices_2d or len(interp.vertices_2d) < MIN_POLYGON_POINTS:
-                continue
-
-            points = [QgsPointXY(x, y * vert_exag) for x, y in interp.vertices_2d]
-            # Polygon must be closed in QGIS Geometry
-            if points[0] != points[-1]:
-                points.append(points[0])
-
-            geom = QgsGeometry.fromPolygonXY([points])
-            feat = QgsFeature(layer.fields())
-            feat.setGeometry(geom)
-            feat.setAttribute("id", interp.id)
-            feat.setAttribute("name", interp.name)
-            features.append(feat)
-
-        if not features:
-            return None
-
-        provider.addFeatures(features)
-        self.interp_renderer.apply_style(
-            layer, interp_data=interp_data, default_color=default_color
-        )
-        layer.updateExtents()
-        return layer
+        """Create a memory layer for interpretation polygons."""
+        return create_interp_layer(self, interp_data, vert_exag, default_color, hidden_ids)
