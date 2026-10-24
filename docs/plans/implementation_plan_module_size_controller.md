@@ -1,6 +1,7 @@
 # Implementation Plan — Refactor `core/controller.py` below 300 lines
 
 **Status**: PROPUESTO — pendiente de aprobación del usuario
+**Branch**: `refactor/module-size-controller` (desde `main` en `ed78eef8`)
 **Created**: 2026-10-23
 **Scope**: `core/controller.py` (465 líneas, 22 atributos de instancia)
 **Related**: `docs/plans/Technical_Specification_module_size_gate.md`,
