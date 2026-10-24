@@ -9,15 +9,19 @@
   `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
   `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
   the deprecated `qa-docker` alias.
-- **Tests**: 778 OK (827 static). `ruff`, `format`, `mypy`, `check_docs`, `forge validate`
-  (17 skills / 18 workflows), `sync_metrics --validate`, `i18n-check` and release YAML pass.
-- **Reference**: `docs/maintenance/session_2026-10-19_reliability_hardening.md`.
+- **Tests**: **807 OK** (856 static). `ruff`, `format`, `mypy`, `check_docs`,
+  `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
+  `i18n-check` and release YAML pass.
+- **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
+  and four processors live in `core/services/profile/`. Branch
+  `refactor/module-size-controller` (local, not merged yet).
+- **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending
 
-1. **`module_size_gate`** — 5 modules > 400 lines: `gui/adapters/geometry.py` (598),
+1. **`module_size_gate`** — 4 modules > 400 lines: `gui/adapters/geometry.py` (598),
    `gui/preview_layer_factory.py` (535), `exporters/interpretation_3d_exporter.py` (472),
-   `core/controller.py` (466), `gui/preview_renderer.py` (439).
+   `gui/preview_renderer.py` (439).
 2. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
 3. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.

@@ -1,3 +1,15 @@
+## [2026-10-24] Session: Controller Module-Size Refactor
+- **Achievement**: reduced `core/controller.py` from **465 to 295 lines** without changing the public API, cache semantics or translations. The module-size gate now lists 4 modules instead of 5; `ProfileController` keeps thin translation wrappers.
+- **Changes**:
+    - **Fase 0** (`e09693f1`): 12 characterization tests pin messages, cache hits, `None`/`[]` returns, service-missing messages and orchestration order.
+    - **Fase 1** (`54998073`): cache-key builders moved to `core/services/profile/cache.py`; 7 key tests.
+    - **Fase 2** (`6ba7e0ba`): drillhole and structure processors extracted to `profile/drillholes.py` and `profile/structures.py`; wrappers preserve translated messages.
+    - **Fase 3** (`938b01b7`): topography/geology processors and `profile/pipeline.py` extracted; internal exception strings tagged `# no-i18n` (0 `MISSING_I18N`).
+    - **Fase 4**: 10 direct processor/pipeline tests; metrics, task board and handoff updated.
+- **Quality**: **807 tests OK** (856 static) · `module_size_gate` 5 → 4 modules · CC PASS · i18n PASS · quality **56.0** (was 55.7) · `mypy` 97 files.
+- **Maintenance**: [implementation_plan_module_size_controller.md](plans/implementation_plan_module_size_controller.md).
+- **Follow-up**: `GOD_OBJECT` remains deferred (21 attrs); next is one of the 4 remaining >400 modules (`gui/adapters/geometry.py` first).
+
 ## [2026-10-23] Milestone: v3.11.0 Approved in the QGIS Plugin Repository
 - **Achievement**: the QGIS plugin repository marked **v3.11.0** green/approved; it is now the public version (the listing previously served 3.10.0).
 - **Docs**: README version badge corrected from 3.9.1 to **3.11.0** and linked to the plugin page; `task.md`/`next_steps.md` portal item closed.

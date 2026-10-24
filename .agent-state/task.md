@@ -11,12 +11,14 @@
 
 ## 📌 Pendientes del proyecto
 
-- [ ] **`module_size_gate`** — 5 módulos > 400 líneas (detalle en `.agent-state/memory/agent_metrics.json`).
+- [ ] **`module_size_gate`** — 4 módulos > 400 líneas restantes (`core/controller.py` resuelto: 465 → 295).
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).
 - [ ] **Interop §9** — empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
 - [ ] **Opcional** — borrar la rama `backup/main-pre-v3.11.0` cuando se valide `main`.
 
-## ✅ Cerrado recientemente (2026-10-18/23)
+## ✅ Cerrado recientemente (2026-10-18/24)
+
+- [x] **Refactor `core/controller.py`** — 465 → **295 líneas**; caché y procesadores movidos a `core/services/profile/`; 21 tests nuevos; suite **807 OK** (856 static); module-size gate 5 → 4 módulos. Rama local `refactor/module-size-controller`.
 
 - [x] **Portal QGIS** — v3.11.0 aprobada/en verde en el repositorio de plugins (2026-10-23); el badge de versión del README se actualizó de 3.9.1 a 3.11.0 y enlaza a la ficha.
 

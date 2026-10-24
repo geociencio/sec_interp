@@ -1,9 +1,9 @@
 # Implementation Plan — Refactor `core/controller.py` below 300 lines
 
-**Status**: PROPUESTO — pendiente de aprobación del usuario
+**Status**: ✅ IMPLEMENTADO 2026-10-24 — fases 0–3 completadas
 **Branch**: `refactor/module-size-controller` (desde `main` en `ed78eef8`)
 **Created**: 2026-10-23
-**Scope**: `core/controller.py` (465 líneas, 22 atributos de instancia)
+**Scope**: `core/controller.py` (465 → **295 líneas**)
 **Related**: `docs/plans/Technical_Specification_module_size_gate.md`,
 `core/controller.py`, `core/data_cache.py`, `tests/core/test_controller_*.py`
 
@@ -28,7 +28,26 @@ cambiar la API pública, los mensajes ni la semántica de caché.
 
 ---
 
-## 2. Ground truth
+## 1.1 Resultado (2026-10-24)
+
+| Métrica | Antes | Después |
+|---|---:|---:|
+| `core/controller.py` | 465 | **295** |
+| Módulos >400 | 5 | **4** (controller fuera) |
+| Tests | 778 | **807** (856 static) |
+| Quality score | 55.7 | **56.0** |
+| CC gate | PASS | **PASS** |
+| i18n gate | PASS | **PASS** (0 `MISSING_I18N`) |
+| `ProfileController` attrs | 22 | **21** (GOD_OBJECT diferido) |
+
+Nuevos módulos: `core/services/profile/{cache,errors,topography,geology,structures,drillholes,pipeline}.py`,
+todos <105 líneas. Commits: `e09693f1` (Fase 0), `54998073` (Fase 1), `6ba7e0ba`
+(Fase 2), `938b01b7` (Fase 3). El módulo de tests de procesadores se añadió en
+la Fase 4 (`tests/core/test_profile_processors.py`).
+
+---
+
+## 2. Ground truth (antes de la implementación)
 
 | Hecho | Valor actual |
 |---|---|
@@ -289,5 +308,5 @@ Disparador futuro (sesión aparte):
 
 ---
 
-**Aprobación requerida**: confirmar alcance (fases 0–3) y objetivo <300 antes de
-tocar código. La implementación empezará por la Fase 0 (tests de caracterización).
+**Estado**: aprobado y ejecutado (fases 0–3). La Fase 4 cierra métricas y
+documentación; no quedan cambios de código pendientes en este plan.
