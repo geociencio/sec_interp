@@ -13,8 +13,8 @@
   `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
   `i18n-check` and release YAML pass.
 - **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
-  and four processors live in `core/services/profile/`. Branch
-  `refactor/module-size-controller` (local, not merged yet).
+  and four processors live in `core/services/profile/`. Merged into `main` at `434421db`
+  (fast-forward); the local branch is kept for reference.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending

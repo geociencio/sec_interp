@@ -1,7 +1,7 @@
 # Implementation Plan — Refactor `core/controller.py` below 300 lines
 
 **Status**: ✅ IMPLEMENTADO 2026-10-24 — fases 0–3 completadas
-**Branch**: `refactor/module-size-controller` (desde `main` en `ed78eef8`)
+**Branch**: `refactor/module-size-controller` — merged into `main` (fast-forward) at `434421db`
 **Created**: 2026-10-23
 **Scope**: `core/controller.py` (465 → **295 líneas**)
 **Related**: `docs/plans/Technical_Specification_module_size_gate.md`,
