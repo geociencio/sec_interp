@@ -40,7 +40,7 @@
 ## 🧹 Deuda no bloqueante
 
 - 7 archivos de `core/` en la allowlist de QGIS: `config.py`, `data_cache.py`, `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`, `utils/i18n.py`, `utils/io.py`.
-- `ProfileController` `GOD_OBJECT` (22 atributos, `core/controller.py:30`) — **diferido** tras el refactor de tamaño; agrupar lazy services en una sesión aparte.
+- `ProfileController` `GOD_OBJECT` (21 atributos, `core/controller.py:37`) — **diferido** tras el refactor de tamaño; agrupar lazy services en una sesión aparte.
 - Traducciones de documentación: `USER_GUIDE` fr (28 %) / de (18 %).
 
 ## 🏁 Cerrado
@@ -48,4 +48,4 @@
 - **Goal 1.1** — symbology/legend styling (v3.11.0).
 - **Divergencia `legend_widget.py`** — resuelta por el merge de v3.11.0.
 - **Adaptive VE (Goal 1.2)** — completo.
-- **Goal 2 (tech debt)** — analyzer 0 issues en su momento; el estado actual es 37 hallazgos conocidos.
+- **Goal 2 (tech debt)** — analyzer 0 issues en su momento; el estado actual es 36 hallazgos conocidos.

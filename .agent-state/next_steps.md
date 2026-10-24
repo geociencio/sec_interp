@@ -49,10 +49,10 @@ sampled section yet. Fix it before claiming multi-line support.
 - **Core QGIS allowlist** (7 files): `config.py`, `data_cache.py`,
   `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`,
   `utils/i18n.py`, `utils/io.py`.
-- **Analyzer**: 37 known issues (20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
+- **Analyzer**: 36 known issues (19 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
   4 `NON_PYTHONIC_LOOP`, 2 `POTENTIAL_MISSING_SLOT`, 1 `SPAGHETTI_CODE`,
   1 `UNPRECISE_LAYER`).
-- **`ProfileController` GOD_OBJECT** (22 attributes, `core/controller.py:30`) —
+- **`ProfileController` GOD_OBJECT** (21 attributes, `core/controller.py:37`) —
   deferred after the module-size refactor; group lazy services into
   `ControllerServices` and keep compatibility properties.
 - **Docs i18n (optional)**: `USER_GUIDE` fr (28 %) / de (18 %).
@@ -64,7 +64,7 @@ sampled section yet. Fix it before claiming multi-line support.
 
 1. Run `/start-session` (refreshes `AI_CONTEXT.md` and reads this file).
 2. Choose one:
-   - `module_size_gate` refactor (before the next release), or
-   - interop §9 **B1** (new feature), or
-   - the `section_feature_id` multi-line fix.
+   - interop §9 **B1** (new feature; recommended), or
+   - the `section_feature_id` multi-line fix, or
+   - the deferred `ProfileController` `GOD_OBJECT` refactor.
 3. Before closing: `/close-session` and confirm the release gate is green.
