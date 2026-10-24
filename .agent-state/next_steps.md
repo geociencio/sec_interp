@@ -38,6 +38,9 @@ sampled section yet. Fix it before claiming multi-line support.
 - **Analyzer**: 37 known issues (20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
   4 `NON_PYTHONIC_LOOP`, 2 `POTENTIAL_MISSING_SLOT`, 1 `SPAGHETTI_CODE`,
   1 `UNPRECISE_LAYER`).
+- **`ProfileController` GOD_OBJECT** (22 attributes, `core/controller.py:30`) —
+  deferred after the module-size refactor; group lazy services into
+  `ControllerServices` and keep compatibility properties.
 - **Docs i18n (optional)**: `USER_GUIDE` fr (28 %) / de (18 %).
 - **Framework pytest**: `test_workflow_graph_has_no_broken_refs` assumes only the three
   canonical agents; SecInterp's `qgis_driver` is valid via `opencode.json`. Deselect that

@@ -22,8 +22,8 @@ orquestación. Objetivo: **<300 líneas** (margen ~100 bajo el gate de 400), sin
 cambiar la API pública, los mensajes ni la semántica de caché.
 
 **No objetivos**: cambiar el comportamiento de preview/export, alterar
-`PreviewParams`, reducir el número de atributos (`GOD_OBJECT`) en esta iteración,
-o refactorizar los otros 4 módulos >400.
+`PreviewParams`, reducir el número de atributos (`GOD_OBJECT`) en esta iteración
+(diferido explícitamente, ver §9), o refactorizar los otros 4 módulos >400.
 
 ---
 
@@ -258,6 +258,33 @@ Cada fase es un commit independiente. Si una fase rompe tests o i18n:
 1. `git revert <commit>` de esa fase.
 2. Mantener las fases anteriores (caché y handlers ya extraídos).
 3. Reabrir el plan con el test/riesgo concreto antes de reintentar.
+
+---
+
+## 9. Deuda diferida — `GOD_OBJECT` de `ProfileController`
+
+El analyzer marca:
+
+```
+core/controller.py:30  [GOD_OBJECT]  LOW
+Class 'ProfileController' holds 22 instance attributes (> 15)
+```
+
+**Decisión (usuario, 2026-10-23)**: no abordarlo en esta refactorización; queda
+como deuda posterior. El plan de tamaño de módulo **no** promete eliminar este
+issue: tras las fases 1–3 el controlador bajará de líneas, pero conservará los
+mismos atributos de dependencia.
+
+Disparador futuro (sesión aparte):
+
+- Agrupar los lazy services (`collar_processor`, `survey_processor`,
+  `interval_processor`, `trajectory_engine`, `geology_service`,
+  `structure_service`, `drillhole_service`) en un `ControllerServices` o
+  dataclass interno.
+- Exponer propiedades de compatibilidad para los tests/DI que hoy acceden a
+  `controller.collar_processor`, etc.
+- Criterio de aceptación futuro: `ProfileController` ≤15 atributos, sin romper
+  `test_controller_di.py` ni el contrato de `generate_profile_data`.
 
 ---
 

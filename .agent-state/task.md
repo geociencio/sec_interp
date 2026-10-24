@@ -34,6 +34,7 @@
 ## 🧹 Deuda no bloqueante
 
 - 7 archivos de `core/` en la allowlist de QGIS: `config.py`, `data_cache.py`, `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`, `utils/i18n.py`, `utils/io.py`.
+- `ProfileController` `GOD_OBJECT` (22 atributos, `core/controller.py:30`) — **diferido** tras el refactor de tamaño; agrupar lazy services en una sesión aparte.
 - Traducciones de documentación: `USER_GUIDE` fr (28 %) / de (18 %).
 
 ## 🏁 Cerrado
