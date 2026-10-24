@@ -25,8 +25,7 @@
   (67–178 lines). Merged into `main` at `91639cc3`.
 - **Preview renderer**: `gui/preview_renderer.py` is now a **335-line façade**; layer
   collection and cleanup live in `preview_renderer_layers.py` (123) and
-  `preview_renderer_cleanup.py` (68). Branch `refactor/module-size-preview-renderer`
-  (local, not merged yet).
+  `preview_renderer_cleanup.py` (68). Merged into `main` at `2e05e4f8`.
 - **`module_size_gate`: PASS** — 0 modules >400 after all five refactors.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
