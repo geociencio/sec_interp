@@ -19,6 +19,11 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 ```yaml
 lessons:
   - date: '2026-10-24'
+    category: ARCHITECTURE
+    topic: cache keys do not prove a parameter reaches the extractor
+    lesson: 'section_feature_id was in PreviewParams, the hash and every component cache key, but nine preview/export callers omitted it, so the first feature was always sampled.'
+    action: After adding a selector input, pass it through every extraction path and assert the extractor call kwargs in tests; cache-key changes alone do not prove behavior.
+  - date: '2026-10-24'
     category: TESTING
     topic: module-size refactors break tests that patch private methods unless wrappers stay
     lesson: 'Moving renderer/exporter logic to helper modules changed the patch targets; keeping thin private wrappers on the original class preserved the existing tests and integration hooks without rewriting them.'

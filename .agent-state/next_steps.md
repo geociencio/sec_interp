@@ -33,11 +33,19 @@
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
   geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
   merged into `main` at `83e86a2c`.
-- **Reference**: `docs/plans/implementation_plan_module_size_controller.md` ·
+- **QGIS 4 manual validation (2026-10-24)**: plugin deployed to
+  `~/.local/share/QGIS/QGIS4/profiles/default/python/plugins/sec_interp` with
+  `uv run qgis-manage deploy --no-compile --qgis-version 4`; backup
+  `sec_interp.bak.20261024153917`; manual tests were in progress at close.
+- **Reference**: `docs/plans/implementation_plan_section_feature_id.md` ·
+  `docs/maintenance/session_2026-10-24_section_feature_selection.md` ·
+  `docs/plans/implementation_plan_module_size_controller.md` ·
   `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
 
 ## 📌 Pending
 
+0. **Manual QGIS 4 validation** — finish the checklist for the section selector; report
+   any finding before pushing.
 1. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
 2. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.

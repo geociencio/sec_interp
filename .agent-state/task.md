@@ -11,6 +11,7 @@
 
 ## 📌 Pendientes del proyecto
 
+- [ ] **Validación manual QGIS 4** — probar el selector de sección desplegado (2 vs 3 puntos, campo de etiqueta, LOD, export, persistencia); recoger hallazgos antes de push.
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).
 - [ ] **Interop §9** — empezar por **B1** (estilos 3D de sondeo) → B3 → B2 → B4 → Fase A.
 - [ ] **Opcional** — borrar la rama `backup/main-pre-v3.11.0` cuando se valide `main`.
