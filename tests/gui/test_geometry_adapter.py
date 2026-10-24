@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from sec_interp.gui.adapters import geometry
+from sec_interp.gui.adapters import geometry, geometry_crs, geometry_sampling
 from tests.base_test import BaseTestCase
 from tests.mocks.qgis_core import (
     MockQgsCoordinateReferenceSystem,
@@ -48,7 +48,7 @@ class TestRasterResolutionInCrs(BaseTestCase):
         raster = self._raster(0.000138, MockQgsCoordinateReferenceSystem("EPSG:4326"))
         target = MockQgsCoordinateReferenceSystem("EPSG:32614")
 
-        with patch.object(geometry, "QgsCoordinateTransform", _ScalingTransform):
+        with patch.object(geometry_crs, "QgsCoordinateTransform", _ScalingTransform):
             result = geometry.raster_resolution_in_crs(raster, target)
 
         self.assertIsNotNone(result)
@@ -100,7 +100,9 @@ class TestSamplePointElevation(BaseTestCase):
         raster = self._raster()
         source = MockQgsCoordinateReferenceSystem("EPSG:32614")
 
-        with patch.object(geometry, "build_sampling_transform", return_value=_ScalingTransform()):
+        with patch.object(
+            geometry_sampling, "build_sampling_transform", return_value=_ScalingTransform()
+        ):
             result = geometry.sample_point_elevation(raster, (1.0, 2.0), source_crs=source)
 
         called = raster.dataProvider().identify.call_args.args[0]
@@ -160,9 +162,7 @@ class TestProfileRasterStatistics(BaseTestCase):
         raster, crs = self._raster()
         line = MockQgsGeometry.fromWkt("LINESTRING(0 0, 2 0)")
 
-        stats = geometry.profile_raster_statistics(
-            line, raster, 1, self._distance_area(crs)
-        )
+        stats = geometry.profile_raster_statistics(line, raster, 1, self._distance_area(crs))
 
         self.assertIsNotNone(stats)
         self.assertEqual(stats.count, 1)
@@ -173,12 +173,30 @@ class TestProfileRasterStatistics(BaseTestCase):
         raster, crs = self._raster(sample=lambda pt, band: (pt.x(), True))
         line = MockQgsGeometry.fromWkt("LINESTRING(0 0, 15 0)")
 
-        stats = geometry.profile_raster_statistics(
-            line, raster, 1, self._distance_area(crs)
-        )
+        stats = geometry.profile_raster_statistics(line, raster, 1, self._distance_area(crs))
 
         self.assertIsNotNone(stats)
         self.assertEqual(stats.count, 4)
         self.assertEqual(stats.minimum, 0.0)
         self.assertEqual(stats.maximum, 15.0)
         self.assertEqual(stats.mean, 7.5)
+
+
+class TestSampleElevationAlongLine(BaseTestCase):
+    """Line sampling uses the CRS-aware interval and samples every vertex."""
+
+    def test_samples_densified_vertices(self):
+        crs = MockQgsCoordinateReferenceSystem("EPSG:32614")
+        raster = MagicMock()
+        raster.crs.return_value = crs
+        raster.rasterUnitsPerPixelX.return_value = 5.0
+        raster.dataProvider.return_value.sample.return_value = (10.0, True)
+        line = MockQgsGeometry.fromWkt("LINESTRING(0 0, 10 0)")
+        da = MagicMock()
+        da.sourceCrs.return_value = crs
+        da.measureLine.side_effect = lambda a, b: abs(b.x() - a.x())
+
+        points = geometry.sample_elevation_along_line(line, raster, 1, da)
+
+        self.assertEqual([point.x() for point in points], [0.0, 5.0, 10.0])
+        self.assertEqual([point.y() for point in points], [10.0, 10.0, 10.0])
