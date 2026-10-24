@@ -13,3 +13,11 @@ class ProfileComponentError(Exception):
 
 class ProfileServiceError(ProfileComponentError):
     """Raised when a component service or extractor is unavailable."""
+
+
+class ProfileInputError(ProfileComponentError):
+    """Raised when required component inputs are missing."""
+
+
+class ProfileDataError(ProfileComponentError):
+    """Raised when a component produces no usable data."""

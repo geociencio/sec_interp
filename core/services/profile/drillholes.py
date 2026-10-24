@@ -43,7 +43,7 @@ def process_drillholes(
         return drillhole_data  # type: ignore[no-any-return]
 
     if not service or not extractor:
-        raise ProfileServiceError("drillhole service unavailable")
+        raise ProfileServiceError("drillhole service unavailable")  # no-i18n
 
     survey_fields = {
         "id": params.survey_id_field,

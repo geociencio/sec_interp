@@ -6,7 +6,6 @@ This module handles the orchestration of various data generation services
 
 from __future__ import annotations
 
-import time
 from typing import Any
 
 from sec_interp.core.config import ConfigService
@@ -18,13 +17,16 @@ from sec_interp.core.domain import (
     StructureMeasurement,
 )
 from sec_interp.core.exceptions import ProcessingError
-from sec_interp.core.services.profile.cache import (
-    geology_cache_key,
-    topography_cache_key,
-)
 from sec_interp.core.services.profile.drillholes import process_drillholes
-from sec_interp.core.services.profile.errors import ProfileServiceError
+from sec_interp.core.services.profile.errors import (
+    ProfileDataError,
+    ProfileInputError,
+    ProfileServiceError,
+)
+from sec_interp.core.services.profile.geology import process_geology
+from sec_interp.core.services.profile.pipeline import build_profile_data
 from sec_interp.core.services.profile.structures import process_structures
+from sec_interp.core.services.profile.topography import process_topography
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
@@ -145,27 +147,13 @@ class ProfileController(TranslatableMixin):
         list[str],
     ]:
         """Unified method to generate all profile data components with granular caching."""
-        params.validate()
-        messages: list[str] = []
-        cache_meta = {
-            "max_points": params.max_points,
-            "canvas_width": params.canvas_width,
-            "timestamp": time.time(),
-        }
-
-        # 1. Topography
-        profile_data = self._process_topography(params, cache_meta, messages)
-
-        # 2. Geology
-        geol_data = self._process_geology(params, cache_meta, messages)
-
-        # 3. Structure
-        struct_data = self._process_structures(params, cache_meta, messages)
-
-        # 4. Drillholes
-        drillhole_data = self._process_drillholes(params, cache_meta, messages)
-
-        return profile_data, geol_data, struct_data, drillhole_data, messages
+        return build_profile_data(
+            params,
+            self._process_topography,
+            self._process_geology,
+            self._process_structures,
+            self._process_drillholes,
+        )
 
     def _process_topography(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
@@ -184,32 +172,26 @@ class ProfileController(TranslatableMixin):
             ProcessingError: If required layers are missing or service fails.
 
         """
-        topo_key = topography_cache_key(params)
-        profile_data = self.data_cache.get("topo", topo_key)
-        if profile_data:
-            logger.debug("Cache hit: Topography")
-        else:
-            line_lyr = params.line_layer
-            raster_lyr = params.raster_layer
-
-            if not line_lyr or not raster_lyr:
-                raise ProcessingError(self.tr("Required layers for topography are missing."))
-
-            if not self.profile_extractor:
-                raise ProcessingError(self.tr("Topography service failed to load."))
-
-            profile_data = self.profile_extractor.extract_profile(
-                line_lyr, raster_lyr, params.band_num
+        try:
+            profile_data = process_topography(
+                params,
+                self.profile_extractor,
+                self.data_cache,
+                cache_meta,
             )
-            if not profile_data:
-                raise ProcessingError(self.tr("No topographic profile data was generated."))
-        self.data_cache.set("topo", topo_key, profile_data, cache_meta)
+        except ProfileInputError:
+            raise ProcessingError(self.tr("Required layers for topography are missing.")) from None
+        except ProfileServiceError:
+            raise ProcessingError(self.tr("Topography service failed to load.")) from None
+        except ProfileDataError:
+            raise ProcessingError(self.tr("No topographic profile data was generated.")) from None
+
         messages.append(
             self.tr("✓ Data processed successfully!\n\nTopography: {0} points").format(
                 len(profile_data)
             )
         )
-        return profile_data  # type: ignore[no-any-return]
+        return profile_data
 
     def _process_geology(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
@@ -228,39 +210,25 @@ class ProfileController(TranslatableMixin):
         if not params.outcrop_layer:
             return None
 
-        geol_key = geology_cache_key(params)
-        geol_data = self.data_cache.get("geol", geol_key)
+        try:
+            geol_data = process_geology(
+                params,
+                self.geology_extractor,
+                self.geology_service,
+                self.data_cache,
+                cache_meta,
+            )
+        except ProfileInputError:
+            return None
+        except ProfileServiceError:
+            messages.append(self.tr("Geology: Service failed to load"))
+            return None
+
         if geol_data:
-            logger.debug("Cache hit: Geology")
             messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
         else:
-            line_lyr = params.line_layer
-            raster_lyr = params.raster_layer
-            outcrop_lyr = params.outcrop_layer
-
-            if not all([line_lyr, raster_lyr, outcrop_lyr]):
-                return None
-
-            if not self.geology_service or not self.geology_extractor:
-                messages.append(self.tr("Geology: Service failed to load"))
-                return None
-
-            context = self.geology_extractor.extract_context(
-                line_lyr,
-                raster_lyr,
-                outcrop_lyr,
-                params.outcrop_name_field,
-                params.band_num,
-                smoothing_window_m=float(params.smooth_window) if params.smooth else 0.0,
-            )
-            geol_data = self.geology_service.build_segments(context)
-
-            if geol_data:
-                self.data_cache.set("geol", geol_key, geol_data, cache_meta)
-                messages.append(self.tr("Geology: {0} segments").format(len(geol_data)))
-            else:
-                messages.append(self.tr("Geology: No intersections"))
-        return geol_data  # type: ignore[no-any-return]
+            messages.append(self.tr("Geology: No intersections"))
+        return geol_data
 
     def _process_structures(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
