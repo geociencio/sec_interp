@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formulário redefinido para os valores padrão",
     "✓ Generating data for export...": "✓ Gerando dados para exportação...",
     "✓ Preview generated!": "✓ Prévia gerada!",
-    "✓ Saving files...": "✓ Salvando arquivos..."
+    "✓ Saving files...": "✓ Salvando arquivos...",
+    "Feature": "Feição",
+    "Select the section line feature": "Selecionar a feição da linha de seção",
+    "Label field": "Campo de rótulo",
+    "Field used to label each section feature": "Campo usado para rotular cada feição da seção"
 }

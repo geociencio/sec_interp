@@ -47,6 +47,7 @@ from .mocks.qt_mocks import (
     MockQPoint,
     MockQRectF,
     MockQWidget,
+    MockQComboBox,
     MockQLayout,
 )
 from .mocks.qgis_gui import (
@@ -231,7 +232,7 @@ def restore_mocks():
     mock_qtwidgets.QPushButton = MockQWidget
     mock_qtwidgets.QCheckBox = MockQWidget
     mock_qtwidgets.QLineEdit = MockQWidget
-    mock_qtwidgets.QComboBox = MockQWidget
+    mock_qtwidgets.QComboBox = MockQComboBox
     mock_qtwidgets.QProgressBar = MockQWidget
     mock_qtwidgets.QGroupBox = MockQWidget
     mock_qtwidgets.QAbstractItemView = MockQWidget

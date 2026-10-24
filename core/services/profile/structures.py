@@ -52,7 +52,12 @@ def process_structures(
     if not service or not extractor:
         raise ProfileServiceError("structure service unavailable")  # no-i18n
 
-    ctx = extractor.extract_section_and_structures(line_lyr, struct_lyr, params.buffer_dist)
+    ctx = extractor.extract_section_and_structures(
+        line_lyr,
+        struct_lyr,
+        params.buffer_dist,
+        feature_id=params.section_feature_id,
+    )
     if ctx is None:
         return None
 

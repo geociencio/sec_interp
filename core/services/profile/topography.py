@@ -52,7 +52,12 @@ def process_topography(
         if not extractor:
             raise ProfileServiceError("topography service unavailable")  # no-i18n
 
-        profile_data = extractor.extract_profile(line_lyr, raster_lyr, params.band_num)
+        profile_data = extractor.extract_profile(
+            line_lyr,
+            raster_lyr,
+            params.band_num,
+            feature_id=params.section_feature_id,
+        )
         if not profile_data:
             raise ProfileDataError("empty topography profile")  # no-i18n
 

@@ -356,5 +356,9 @@
     "✓ Form reset to default values": "✓ Formulario restablecido a los valores predeterminados",
     "✓ Generating data for export...": "✓ Generando datos para exportar...",
     "✓ Preview generated!": "✓ ¡Vista previa generada!",
-    "✓ Saving files...": "✓ Guardando archivos..."
+    "✓ Saving files...": "✓ Guardando archivos...",
+    "Feature": "Elemento",
+    "Select the section line feature": "Seleccionar el elemento de la línea de sección",
+    "Label field": "Campo de etiqueta",
+    "Field used to label each section feature": "Campo usado para etiquetar cada elemento de la sección"
 }

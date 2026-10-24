@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formulier gereset naar standaardwaarden",
     "✓ Generating data for export...": "✓ Gegevens genereren voor uitvoering...",
     "✓ Preview generated!": "✓ Voorbeeld gegenereerd!",
-    "✓ Saving files...": "✓ Bestanden opslaan..."
+    "✓ Saving files...": "✓ Bestanden opslaan...",
+    "Feature": "Object",
+    "Select the section line feature": "Selecteer het object van de doorsnedelijn",
+    "Label field": "Labelveld",
+    "Field used to label each section feature": "Veld dat wordt gebruikt om elk doorsnedeobject te labelen"
 }

@@ -509,12 +509,12 @@ Tarkista tiedot lokeista.</translation>
     <context>
         <name>GeometryExtraction</name>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="206" />
+            <location filename="../gui/adapters/geometry_lines.py" line="29" />
             <source>Geometry is null or invalid</source>
             <translation>Geometria on tyhjä tai virheellinen</translation>
         </message>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="215" />
+            <location filename="../gui/adapters/geometry_lines.py" line="38" />
             <source>Line geometry has no vertices</source>
             <translation>Viivageometriassa ei ole pisteitä</translation>
         </message>
@@ -811,17 +811,17 @@ Tarkista tiedot lokeista.</translation>
     <context>
         <name>PreviewLayerFactory</name>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="227" />
+            <location filename="../gui/preview_layers/topography.py" line="117" />
             <source>Topography Fill</source>
             <translation>Topografian täyttö</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="368" />
+            <location filename="../gui/preview_layers/drillholes.py" line="33" />
             <source>Drillhole Traces</source>
             <translation>Porareiän jäljet</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="433" />
+            <location filename="../gui/preview_layers/drillholes.py" line="101" />
             <source>Drillhole Intervals</source>
             <translation>Porareikien intervallit</translation>
         </message>
@@ -1136,52 +1136,52 @@ Tarkista tiedot lokeista.</translation>
     <context>
         <name>ProfileController</name>
         <message>
-            <location filename="../core/controller.py" line="221" />
+            <location filename="../core/controller.py" line="183" />
             <source>Required layers for topography are missing.</source>
             <translation>Topografiaa varten vaadittavat tasot puuttuvat.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="230" />
+            <location filename="../core/controller.py" line="187" />
             <source>No topographic profile data was generated.</source>
             <translation>Topografisia profiilitietoja ei luotu.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="295" />
+            <location filename="../core/controller.py" line="228" />
             <source>Geology: {0} segments</source>
             <translation>Geologia: {0} segmenttiä</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="297" />
+            <location filename="../core/controller.py" line="230" />
             <source>Geology: No intersections</source>
             <translation>Geologia: Ei risteyksiä</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="365" />
+            <location filename="../core/controller.py" line="263" />
             <source>Structures: {0} points</source>
             <translation>Rakenteet: {0} pistettä</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="367" />
+            <location filename="../core/controller.py" line="265" />
             <source>Structures: None in {0}m buffer</source>
             <translation>Rakenteet: Ei mitään {0} metrin puskurissa</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="224" />
+            <location filename="../core/controller.py" line="185" />
             <source>Topography service failed to load.</source>
             <translation>Topografiapalvelun lataaminen epäonnistui.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="280" />
+            <location filename="../core/controller.py" line="224" />
             <source>Geology: Service failed to load</source>
             <translation>Geologia: Palvelun lataaminen epäonnistui</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="340" />
+            <location filename="../core/controller.py" line="259" />
             <source>Structures: Service failed to load</source>
             <translation>Rakenteet: Palvelun lataaminen epäonnistui</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="232" />
+            <location filename="../core/controller.py" line="189" />
             <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
@@ -1190,7 +1190,7 @@ Topography: {0} points</source>
 Topografia: {0} pistettä</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="424" />
+            <location filename="../core/controller.py" line="294" />
             <source>Drillholes: Service failed to load</source>
             <translation>Porareiät: Palvelun lataaminen epäonnistui</translation>
         </message>
@@ -1334,94 +1334,122 @@ Topografia: {0} pistettä</translation>
         </message>
     </context>
     <context>
+        <name>SectionFeatureSelector</name>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <source>Feature</source>
+            <translation>Kohde</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <source>Select the section line feature</source>
+            <translation>Valitse leikkausviivan kohde</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <source>Label field</source>
+            <translation>Tunnistekenttä</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <source>Field used to label each section feature</source>
+            <translation>Kenttä, jolla jokainen leikkauskohde merkitään</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <source>Auto</source>
+            <translation>Auto</translation>
+        </message>
+    </context>
+    <context>
         <name>SectionPage</name>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="46" />
+            <location filename="../gui/ui/pages/section_page.py" line="47" />
             <source>Cross Section Line</source>
             <translation>Poikkileikkausviiva</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="57" />
+            <location filename="../gui/ui/pages/section_page.py" line="58" />
             <source>Section Line *</source>
             <translation>Sektio-viiva *</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="70" />
+            <location filename="../gui/ui/pages/section_page.py" line="71" />
             <source>Select the line layer defining the cross-section</source>
             <translation>Valitse poikkileikkauksen määrittävä viivakerros</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="79" />
+            <location filename="../gui/ui/pages/section_page.py" line="80" />
             <source>Buffer Dist. (m)</source>
             <translation>Puskuriväli (m)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="84" />
+            <location filename="../gui/ui/pages/section_page.py" line="85" />
             <source> m</source>
             <translation> m</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="85" />
+            <location filename="../gui/ui/pages/section_page.py" line="86" />
             <source>Distance to include structures around the section line</source>
             <translation>Etäisyys rakenteiden sisällyttämiseksi sektio-viivan ympäriltä</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="224" />
+            <location filename="../gui/ui/pages/section_page.py" line="234" />
             <source>Section line layer is required</source>
             <translation>Sektio-viivataso vaaditaan</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="47" />
+            <location filename="../gui/ui/pages/section_page.py" line="48" />
             <source>Mandatory</source>
             <translation>Pakollinen</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="98" />
+            <location filename="../gui/ui/pages/section_page.py" line="99" />
             <source>DEM Profile</source>
             <translation>DEM-profiili</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="106" />
+            <location filename="../gui/ui/pages/section_page.py" line="107" />
             <source>Min</source>
             <translation>Min</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="108" />
+            <location filename="../gui/ui/pages/section_page.py" line="109" />
             <source>Max</source>
             <translation>Max</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="110" />
+            <location filename="../gui/ui/pages/section_page.py" line="111" />
             <source>Mean</source>
             <translation>Keskiarvo</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="112" />
+            <location filename="../gui/ui/pages/section_page.py" line="113" />
             <source>Samples</source>
             <translation>Näytteet</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="226" />
+            <location filename="../gui/ui/pages/section_page.py" line="236" />
             <source>Section line layer is not valid</source>
             <translation>Leikkausviivan kerros ei ole kelvollinen</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="229" />
+            <location filename="../gui/ui/pages/section_page.py" line="239" />
             <source>Section line must use a projected CRS (metric units)</source>
             <translation>Osion rivillä on käytettävä projisoitua CRS: ää (metrijärjestelmän yksiköt)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="233" />
+            <location filename="../gui/ui/pages/section_page.py" line="243" />
             <source>Section line layer has no readable line geometry</source>
             <translation>Leikkausviivan kerroksessa ei ole luettavaa viivan geometriaa</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="235" />
+            <location filename="../gui/ui/pages/section_page.py" line="245" />
             <source>Section line must have exactly 2 vertices (start and end)</source>
             <translation>Leikkausviivalla on oltava täsmälleen 2 kärkipistettä (alku ja loppu)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="237" />
+            <location filename="../gui/ui/pages/section_page.py" line="247" />
             <source>Section line has zero length</source>
             <translation>Leikkausviivan pituus on nolla</translation>
         </message>

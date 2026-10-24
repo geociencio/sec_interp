@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->857<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->876<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-24<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,8 +14,8 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->345<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->353<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **Core Services** | <!-- CORE_COUNT -->349<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **GUI Components** | <!-- GUI_COUNT -->368<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -50,6 +50,7 @@
 - **tests/core/test_preview_service.py**: 4 tests
 - **tests/core/test_profile_cache.py**: 7 tests
 - **tests/core/test_profile_exporters.py**: 14 tests
+- **tests/core/test_profile_feature_id.py**: 4 tests
 - **tests/core/test_profile_processors.py**: 10 tests
 - **tests/core/test_project_validator.py**: 17 tests
 - **tests/core/test_python_compat.py**: 5 tests
@@ -103,6 +104,8 @@
 - **tests/gui/test_preview_renderer_custom.py**: 2 tests
 - **tests/gui/test_preview_side_panel.py**: 10 tests
 - **tests/gui/test_preview_task_orchestrator.py**: 6 tests
+- **tests/gui/test_section_feature_page.py**: 6 tests
+- **tests/gui/test_section_feature_selector.py**: 9 tests
 - **tests/gui/test_section_page.py**: 13 tests
 - **tests/gui/test_section_resolver.py**: 10 tests
 - **tests/gui/test_settings_page.py**: 4 tests

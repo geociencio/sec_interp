@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Modulo ripristinato ai valori predefiniti",
     "✓ Generating data for export...": "✓ Generando dati per l'esportazione...",
     "✓ Preview generated!": "✓ Anteprima generata!",
-    "✓ Saving files...": "✓ Salvataggio dei file in corso..."
+    "✓ Saving files...": "✓ Salvataggio dei file in corso...",
+    "Feature": "Elemento",
+    "Select the section line feature": "Seleziona l'elemento della linea di sezione",
+    "Label field": "Campo etichetta",
+    "Field used to label each section feature": "Campo usato per etichettare ogni elemento della sezione"
 }

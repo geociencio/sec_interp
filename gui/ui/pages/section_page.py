@@ -26,6 +26,7 @@ from sec_interp.gui.main_dialog_config import DialogDefaults
 from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage, set_combo_layer
+from .section_feature_selector import SectionFeatureSelector
 
 logger = get_logger(__name__)
 
@@ -87,8 +88,8 @@ class SectionPage(BasePage):
         )
         self.group_layout.addWidget(self.buffer_spin, 1, 1)
 
-        # Wired for the future multi-line selector; the first feature is used
-        # while ``None`` (no widget yet).
+        self.feature_selector = SectionFeatureSelector()
+        self.group_layout.addWidget(self.feature_selector, 2, 0, 1, 3)
         self.section_feature_id: int | None = None
 
         self._setup_dem_profile()
@@ -182,6 +183,7 @@ class SectionPage(BasePage):
             "crossline_layer": self.line_combo.currentLayer(),
             "buffer_distance": self.buffer_spin.value(),
             "section_feature_id": self.section_feature_id,
+            "section_feature_label_field": self.feature_selector.label_field(),
         }
 
     def dump(self) -> dict[str, Any]:
@@ -190,6 +192,7 @@ class SectionPage(BasePage):
             "section_layer": self.line_combo.currentLayer(),
             "buffer_dist": self.buffer_spin.value(),
             "section_feature_id": self.section_feature_id,
+            "section_feature_label_field": self.feature_selector.label_field(),
         }
 
     def load(self, data: dict[str, Any]) -> None:
@@ -199,13 +202,20 @@ class SectionPage(BasePage):
         buffer_dist = data.get("buffer_dist")
         if buffer_dist is not None:
             self.buffer_spin.setValue(float(buffer_dist))
-        if "section_feature_id" in data:
-            self.section_feature_id = data.get("section_feature_id")
+        self.feature_selector.set_layer(self.line_combo.currentLayer())
+        saved_field = data.get("section_feature_label_field")
+        if saved_field:
+            self.feature_selector.set_label_field(saved_field)
+        saved_id = data.get("section_feature_id")
+        if saved_id is not None and not self.feature_selector.select_feature(saved_id):
+            self.feature_selector.select_feature(None)
+        self.section_feature_id = self.feature_selector.selected_feature_id()
 
     def reset(self) -> None:
         """Reset section inputs to defaults."""
         self.line_combo.setLayer(None)
         self.buffer_spin.setValue(float(DialogDefaults.BUFFER_DISTANCE))
+        self.feature_selector.set_layer(None)
         self.section_feature_id = None
 
     def validate(self) -> tuple[bool, str]:
@@ -250,20 +260,31 @@ class SectionPage(BasePage):
         """Check if the section line is a valid 2-point line."""
         return self.validate()[0]
 
+    def _on_line_layer_changed(self, _layer: Any = None) -> None:
+        """Repopulate feature choices when the section layer changes."""
+        self.feature_selector.set_layer(self.line_combo.currentLayer())
+        self.section_feature_id = self.feature_selector.selected_feature_id()
+        self.update_dem_stats()
+        self.dataChanged.emit()
+
+    def _on_feature_changed(self) -> None:
+        """Refresh stats and preview when the section feature changes."""
+        self.section_feature_id = self.feature_selector.selected_feature_id()
+        self.update_dem_stats()
+        self.dataChanged.emit()
+
     def connect_signals(self) -> None:
         """Connect internal signals for the section page."""
-        self.line_combo.layerChanged.connect(self.update_dem_stats)
+        self.line_combo.layerChanged.connect(self._on_line_layer_changed)
+        self.feature_selector.featureChanged.connect(self._on_feature_changed)
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         for signal, slot in (
-            (self.line_combo.layerChanged, None),
-            (self.line_combo.layerChanged, self.update_dem_stats),
+            (self.line_combo.layerChanged, self._on_line_layer_changed),
+            (self.feature_selector.featureChanged, self._on_feature_changed),
         ):
             with contextlib.suppress(TypeError, RuntimeError):
-                if slot is None:
-                    signal.disconnect()
-                else:
-                    signal.disconnect(slot)
+                signal.disconnect(slot)
         with contextlib.suppress(TypeError, RuntimeError):
             self.dataChanged.disconnect()

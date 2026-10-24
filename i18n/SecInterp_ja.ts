@@ -510,12 +510,12 @@ Please check the logs for details.</source>
     <context>
         <name>GeometryExtraction</name>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="206" />
+            <location filename="../gui/adapters/geometry_lines.py" line="29" />
             <source>Geometry is null or invalid</source>
             <translation>ジオメトリがNULLまたは無効です</translation>
         </message>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="215" />
+            <location filename="../gui/adapters/geometry_lines.py" line="38" />
             <source>Line geometry has no vertices</source>
             <translation>ラインジオメトリに頂点がありません</translation>
         </message>
@@ -812,17 +812,17 @@ Please check the logs for details.</source>
     <context>
         <name>PreviewLayerFactory</name>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="227" />
+            <location filename="../gui/preview_layers/topography.py" line="117" />
             <source>Topography Fill</source>
             <translation>地形の塗りつぶし</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="368" />
+            <location filename="../gui/preview_layers/drillholes.py" line="33" />
             <source>Drillhole Traces</source>
             <translation>drillhole trace lines</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="433" />
+            <location filename="../gui/preview_layers/drillholes.py" line="101" />
             <source>Drillhole Intervals</source>
             <translation>drillholet intervals</translation>
         </message>
@@ -1137,52 +1137,52 @@ Please check the logs for details.</source>
     <context>
         <name>ProfileController</name>
         <message>
-            <location filename="../core/controller.py" line="295" />
+            <location filename="../core/controller.py" line="228" />
             <source>Geology: {0} segments</source>
             <translation>地質: {0} セグメント</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="297" />
+            <location filename="../core/controller.py" line="230" />
             <source>Geology: No intersections</source>
             <translation>地質: 交差点なし</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="365" />
+            <location filename="../core/controller.py" line="263" />
             <source>Structures: {0} points</source>
             <translation>構造物: {0} ポイント</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="367" />
+            <location filename="../core/controller.py" line="265" />
             <source>Structures: None in {0}m buffer</source>
             <translation>構造: {0}m バッファになし</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="221" />
+            <location filename="../core/controller.py" line="183" />
             <source>Required layers for topography are missing.</source>
             <translation>地形に必要なレイヤーがありません。</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="224" />
+            <location filename="../core/controller.py" line="185" />
             <source>Topography service failed to load.</source>
             <translation>地形サービスのロードに失敗しました。</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="230" />
+            <location filename="../core/controller.py" line="187" />
             <source>No topographic profile data was generated.</source>
             <translation>地形プロファイル データは生成されませんでした。</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="280" />
+            <location filename="../core/controller.py" line="224" />
             <source>Geology: Service failed to load</source>
             <translation>地質: サービスの読み込みに失敗しました</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="340" />
+            <location filename="../core/controller.py" line="259" />
             <source>Structures: Service failed to load</source>
             <translation>構造: サービスのロードに失敗しました</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="232" />
+            <location filename="../core/controller.py" line="189" />
             <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
@@ -1191,7 +1191,7 @@ Topography: {0} points</source>
 地形: {0} ポイント</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="424" />
+            <location filename="../core/controller.py" line="294" />
             <source>Drillholes: Service failed to load</source>
             <translation>Drillholes: Service failed to load</translation>
         </message>
@@ -1335,94 +1335,122 @@ Topography: {0} points</source>
         </message>
     </context>
     <context>
+        <name>SectionFeatureSelector</name>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <source>Feature</source>
+            <translation>フィーチャ</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <source>Select the section line feature</source>
+            <translation>断面線フィーチャを選択</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <source>Label field</source>
+            <translation>ラベルフィールド</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <source>Field used to label each section feature</source>
+            <translation>各断面フィーチャのラベルに使用するフィールド</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <source>Auto</source>
+            <translation>自動</translation>
+        </message>
+    </context>
+    <context>
         <name>SectionPage</name>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="46" />
+            <location filename="../gui/ui/pages/section_page.py" line="47" />
             <source>Cross Section Line</source>
             <translation>断面線</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="57" />
+            <location filename="../gui/ui/pages/section_page.py" line="58" />
             <source>Section Line *</source>
             <translation>断面線 *</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="70" />
+            <location filename="../gui/ui/pages/section_page.py" line="71" />
             <source>Select the line layer defining the cross-section</source>
             <translation>断面を定義するラインレイヤーを選択します</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="79" />
+            <location filename="../gui/ui/pages/section_page.py" line="80" />
             <source>Buffer Dist. (m)</source>
             <translation>Buffer Dist. (メートル)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="84" />
+            <location filename="../gui/ui/pages/section_page.py" line="85" />
             <source> m</source>
             <translation> m</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="85" />
+            <location filename="../gui/ui/pages/section_page.py" line="86" />
             <source>Distance to include structures around the section line</source>
             <translation>断面線周辺の構造を含める距離</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="224" />
+            <location filename="../gui/ui/pages/section_page.py" line="234" />
             <source>Section line layer is required</source>
             <translation>断面線レイヤが必要です</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="47" />
+            <location filename="../gui/ui/pages/section_page.py" line="48" />
             <source>Mandatory</source>
             <translation>必須</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="98" />
+            <location filename="../gui/ui/pages/section_page.py" line="99" />
             <source>DEM Profile</source>
             <translation>DEMプロフィール</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="106" />
+            <location filename="../gui/ui/pages/section_page.py" line="107" />
             <source>Min</source>
             <translation>Min</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="108" />
+            <location filename="../gui/ui/pages/section_page.py" line="109" />
             <source>Max</source>
             <translation>Max</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="110" />
+            <location filename="../gui/ui/pages/section_page.py" line="111" />
             <source>Mean</source>
             <translation>Mean</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="112" />
+            <location filename="../gui/ui/pages/section_page.py" line="113" />
             <source>Samples</source>
             <translation>サンプル</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="226" />
+            <location filename="../gui/ui/pages/section_page.py" line="236" />
             <source>Section line layer is not valid</source>
             <translation>断面線レイヤが有効ではありません</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="229" />
+            <location filename="../gui/ui/pages/section_page.py" line="239" />
             <source>Section line must use a projected CRS (metric units)</source>
             <translation>断面線は投影座標系（メトリック単位）を使用する必要があります</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="233" />
+            <location filename="../gui/ui/pages/section_page.py" line="243" />
             <source>Section line layer has no readable line geometry</source>
             <translation>断面線レイヤに読み取れるラインジオメトリはありません</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="235" />
+            <location filename="../gui/ui/pages/section_page.py" line="245" />
             <source>Section line must have exactly 2 vertices (start and end)</source>
             <translation>断面線は正確に2つの頂点（開始と終了）を持つ必要があります</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="237" />
+            <location filename="../gui/ui/pages/section_page.py" line="247" />
             <source>Section line has zero length</source>
             <translation>断面線の長さが0です</translation>
         </message>

@@ -9,7 +9,7 @@
   `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
   `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
   the deprecated `qa-docker` alias.
-- **Tests**: **808 OK** (857 static). `ruff`, `format`, `mypy`, `check_docs`,
+- **Tests**: **827 OK** (876 static). `ruff`, `format`, `mypy`, `check_docs`,
   `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
   `i18n-check` and release YAML pass.
 - **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
@@ -27,6 +27,12 @@
   collection and cleanup live in `preview_renderer_layers.py` (123) and
   `preview_renderer_cleanup.py` (68). Merged into `main` at `2e05e4f8`.
 - **`module_size_gate`: PASS** — 0 modules >400 after all five refactors.
+- **`section_feature_id` fix (branch `fix/section-feature-id`)**: `SectionPage` now has
+  an `fid — label` selector that lists only 2-vertex lines, with a selectable label
+  field (`Auto` or any attribute). The id is forwarded to topography/geology/
+  structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
+  geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
+  pending merge.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md` ·
   `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
 
@@ -38,11 +44,11 @@
 3. **Optional** — native review of the machine-assisted translations; refresh `help/html`
    to v3.11.0 with `make deploy` (without `--no-compile`).
 
-## ⚠️ Known separate bug
+## ✅ Recently fixed
 
-`section_feature_id` is part of the component cache key but is still **not passed** to
-`extract_profile` / `calculate_lod_interval`; the multi-line selector does not change the
-sampled section yet. Fix it before claiming multi-line support.
+- `section_feature_id` is now passed end-to-end (branch `fix/section-feature-id`); the
+  selector filters 2-vertex lines and exposes `fid — label` + label field. See
+  `docs/plans/implementation_plan_section_feature_id.md`.
 
 ## 🧾 Remaining debt (documented, non-blocking)
 
@@ -65,6 +71,5 @@ sampled section yet. Fix it before claiming multi-line support.
 1. Run `/start-session` (refreshes `AI_CONTEXT.md` and reads this file).
 2. Choose one:
    - interop §9 **B1** (new feature; recommended), or
-   - the `section_feature_id` multi-line fix, or
    - the deferred `ProfileController` `GOD_OBJECT` refactor.
 3. Before closing: `/close-session` and confirm the release gate is green.

@@ -1,9 +1,9 @@
 # Implementation Plan — Fix `section_feature_id` in the sampled section
 
-**Status**: PROPUESTO — pendiente de aprobación
+**Status**: IMPLEMENTADO en `fix/section-feature-id` (pendiente de merge)
 **Created**: 2026-10-24
 **Scope**: selección de feature en `SectionPage`, propagación a preview/export y LOD
-**Branch propuesta**: `fix/section-feature-id` (desde `main`)
+**Branch**: `fix/section-feature-id` (desde `main`)
 
 ---
 
@@ -60,7 +60,7 @@ calcula con la longitud de B; el feature A y B no comparten caché.
 
 ### 2.3 UI
 
-`gui/ui/pages/section_page.py` (269 líneas):
+`gui/ui/pages/section_page.py` (269 líneas antes del fix; 291 con el selector):
 
 - `section_feature_id` se declara en `_setup_ui` (línea 92) pero no hay widget.
 - `get_data`/`dump` lo publican (líneas 184/192).
@@ -326,9 +326,24 @@ Cada fase es un commit atómico; la rama se mergea solo con todos los gates verd
 - Una capa sin features de 2 puntos deja el combo vacío y la validación falla.
 - `feature_id=None` mantiene el comportamiento histórico para llamadas programáticas;
   la UI fija el primer fid válido.
-- 808+ tests OK, `section_page.py` <300 líneas, analyzer PASS.
+- 827 tests OK, `section_page.py` <300 líneas, analyzer PASS (`GOD_OBJECT` 19, issues 36).
 
 ---
 
-**Aprobación requerida**: confirmar el alcance (propagación + selector UI) antes de
-crear la rama y empezar por la Fase 0.
+## 8. Resultado de implementación
+
+Implementado en `fix/section-feature-id`:
+
+- Nuevo `gui/ui/pages/section_feature_selector.py` (245 líneas): combo `fid — label`,
+  filtro de 2 vértices, selector `Auto`/campo y persistencia.
+- `SectionPage` (291 líneas) integra el selector, repuebla al cambiar de capa y
+  persiste `section_feature_id` + `section_feature_label_field`.
+- Los 9 callers de §2.2 propagan `feature_id` (handlers de perfil, `PreviewService`,
+  `PreviewTaskOrchestrator`).
+- Tests nuevos: selector (9), página (6), procesadores (4) y aserciones en
+  preview/async; suite **827 OK / 876 estáticos**.
+- Analyzer: **CC PASS**, **i18n PASS**, **module size PASS**, **security 100**,
+  **GOD_OBJECT 19**, **issues 36**, quality **56.4** (MI, diagnóstico).
+- `Invert line` queda para una feature futura.
+
+Pendiente: commit, gates finales y merge a `main`.

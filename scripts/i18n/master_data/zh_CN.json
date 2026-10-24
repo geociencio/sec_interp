@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ 表单已重置为默认值",
     "✓ Generating data for export...": "✓ Generating data for export...",
     "✓ Preview generated!": "✓ 预览已生成！",
-    "✓ Saving files...": "✓ 正在保存文件..."
+    "✓ Saving files...": "✓ 正在保存文件...",
+    "Feature": "要素",
+    "Select the section line feature": "选择剖面线要素",
+    "Label field": "标注字段",
+    "Field used to label each section feature": "用于标注每个剖面要素的字段"
 }

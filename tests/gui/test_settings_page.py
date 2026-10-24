@@ -99,7 +99,7 @@ class TestSettingsPage(BaseTestCase):
             "drill_3d_original": True,
             "drill_3d_projected": False,
             "drill_3d_traces": True,
-            "export_format": "",  # MockComboBox has empty text by default
+            "export_format": "Shapefile",  # First item is selected by default
             "export_naming": "{filename}_{profile}",
         }
         for key, value in expected.items():

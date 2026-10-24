@@ -73,6 +73,7 @@ def process_drillholes(
         interval_fields,
         params.raster_layer,
         params.band_num,
+        feature_id=params.section_feature_id,
     )
     if context is None:
         return None

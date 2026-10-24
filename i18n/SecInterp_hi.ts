@@ -509,12 +509,12 @@ Please check the logs for details.</source>
     <context>
         <name>GeometryExtraction</name>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="206" />
+            <location filename="../gui/adapters/geometry_lines.py" line="29" />
             <source>Geometry is null or invalid</source>
             <translation>ज्यामिति शून्य या अमान्य है</translation>
         </message>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="215" />
+            <location filename="../gui/adapters/geometry_lines.py" line="38" />
             <source>Line geometry has no vertices</source>
             <translation>लाइन ज्यामिति में कोई वर्टिसेस नहीं हैं</translation>
         </message>
@@ -811,17 +811,17 @@ Please check the logs for details.</source>
     <context>
         <name>PreviewLayerFactory</name>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="227" />
+            <location filename="../gui/preview_layers/topography.py" line="117" />
             <source>Topography Fill</source>
             <translation>स्थलाकृति भरण</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="368" />
+            <location filename="../gui/preview_layers/drillholes.py" line="33" />
             <source>Drillhole Traces</source>
             <translation>ड्रिलहोल के निशान</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="433" />
+            <location filename="../gui/preview_layers/drillholes.py" line="101" />
             <source>Drillhole Intervals</source>
             <translation>ड्रिलहोल अंतराल</translation>
         </message>
@@ -1136,52 +1136,52 @@ Please check the logs for details.</source>
     <context>
         <name>ProfileController</name>
         <message>
-            <location filename="../core/controller.py" line="295" />
+            <location filename="../core/controller.py" line="228" />
             <source>Geology: {0} segments</source>
             <translation>भूविज्ञान: {0} खंड</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="297" />
+            <location filename="../core/controller.py" line="230" />
             <source>Geology: No intersections</source>
             <translation>भूविज्ञान: कोई चौराहा नहीं</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="365" />
+            <location filename="../core/controller.py" line="263" />
             <source>Structures: {0} points</source>
             <translation>संरचनाएँ: {0} अंक</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="367" />
+            <location filename="../core/controller.py" line="265" />
             <source>Structures: None in {0}m buffer</source>
             <translation>संरचनाएँ: {0}m बफ़र में कोई नहीं</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="221" />
+            <location filename="../core/controller.py" line="183" />
             <source>Required layers for topography are missing.</source>
             <translation>स्थलाकृति के लिए आवश्यक परतें गायब हैं।</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="224" />
+            <location filename="../core/controller.py" line="185" />
             <source>Topography service failed to load.</source>
             <translation>स्थलाकृति सेवा लोड होने में विफल रही.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="230" />
+            <location filename="../core/controller.py" line="187" />
             <source>No topographic profile data was generated.</source>
             <translation>कोई स्थलाकृतिक प्रोफ़ाइल डेटा उत्पन्न नहीं किया गया था.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="280" />
+            <location filename="../core/controller.py" line="224" />
             <source>Geology: Service failed to load</source>
             <translation>भूविज्ञान: सेवा लोड होने में विफल रही</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="340" />
+            <location filename="../core/controller.py" line="259" />
             <source>Structures: Service failed to load</source>
             <translation>संरचनाएँ: सेवा लोड करने में विफल रही</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="232" />
+            <location filename="../core/controller.py" line="189" />
             <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
@@ -1190,7 +1190,7 @@ Topography: {0} points</source>
 स्थलाकृति: {0} अंक</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="424" />
+            <location filename="../core/controller.py" line="294" />
             <source>Drillholes: Service failed to load</source>
             <translation>ड्रिलहोल: सेवा लोड नहीं हो सकी</translation>
         </message>
@@ -1334,94 +1334,122 @@ Topography: {0} points</source>
         </message>
     </context>
     <context>
+        <name>SectionFeatureSelector</name>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <source>Feature</source>
+            <translation>फ़ीचर</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <source>Select the section line feature</source>
+            <translation>सेक्शन लाइन फ़ीचर चुनें</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <source>Label field</source>
+            <translation>लेबल फ़ील्ड</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <source>Field used to label each section feature</source>
+            <translation>प्रत्येक सेक्शन फ़ीचर को लेबल करने के लिए उपयोग किया गया फ़ील्ड</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <source>Auto</source>
+            <translation>स्वत:</translation>
+        </message>
+    </context>
+    <context>
         <name>SectionPage</name>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="46" />
+            <location filename="../gui/ui/pages/section_page.py" line="47" />
             <source>Cross Section Line</source>
             <translation>क्रॉस सेक्शन लाइन</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="57" />
+            <location filename="../gui/ui/pages/section_page.py" line="58" />
             <source>Section Line *</source>
             <translation>सेक्शन लाइन *</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="70" />
+            <location filename="../gui/ui/pages/section_page.py" line="71" />
             <source>Select the line layer defining the cross-section</source>
             <translation>क्रॉस-सेक्शन को परिभाषित करने वाली रेखा परत का चयन करें</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="79" />
+            <location filename="../gui/ui/pages/section_page.py" line="80" />
             <source>Buffer Dist. (m)</source>
             <translation>बफर जिला. (एम)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="84" />
+            <location filename="../gui/ui/pages/section_page.py" line="85" />
             <source> m</source>
             <translation> m</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="85" />
+            <location filename="../gui/ui/pages/section_page.py" line="86" />
             <source>Distance to include structures around the section line</source>
             <translation>सेक्शन लाइन के आसपास संरचनाओं को शामिल करने की दूरी</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="224" />
+            <location filename="../gui/ui/pages/section_page.py" line="234" />
             <source>Section line layer is required</source>
             <translation>सेक्शन लाइन लेयर आवश्यक है</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="47" />
+            <location filename="../gui/ui/pages/section_page.py" line="48" />
             <source>Mandatory</source>
             <translation>अनिवार्य</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="98" />
+            <location filename="../gui/ui/pages/section_page.py" line="99" />
             <source>DEM Profile</source>
             <translation>डीईएम प्रोफ़ाइल</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="106" />
+            <location filename="../gui/ui/pages/section_page.py" line="107" />
             <source>Min</source>
             <translation>न्यूनतम</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="108" />
+            <location filename="../gui/ui/pages/section_page.py" line="109" />
             <source>Max</source>
             <translation>अधिकतम</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="110" />
+            <location filename="../gui/ui/pages/section_page.py" line="111" />
             <source>Mean</source>
             <translation>औसत</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="112" />
+            <location filename="../gui/ui/pages/section_page.py" line="113" />
             <source>Samples</source>
             <translation>नमूने</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="226" />
+            <location filename="../gui/ui/pages/section_page.py" line="236" />
             <source>Section line layer is not valid</source>
             <translation>सेक्शन लाइन लेयर मान्य नहीं है</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="229" />
+            <location filename="../gui/ui/pages/section_page.py" line="239" />
             <source>Section line must use a projected CRS (metric units)</source>
             <translation>सेक्शन लाइन में अनुमानित CRS (मीट्रिक यूनिट्स) का इस्तेमाल किया जाना चाहिए</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="233" />
+            <location filename="../gui/ui/pages/section_page.py" line="243" />
             <source>Section line layer has no readable line geometry</source>
             <translation>सेक्शन लाइन लेयर में कोई पठनीय लाइन ज्यामिति नहीं है</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="235" />
+            <location filename="../gui/ui/pages/section_page.py" line="245" />
             <source>Section line must have exactly 2 vertices (start and end)</source>
             <translation>सेक्शन लाइन में ठीक 2 वर्टिसेस होने चाहिए (शुरू और अंत)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="237" />
+            <location filename="../gui/ui/pages/section_page.py" line="247" />
             <source>Section line has zero length</source>
             <translation>सेक्शन लाइन की लंबाई शून्य है</translation>
         </message>

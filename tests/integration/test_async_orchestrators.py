@@ -30,9 +30,7 @@ def _make_line_layer() -> QgsVectorLayer:
     layer = QgsVectorLayer("LineString?crs=EPSG:32719", "section_line", "memory")
     feat = QgsFeature()
     feat.setGeometry(
-        QgsGeometry.fromPolylineXY(
-            [QgsPointXY(0, 6_000_000), QgsPointXY(1000, 6_000_000)]
-        )
+        QgsGeometry.fromPolylineXY([QgsPointXY(0, 6_000_000), QgsPointXY(1000, 6_000_000)])
     )
     layer.dataProvider().addFeatures([feat])
     layer.updateExtents()
@@ -136,13 +134,12 @@ class TestPreviewTaskOrchestrator(BaseIntegrationTest):
             band_num = 1
             smooth = False
             smooth_window = 30
+            section_feature_id = 7
 
         params = DummyParams()
 
         # Mock resolve_layer to avoid needing real QgsProject IDs
-        with patch(
-            "sec_interp.gui.preview_task_orchestrator.resolve_layer"
-        ) as mock_resolve:
+        with patch("sec_interp.gui.preview_task_orchestrator.resolve_layer") as mock_resolve:
             mock_lyr = MagicMock()
             mock_resolve.return_value = mock_lyr
 
@@ -150,11 +147,16 @@ class TestPreviewTaskOrchestrator(BaseIntegrationTest):
 
             # Mock the geology extractor accessed via the manager chain
             self.mock_manager.preview_service.controller.geology_extractor = MagicMock()
-            self.mock_manager.preview_service.controller.geology_extractor.extract_context.return_value = (
-                MagicMock()
-            )
+            self.mock_manager.preview_service.controller.geology_extractor.extract_context.return_value = MagicMock()
 
             self.orchestrator.start_geology_task(params, mock_service)
+
+            self.assertEqual(
+                self.mock_manager.preview_service.controller.geology_extractor.extract_context.call_args.kwargs[
+                    "feature_id"
+                ],
+                7,
+            )
 
             # Verification
             self.assertIsNotNone(self.orchestrator.geology_task)

@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Форма сброшена к значениям по умолчанию",
     "✓ Generating data for export...": "✓ Генерация данных для экспорта...",
     "✓ Preview generated!": "✓ Предварительный просмотр создан!",
-    "✓ Saving files...": "✓ Сохранение файлов..."
+    "✓ Saving files...": "✓ Сохранение файлов...",
+    "Feature": "Объект",
+    "Select the section line feature": "Выберите объект линии разреза",
+    "Label field": "Поле подписи",
+    "Field used to label each section feature": "Поле, используемое для подписи каждого объекта разреза"
 }

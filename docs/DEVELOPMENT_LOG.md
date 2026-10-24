@@ -1,3 +1,10 @@
+## [2026-10-24] Fix: Section Feature Selection (`section_feature_id`)
+- **Achievement**: `SectionPage` now lists only 2-vertex section lines in an `fid — label` combo, with a selectable label field (`Auto` or any attribute); `section_feature_id` is forwarded end-to-end to topography, geology, structures, drillholes, LOD and async tasks.
+- **Files**: new `gui/ui/pages/section_feature_selector.py` (245 lines); `section_page.py` 291; wired `core/services/profile/{topography,geology,structures,drillholes}.py`, `core/services/preview_service.py` and `gui/preview_task_orchestrator.py`.
+- **Tests**: **827 OK** (876 static); new selector/page/processor regression tests plus preview/async assertions; `ruff`, `format`, `mypy`, `i18n-check` and analyzer PASS.
+- **Metrics**: CC PASS · i18n PASS · module size PASS · security 100 · issues **36** (GOD_OBJECT 19) · quality **56.4** (MI, diagnostic).
+- **Plan**: [implementation_plan_section_feature_id.md](plans/implementation_plan_section_feature_id.md); `Invert line` deferred.
+
 ## [2026-10-24] Session Close: Module-Size Gate Completion
 - **Achievement**: closed the five `module_size_gate` violations and left `main` clean and pushed. Controller 465→295, geometry 598→69, preview factory 535→202, 3D exporter 472→155 and renderer 438→335; **0 modules >400**.
 - **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · security 100 · issues 36 · quality score 56.5 (Module Stability / MI, diagnostic).

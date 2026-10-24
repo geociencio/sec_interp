@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formularz zresetowany do wartości domyślnych",
     "✓ Generating data for export...": "✓ Generating data for export...",
     "✓ Preview generated!": "✓ Podgląd wygenerowany!",
-    "✓ Saving files...": "✓ Saving files..."
+    "✓ Saving files...": "✓ Saving files...",
+    "Feature": "Obiekt",
+    "Select the section line feature": "Wybierz obiekt linii przekroju",
+    "Label field": "Pole etykiety",
+    "Field used to label each section feature": "Pole używane do etykietowania każdego obiektu przekroju"
 }

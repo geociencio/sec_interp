@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formulaire réinitialisé aux valeurs par défaut",
     "✓ Generating data for export...": "Création des données pour l'exportation...",
     "✓ Preview generated!": "✓ Aperçu généré!",
-    "✓ Saving files...": "Enregistrer des fichiers"
+    "✓ Saving files...": "Enregistrer des fichiers",
+    "Feature": "Entité",
+    "Select the section line feature": "Sélectionner l'entité de la ligne de coupe",
+    "Label field": "Champ d'étiquette",
+    "Field used to label each section feature": "Champ utilisé pour étiqueter chaque entité de la coupe"
 }

@@ -123,7 +123,7 @@ class PreviewService:
             interval = None
             if params.auto_lod:
                 interval = self.controller.profile_extractor.calculate_lod_interval(
-                    line_lyr, params.canvas_width
+                    line_lyr, params.canvas_width, params.section_feature_id
                 )
 
             result.topo = self.controller.profile_extractor.extract_profile(
@@ -131,6 +131,7 @@ class PreviewService:
                 raster_lyr,
                 params.band_num,
                 interval=interval,
+                feature_id=params.section_feature_id,
             )
             if result.topo:
                 result.metrics.record_count("Topography Points", len(result.topo))  # no-i18n
@@ -152,7 +153,10 @@ class PreviewService:
                     return
 
                 ctx = extractor.extract_section_and_structures(
-                    params.line_layer, struct_lyr, params.buffer_dist
+                    params.line_layer,
+                    struct_lyr,
+                    params.buffer_dist,
+                    feature_id=params.section_feature_id,
                 )
                 if ctx is None:
                     return

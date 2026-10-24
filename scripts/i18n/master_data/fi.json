@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Lomake palautettu oletusarvoihin",
     "✓ Generating data for export...": "✓ Luodaan tietoja vientiä varten...",
     "✓ Preview generated!": "✓ Esikatselu luotu!",
-    "✓ Saving files...": "✓ Tallennetaan tiedostoja..."
+    "✓ Saving files...": "✓ Tallennetaan tiedostoja...",
+    "Feature": "Kohde",
+    "Select the section line feature": "Valitse leikkausviivan kohde",
+    "Label field": "Tunnistekenttä",
+    "Field used to label each section feature": "Kenttä, jolla jokainen leikkauskohde merkitään"
 }

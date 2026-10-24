@@ -1,11 +1,12 @@
 """Tests for the preview orchestration service."""
 
 from unittest.mock import MagicMock
-from tests.base_test import BaseTestCase
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsGeometry, QgsPointXY, QgsField
 
-from sec_interp.core.services.preview_service import PreviewService
+from qgis.core import QgsField, QgsGeometry, QgsPointXY, QgsRasterLayer, QgsVectorLayer
+
 from sec_interp.core.domain import PreviewParams, PreviewResult
+from sec_interp.core.services.preview_service import PreviewService
+from tests.base_test import BaseTestCase
 
 
 class TestPreviewService(BaseTestCase):
@@ -57,6 +58,7 @@ class TestPreviewService(BaseTestCase):
         self.mock_line_lyr.getFeatures = MagicMock(side_effect=lambda: iter([line_feat]))
 
         # Mock profile extractor
+        self.params.section_feature_id = 9
         self.mock_controller.profile_extractor.extract_profile.return_value = [
             (0.0, 10.0),
             (100.0, 15.0),
@@ -66,7 +68,14 @@ class TestPreviewService(BaseTestCase):
 
         self.assertIsInstance(result, PreviewResult)
         self.assertEqual(len(result.topo), 2)
+        self.mock_controller.profile_extractor.calculate_lod_interval.assert_called_once_with(
+            self.mock_line_lyr, 800, 9
+        )
         self.mock_controller.profile_extractor.extract_profile.assert_called_once()
+        self.assertEqual(
+            self.mock_controller.profile_extractor.extract_profile.call_args.kwargs["feature_id"],
+            9,
+        )
 
     def test_generate_all_with_structures(self):
         """Test generating topo and structures."""
@@ -78,6 +87,7 @@ class TestPreviewService(BaseTestCase):
         self.mock_controller.profile_extractor.extract_profile.return_value = []
 
         # Setup structure params
+        self.params.section_feature_id = 9
         self.params.struct_layer = QgsVectorLayer()
         self.params.struct_layer.isValid = MagicMock(return_value=True)
         self.params.struct_layer.setWkbType(1001)  # PointZ
@@ -104,13 +114,19 @@ class TestPreviewService(BaseTestCase):
         self.assertIsNotNone(result.struct)
         self.assertEqual(len(result.struct), 1)
         self.mock_controller.structure_service.project_structures.assert_called_once()
+        self.assertEqual(
+            self.mock_controller.structure_extractor.extract_section_and_structures.call_args.kwargs[
+                "feature_id"
+            ],
+            9,
+        )
 
     def test_generate_all_no_features(self):
         """Test that extractor errors propagate when the line layer is empty."""
         from sec_interp.core.exceptions import DataMissingError
 
-        self.mock_controller.profile_extractor.extract_profile.side_effect = (
-            DataMissingError("Line layer has no features")
+        self.mock_controller.profile_extractor.extract_profile.side_effect = DataMissingError(
+            "Line layer has no features"
         )
 
         with self.assertRaises(DataMissingError):

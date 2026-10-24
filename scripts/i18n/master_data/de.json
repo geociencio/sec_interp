@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formular auf Standardwerte zurückgesetzt",
     "✓ Generating data for export...": "Daten für den Export werden ✓ generiert...",
     "✓ Preview generated!": "✓ Vorschau generiert!",
-    "✓ Saving files...": "Das Speichern von Dateien"
+    "✓ Saving files...": "Das Speichern von Dateien",
+    "Feature": "Objekt",
+    "Select the section line feature": "Abschnittslinien-Objekt auswählen",
+    "Label field": "Beschriftungsfeld",
+    "Field used to label each section feature": "Feld zur Beschriftung jedes Abschnittsobjekts"
 }

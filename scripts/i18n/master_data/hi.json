@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ फॉर्म डिफ़ॉल्ट मानों पर रीसेट कर दिया गया है",
     "✓ Generating data for export...": "निर्यात के लिए डेटा ✓ जनरेट किया जा रहा है...",
     "✓ Preview generated!": "✓ पूर्वावलोकन जनरेट हो गया!",
-    "✓ Saving files...": "फ़ाइलें ✓ सेव की जा रही हैं..."
+    "✓ Saving files...": "फ़ाइलें ✓ सेव की जा रही हैं...",
+    "Feature": "फ़ीचर",
+    "Select the section line feature": "सेक्शन लाइन फ़ीचर चुनें",
+    "Label field": "लेबल फ़ील्ड",
+    "Field used to label each section feature": "प्रत्येक सेक्शन फ़ीचर को लेबल करने के लिए उपयोग किया गया फ़ील्ड"
 }

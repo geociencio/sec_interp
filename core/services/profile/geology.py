@@ -61,6 +61,7 @@ def process_geology(
         params.outcrop_name_field,
         params.band_num,
         smoothing_window_m=float(params.smooth_window) if params.smooth else 0.0,
+        feature_id=params.section_feature_id,
     )
     geol_data = service.build_segments(context)
     if geol_data:

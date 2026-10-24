@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ Formulir diatur ulang ke nilai default",
     "✓ Generating data for export...": "✓ Menghasilkan data untuk ekspor...",
     "✓ Preview generated!": "✓ Pratinjau dihasilkan!",
-    "✓ Saving files...": "Menyimpan berkas"
+    "✓ Saving files...": "Menyimpan berkas",
+    "Feature": "Fitur",
+    "Select the section line feature": "Pilih fitur garis penampang",
+    "Label field": "Bidang label",
+    "Field used to label each section feature": "Bidang yang digunakan untuk memberi label setiap fitur penampang"
 }

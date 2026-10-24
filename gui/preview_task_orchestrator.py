@@ -78,6 +78,7 @@ class PreviewTaskOrchestrator:
             params.outcrop_name_field,
             params.band_num,
             smoothing_window_m=float(params.smooth_window) if params.smooth else 0.0,
+            feature_id=getattr(params, "section_feature_id", None),
         )
 
         self.geology_task = GeologyGenerationTask(
@@ -139,6 +140,7 @@ class PreviewTaskOrchestrator:
             interval_fields_dict,
             raster_lyr,
             params.band_num,
+            feature_id=getattr(params, "section_feature_id", None),
         )
 
         self.drillhole_task = DrillholeGenerationTask(

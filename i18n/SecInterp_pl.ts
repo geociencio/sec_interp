@@ -511,12 +511,12 @@ Aby poznać szczegóły, sprawdź logi.</translation>
     <context>
         <name>GeometryExtraction</name>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="206" />
+            <location filename="../gui/adapters/geometry_lines.py" line="29" />
             <source>Geometry is null or invalid</source>
             <translation>Geometria jest pusta lub nieprawidłowa</translation>
         </message>
         <message>
-            <location filename="../gui/adapters/geometry.py" line="215" />
+            <location filename="../gui/adapters/geometry_lines.py" line="38" />
             <source>Line geometry has no vertices</source>
             <translation>Geometria linii nie ma wierzchołków</translation>
         </message>
@@ -813,17 +813,17 @@ Aby poznać szczegóły, sprawdź logi.</translation>
     <context>
         <name>PreviewLayerFactory</name>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="227" />
+            <location filename="../gui/preview_layers/topography.py" line="117" />
             <source>Topography Fill</source>
             <translation>Wypełnienie topografii</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="368" />
+            <location filename="../gui/preview_layers/drillholes.py" line="33" />
             <source>Drillhole Traces</source>
             <translation>Żerowania boreolów</translation>
         </message>
         <message>
-            <location filename="../gui/preview_layer_factory.py" line="433" />
+            <location filename="../gui/preview_layers/drillholes.py" line="101" />
             <source>Drillhole Intervals</source>
             <translation>Przecinki boreolów</translation>
         </message>
@@ -1138,52 +1138,52 @@ Aby poznać szczegóły, sprawdź logi.</translation>
     <context>
         <name>ProfileController</name>
         <message>
-            <location filename="../core/controller.py" line="221" />
+            <location filename="../core/controller.py" line="183" />
             <source>Required layers for topography are missing.</source>
             <translation>Brak wymaganych warstw dla topografii.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="230" />
+            <location filename="../core/controller.py" line="187" />
             <source>No topographic profile data was generated.</source>
             <translation>Nie wygenerowano żadnych danych profilu topograficznego.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="295" />
+            <location filename="../core/controller.py" line="228" />
             <source>Geology: {0} segments</source>
             <translation>Geologia: {0} segmentów</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="297" />
+            <location filename="../core/controller.py" line="230" />
             <source>Geology: No intersections</source>
             <translation>Geologia: Brak skrzyżowań</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="365" />
+            <location filename="../core/controller.py" line="263" />
             <source>Structures: {0} points</source>
             <translation>Struktury: {0} punktów</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="367" />
+            <location filename="../core/controller.py" line="265" />
             <source>Structures: None in {0}m buffer</source>
             <translation>Struktury: Brak w buforze {0}m</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="224" />
+            <location filename="../core/controller.py" line="185" />
             <source>Topography service failed to load.</source>
             <translation>Nie udało się załadować usługi topograficznej.</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="280" />
+            <location filename="../core/controller.py" line="224" />
             <source>Geology: Service failed to load</source>
             <translation>Geologia: Nie udało się załadować usługi</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="340" />
+            <location filename="../core/controller.py" line="259" />
             <source>Structures: Service failed to load</source>
             <translation>Struktury: Nie udało się załadować usługi</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="232" />
+            <location filename="../core/controller.py" line="189" />
             <source>✓ Data processed successfully!
 
 Topography: {0} points</source>
@@ -1192,7 +1192,7 @@ Topography: {0} points</source>
 Topografia: {0} punktów</translation>
         </message>
         <message>
-            <location filename="../core/controller.py" line="424" />
+            <location filename="../core/controller.py" line="294" />
             <source>Drillholes: Service failed to load</source>
             <translation>Boreole: Usługa nie udała się ładowania</translation>
         </message>
@@ -1336,94 +1336,122 @@ Topografia: {0} punktów</translation>
         </message>
     </context>
     <context>
+        <name>SectionFeatureSelector</name>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <source>Feature</source>
+            <translation>Obiekt</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <source>Select the section line feature</source>
+            <translation>Wybierz obiekt linii przekroju</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <source>Label field</source>
+            <translation>Pole etykiety</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <source>Field used to label each section feature</source>
+            <translation>Pole używane do etykietowania każdego obiektu przekroju</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <source>Auto</source>
+            <translation>Auto</translation>
+        </message>
+    </context>
+    <context>
         <name>SectionPage</name>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="46" />
+            <location filename="../gui/ui/pages/section_page.py" line="47" />
             <source>Cross Section Line</source>
             <translation>Linia przekroju</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="57" />
+            <location filename="../gui/ui/pages/section_page.py" line="58" />
             <source>Section Line *</source>
             <translation>Linia przekroju *</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="70" />
+            <location filename="../gui/ui/pages/section_page.py" line="71" />
             <source>Select the line layer defining the cross-section</source>
             <translation>Wybierz warstwę linii definiującą przekrój</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="79" />
+            <location filename="../gui/ui/pages/section_page.py" line="80" />
             <source>Buffer Dist. (m)</source>
             <translation>Bufor Odległ. (M)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="84" />
+            <location filename="../gui/ui/pages/section_page.py" line="85" />
             <source> m</source>
             <translation> m</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="85" />
+            <location filename="../gui/ui/pages/section_page.py" line="86" />
             <source>Distance to include structures around the section line</source>
             <translation>Odległość uwzględniania struktur wokół linii przekroju</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="224" />
+            <location filename="../gui/ui/pages/section_page.py" line="234" />
             <source>Section line layer is required</source>
             <translation>Warstwa linii przekroju jest wymagana</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="47" />
+            <location filename="../gui/ui/pages/section_page.py" line="48" />
             <source>Mandatory</source>
             <translation>Wymagane</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="98" />
+            <location filename="../gui/ui/pages/section_page.py" line="99" />
             <source>DEM Profile</source>
             <translation>Profil DEM</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="106" />
+            <location filename="../gui/ui/pages/section_page.py" line="107" />
             <source>Min</source>
             <translation>Min</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="108" />
+            <location filename="../gui/ui/pages/section_page.py" line="109" />
             <source>Max</source>
             <translation>Max</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="110" />
+            <location filename="../gui/ui/pages/section_page.py" line="111" />
             <source>Mean</source>
             <translation>Mean</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="112" />
+            <location filename="../gui/ui/pages/section_page.py" line="113" />
             <source>Samples</source>
             <translation>Samples</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="226" />
+            <location filename="../gui/ui/pages/section_page.py" line="236" />
             <source>Section line layer is not valid</source>
             <translation>Section line layer is not valid</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="229" />
+            <location filename="../gui/ui/pages/section_page.py" line="239" />
             <source>Section line must use a projected CRS (metric units)</source>
             <translation>Section line must use a projected CRS (metric units)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="233" />
+            <location filename="../gui/ui/pages/section_page.py" line="243" />
             <source>Section line layer has no readable line geometry</source>
             <translation>Section line layer has no readable line geometry</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="235" />
+            <location filename="../gui/ui/pages/section_page.py" line="245" />
             <source>Section line must have exactly 2 vertices (start and end)</source>
             <translation>Section line must have exactly 2 vertices (start and end)</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_page.py" line="237" />
+            <location filename="../gui/ui/pages/section_page.py" line="247" />
             <source>Section line has zero length</source>
             <translation>Section line has zero length</translation>
         </message>

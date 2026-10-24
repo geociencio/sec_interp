@@ -402,5 +402,9 @@
     "✓ Form reset to default values": "✓ フォームをデフォルト値にリセットしました",
     "✓ Generating data for export...": "✓ エクスポート用データ生成中...",
     "✓ Preview generated!": "✓ プレビューが生成されました！",
-    "✓ Saving files...": "✓ ファイル保存中..."
+    "✓ Saving files...": "✓ ファイル保存中...",
+    "Feature": "フィーチャ",
+    "Select the section line feature": "断面線フィーチャを選択",
+    "Label field": "ラベルフィールド",
+    "Field used to label each section feature": "各断面フィーチャのラベルに使用するフィールド"
 }

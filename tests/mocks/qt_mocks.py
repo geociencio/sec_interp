@@ -409,7 +409,13 @@ class MockQWidget(MockQObject):
 
     def setEnabled(self, enabled):
         """Set enabled status."""
-        pass
+        self._enabled = bool(enabled)
+
+    def blockSignals(self, block):
+        """Mock signal blocking; return the previous state."""
+        previous = getattr(self, "_signals_blocked", False)
+        self._signals_blocked = bool(block)
+        return previous
 
     def setChecked(self, checked):
         """Set checked status."""
@@ -565,6 +571,106 @@ class MockQWidget(MockQObject):
     def setValidator(self, validator):
         """Set input validator."""
         pass
+
+
+class MockQComboBox(MockQWidget):
+    """Mock QComboBox with item text/data storage."""
+
+    def __init__(self, parent=None, *args, **kwargs):
+        """Initialize the combo with empty item lists."""
+        super().__init__(parent, *args, **kwargs)
+        self._items: list[str] = []
+        self._item_data: list[object] = []
+        self._current_index = -1
+        self._enabled = True
+
+    def addItem(self, text, data=None):
+        """Add one item and keep its user data."""
+        self._items.append(str(text))
+        self._item_data.append(data)
+        if self._current_index < 0:
+            self._current_index = 0
+            self.currentIndexChanged.emit(0)
+
+    def addItems(self, items):
+        """Add several items without data."""
+        for item in items:
+            self.addItem(item)
+
+    def clear(self):
+        """Remove all items and reset the current index."""
+        self._items.clear()
+        self._item_data.clear()
+        self._current_index = -1
+
+    def count(self):
+        """Return the number of items."""
+        return len(self._items)
+
+    def itemData(self, index, role=None):
+        """Return user data for an item index."""
+        if 0 <= index < len(self._item_data):
+            return self._item_data[index]
+        return None
+
+    def setItemData(self, index, value, role=None):
+        """Set user data for an item index."""
+        if 0 <= index < len(self._item_data):
+            self._item_data[index] = value
+
+    def setItemText(self, index, text):
+        """Set the text of an item index."""
+        if 0 <= index < len(self._items):
+            self._items[index] = str(text)
+
+    def currentIndex(self):
+        """Return the current item index."""
+        return self._current_index
+
+    def setCurrentIndex(self, index):
+        """Set the current index and emit only on change."""
+        if index == self._current_index:
+            return
+        self._current_index = index
+        self.currentIndexChanged.emit(index)
+
+    def currentData(self, role=None):
+        """Return user data for the current item."""
+        return self.itemData(self._current_index, role)
+
+    def currentText(self):
+        """Return the current item text."""
+        if 0 <= self._current_index < len(self._items):
+            return self._items[self._current_index]
+        return ""
+
+    def setCurrentText(self, text):
+        """Select an item by text."""
+        index = self.findText(text)
+        if index >= 0:
+            self.setCurrentIndex(index)
+
+    def findText(self, text, flags=None):
+        """Find an item index by text, or -1."""
+        try:
+            return self._items.index(str(text))
+        except ValueError:
+            return -1
+
+    def findData(self, data):
+        """Find an item index by user data, or -1."""
+        for index, value in enumerate(self._item_data):
+            if value == data:
+                return index
+        return -1
+
+    def setEnabled(self, enabled):
+        """Store the enabled state."""
+        self._enabled = bool(enabled)
+
+    def isEnabled(self):
+        """Return the enabled state."""
+        return self._enabled
 
 
 class MockQLayout(MockQObject):

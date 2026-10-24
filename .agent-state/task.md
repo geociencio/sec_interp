@@ -17,6 +17,7 @@
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
+- [x] **`section_feature_id` fix** — selector `fid — label` con filtro de 2 vértices y campo de etiqueta seleccionable; propagación a topo/geología/estructuras/sondajes, LOD y tasks async; suite **827 OK** (876 static); rama `fix/section-feature-id` pendiente de merge.
 - [x] **`module_size_gate` — PASS (0 módulos >400)** — cerrados controller (465→295), geometry (598→69), preview layer factory (535→202), 3D exporter (472→155) y preview renderer (438→335); suite **808 OK** (857 static); quality **56.5**.
 - [x] **Refactor `gui/preview_renderer.py`** — 438 → **335 líneas**; collectors/cleanup en `preview_renderer_layers.py` (123) y `preview_renderer_cleanup.py` (68); suite **808 OK**; module-size gate 1 → **0**. Mergeado en `main` en `2e05e4f8`.
 - [x] **Refactor `exporters/interpretation_3d_exporter.py`** — 472 → **155 líneas** (fachada); helpers en `exporters/interpretation_3d/{fields,geometry,style}.py` entre 67 y 178 líneas; suite **808 OK** (857 static); module-size gate 2 → 1 módulo. Mergeado en `main` en `91639cc3`.
@@ -33,7 +34,7 @@
 - [x] **v3.11.0** — release publicada, ZIP verificado (311 archivos, 2,28 MiB, ayuda en 14 idiomas) y subido al portal; merge del tren en `main`.
 - [x] **Auditorías** — `docs/qa/REPO_AUDIT_2026-10-18.md` y `docs/qa/AGENT_AUDIT_2026-10-18.md`.
 - [x] **Agentic Forge v1.4.2** — submódulo actualizado (`b264e35`, hotfix de v1.4.1); adaptados `sync_metrics.py` a `forge_metrics_checks`/`forge_metrics_report`, los tests de memoria al modo dry-run (`--apply`) y los tests del validador a `workflow_graph`/`skill_conflicts`; `qa-docker` sustituido por `testing-standards`.
-- [x] **Métricas** — `agent_metrics.json` reconciliado: 37 issues (incluye `UNPRECISE_LAYER`), 50 sesiones y `tests_static=827` / `tests_executed=778` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
+- [x] **Métricas** — `agent_metrics.json` reconciliado: 36 issues (incluye `UNPRECISE_LAYER`), 52 sesiones y `tests_static=876` / `tests_executed=827` separados del baseline legacy 792; `sync_metrics.py --validate` comprueba frescura contra `project_context.json`.
 - [x] **Handoff** — `task.md` reescrito; el tablero anterior quedó archivado en `.agent-state/history/tasks/tasks_2026-10-18_pre_metrics_reconciliation.md`.
 - [x] **Release** — gate de docstrings alineado con el baseline real (99,0 %) y conteos de tests manuales eliminados de `release-plugin.md`.
 
