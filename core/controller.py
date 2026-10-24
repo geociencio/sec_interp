@@ -6,8 +6,6 @@ This module handles the orchestration of various data generation services
 
 from __future__ import annotations
 
-import contextlib
-import hashlib
 import time
 from typing import Any
 
@@ -20,6 +18,12 @@ from sec_interp.core.domain import (
     StructureMeasurement,
 )
 from sec_interp.core.exceptions import ProcessingError
+from sec_interp.core.services.profile.cache import (
+    drillholes_cache_key,
+    geology_cache_key,
+    structures_cache_key,
+    topography_cache_key,
+)
 from sec_interp.core.utils.i18n import TranslatableMixin
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger
@@ -162,30 +166,6 @@ class ProfileController(TranslatableMixin):
 
         return profile_data, geol_data, struct_data, drillhole_data, messages
 
-    def _component_cache_key(self, **parts: Any) -> str:
-        """Hash the named inputs of one profile component.
-
-        Every input that can change a component's output must be included;
-        otherwise changing a layer, field mapping or smoothing option would
-        reuse a stale result. QGIS layers are represented by their stable ID.
-
-        Args:
-            **parts: Named component inputs. Values with an ``id()`` method
-                (QGIS layers) are replaced by that ID.
-
-        Returns:
-            MD5 hash of the sorted ``name=value`` pairs.
-
-        """
-        hasher = hashlib.md5()  # nosec B324
-        for name in sorted(parts):
-            value = parts[name]
-            if hasattr(value, "id") and not isinstance(value, (str, bytes)):
-                with contextlib.suppress(AttributeError, RuntimeError, TypeError):
-                    value = value.id()
-            hasher.update(f"{name}={value!r};".encode())
-        return hasher.hexdigest()
-
     def _process_topography(
         self, params: PreviewParams, cache_meta: dict, messages: list[str]
     ) -> list[tuple[float, float]]:
@@ -203,13 +183,7 @@ class ProfileController(TranslatableMixin):
             ProcessingError: If required layers are missing or service fails.
 
         """
-        topo_key = self._component_cache_key(
-            line_layer=params.line_layer,
-            raster_layer=params.raster_layer,
-            band_num=params.band_num,
-            section_feature_id=params.section_feature_id,
-            max_points=params.max_points,
-        )
+        topo_key = topography_cache_key(params)
         profile_data = self.data_cache.get("topo", topo_key)
         if profile_data:
             logger.debug("Cache hit: Topography")
@@ -253,17 +227,7 @@ class ProfileController(TranslatableMixin):
         if not params.outcrop_layer:
             return None
 
-        geol_key = self._component_cache_key(
-            line_layer=params.line_layer,
-            raster_layer=params.raster_layer,
-            outcrop_layer=params.outcrop_layer,
-            outcrop_name_field=params.outcrop_name_field,
-            band_num=params.band_num,
-            section_feature_id=params.section_feature_id,
-            smooth=params.smooth,
-            smooth_window=params.smooth_window if params.smooth else 0,
-            max_points=params.max_points,
-        )
+        geol_key = geology_cache_key(params)
         geol_data = self.data_cache.get("geol", geol_key)
         if geol_data:
             logger.debug("Cache hit: Geology")
@@ -314,16 +278,7 @@ class ProfileController(TranslatableMixin):
         if not params.struct_layer:
             return None
 
-        struct_key = self._component_cache_key(
-            line_layer=params.line_layer,
-            raster_layer=params.raster_layer,
-            struct_layer=params.struct_layer,
-            buffer_dist=params.buffer_dist,
-            dip_field=params.dip_field,
-            strike_field=params.strike_field,
-            band_num=params.band_num,
-            section_feature_id=params.section_feature_id,
-        )
+        struct_key = structures_cache_key(params)
         struct_data = self.data_cache.get("struct", struct_key)
         if struct_data:
             logger.debug("Cache hit: Structure")
@@ -386,30 +341,7 @@ class ProfileController(TranslatableMixin):
         if not params.collar_layer:
             return None
 
-        drill_key = self._component_cache_key(
-            line_layer=params.line_layer,
-            raster_layer=params.raster_layer,
-            band_num=params.band_num,
-            section_feature_id=params.section_feature_id,
-            collar_layer=params.collar_layer,
-            survey_layer=params.survey_layer,
-            interval_layer=params.interval_layer,
-            buffer_dist=params.buffer_dist,
-            collar_id_field=params.collar_id_field,
-            collar_use_geometry=params.collar_use_geometry,
-            collar_x_field=params.collar_x_field,
-            collar_y_field=params.collar_y_field,
-            collar_z_field=params.collar_z_field,
-            collar_depth_field=params.collar_depth_field,
-            survey_id_field=params.survey_id_field,
-            survey_depth_field=params.survey_depth_field,
-            survey_azim_field=params.survey_azim_field,
-            survey_incl_field=params.survey_incl_field,
-            interval_id_field=params.interval_id_field,
-            interval_from_field=params.interval_from_field,
-            interval_to_field=params.interval_to_field,
-            interval_lith_field=params.interval_lith_field,
-        )
+        drill_key = drillholes_cache_key(params)
         drillhole_data = self.data_cache.get("drill", drill_key)
 
         if drillhole_data:
