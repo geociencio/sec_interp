@@ -22,7 +22,7 @@
   (25–157 lines). Merged into `main` at `bf3692a9`.
 - **3D interpretation exporter**: `exporters/interpretation_3d_exporter.py` is now a
   **155-line facade**; helpers live in `exporters/interpretation_3d/{fields,geometry,style}.py`
-  (67–178 lines). Branch `refactor/module-size-interpretation-3d-exporter` (local, not merged yet).
+  (67–178 lines). Merged into `main` at `91639cc3`.
 - **Reference**: `docs/plans/implementation_plan_module_size_controller.md`.
 
 ## 📌 Pending
