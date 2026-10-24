@@ -1,3 +1,11 @@
+## [2026-10-24] Session: Preview Layer Factory Module-Size Refactor
+- **Achievement**: replaced the 535-line `gui/preview_layer_factory.py` with a **202-line facade** and five focused builders, keeping the factory helpers, renderers, patch points and behavior intact. Module-size gate now lists 2 modules (was 3).
+- **Changes**:
+    - **Split** (`113f4345`): `gui/preview_layers/{topography,geology,structures,drillholes,interpretations}.py` (25–157 lines); each builder receives the factory and uses its helpers/renderers, preserving tests that patch `factory.create_memory_layer` and the create methods.
+    - **i18n**: the three translated layer names keep the `PreviewLayerFactory` context.
+- **Quality**: **808 tests OK** (857 static) · CC PASS · i18n PASS · quality **56.3** (was 56.1) · module size 3 → 2.
+- **Follow-up**: remaining >400 modules are `exporters/interpretation_3d_exporter.py` (472) and `gui/preview_renderer.py` (439).
+
 ## [2026-10-24] Session: Geometry Adapter Module-Size Refactor
 - **Achievement**: replaced the 598-line `gui/adapters/geometry.py` with a **69-line compatibility facade** and five focused modules, keeping every public import and behavior intact. Module-size gate now lists 3 modules (was 4).
 - **Changes**:
