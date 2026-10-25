@@ -1,3 +1,10 @@
+## [2026-10-24] Session Close: Core QGIS-Agnostic
+- **Achievement**: `core/` has no QGIS/PyQt imports; translations, settings and map settings are injected via ports/adapters; `qgis_io.py` and `map_settings.py` moved to `exporters/`; logger imports QGIS lazily.
+- **Verification**: **839 tests OK / 888 static**; architecture allowlist **empty**; core imports in a plain venv; `ruff`, `format`, `mypy`, `check_docs`, `forge validate`, `sync_metrics --validate` and mirror-check PASS.
+- **Docs**: code walkthrough consolidated on v2; public architecture rebuilt; [v3.11.0 technical analysis](https://geociencio.github.io/sec_interp_docs/en/v3.11.0_technical_analysis.html) published.
+- **Maintenance**: [session_2026-10-24_core_qgis_agnostic.md](maintenance/session_2026-10-24_core_qgis_agnostic.md).
+- **Pending**: `uv` stable, interop §9 B1, `ProfileController` GOD_OBJECT, `Invert line`.
+
 ## [2026-10-24] Refactor: Core QGIS-Agnostic
 - **Achievement**: `core/` no longer imports `qgis.*` or `qgis.PyQt`. Translations are injected (`TranslatableMixin.set_translator`), settings use the `SettingsStore` port (`QgsSettingsStore` in `gui/adapters`), and `ExportService` receives `create_map_settings` from `exporters/map_settings.py`. `core/utils/io.py` moved to `exporters/qgis_io.py`.
 - **Composition**: `SecInterp` creates `QgsSettingsStore`, `ConfigService` and `AccessControlService`; `ProfileController`, `SettingsPage`, `ExportService` receive them. Headless core defaults to `InMemorySettingsStore`; `logger_config` lazy-loads QGIS handlers.

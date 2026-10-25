@@ -12,7 +12,7 @@
 - **Tests**: **839 OK** (888 static). `ruff`, `format`, `mypy`, `check_docs`,
   `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
   `i18n-check` and release YAML pass.
-- **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
+- **Controller refactor**: `core/controller.py` is **298 lines** (was 465); cache keys
   and four processors live in `core/services/profile/`. Merged into `main` at `434421db`.
 - **Geometry refactor**: `gui/adapters/geometry.py` is now a **69-line facade**; the
   implementation lives in `geometry_{crs,lines,sampling,stats,sections}.py` (69–174
@@ -32,16 +32,22 @@
   sidebar is now 6 entries. `MainWindow.page_interpretation` aliases
   `page_settings.interpretation_tab`, so persistence/consumers are unchanged. Merged into
   `main` at `1cc2c105`.
+- **Core QGIS-agnostic (2026-10-24)**: `core/` has **no QGIS/PyQt imports** and
+  `CORE_VIOLATIONS == {}`. Translations, settings and map-settings factories are
+  injected via ports/adapters; `qgis_io.py`/`map_settings.py` live in `exporters/`.
+  `core.controller` and `ExportService` import in a plain venv without QGIS.
 - **`section_feature_id` fix (branch `fix/section-feature-id`)**: `SectionPage` now has
   an `fid — label` selector that lists only 2-vertex lines, with a selectable label
   field (`Auto` or any attribute). The id is forwarded to topography/geology/
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
-  geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
+  geology/drillhole tasks; cache keys already isolate features. **839 OK / 888 static**;
   merged into `main` at `83e86a2c`.
 - **Core QGIS-agnostic**: `core/` no longer imports QGIS/PyQt. Translations, settings
   and map settings are injected via ports/adapters; `qgis_io.py` and `map_settings.py`
   live in `exporters/`; architecture allowlist is empty. Merged into `main` at
   `af0bfbbb`.
+- **Documentation (2026-10-24)**: code walkthrough v2 consolidation; public
+  architecture page rebuilt with root redirects; v3.11.0 technical analysis published.
 - **Code Walkthrough v2 consolidation**: v2 ES/EN is the only active vault; v1 is
   archived under `docs/archive/code_walkthrough_v1*`; 4 notes migrated and
   `section_feature_selector` / `interpretation_tab` added. Merged into `main` at
@@ -51,7 +57,8 @@
   `uv run qgis-manage deploy --no-compile --qgis-version 4`; backup
   `sec_interp.bak.20261024153917`; manual tests **confirmed OK** (2026-10-24).
   `secc1.shp`: 4 of 7 features listed by design; `a2`/`a3`/`a6` have 3/4/5 vertices.
-- **Reference**: `docs/plans/implementation_plan_section_feature_id.md` ·
+- **Reference**: `docs/maintenance/session_2026-10-24_core_qgis_agnostic.md` ·
+  `docs/plans/implementation_plan_core_qgis_agnostic.md` · `docs/plans/implementation_plan_section_feature_id.md` ·
   `docs/maintenance/session_2026-10-24_section_feature_selection.md` ·
   `docs/plans/implementation_plan_module_size_controller.md` ·
   `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
@@ -72,12 +79,11 @@
 
 ## 🧾 Remaining debt (documented, non-blocking)
 
-- **Core QGIS allowlist** (7 files): `config.py`, `data_cache.py`,
-  `access_control_service.py`, `export/map_settings_factory.py`, `export/orchestrator.py`,
-  `utils/i18n.py`, `utils/io.py`.
-- **Analyzer**: 36 known issues (19 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
+- **Analyzer**: 37 known issues (20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
   4 `NON_PYTHONIC_LOOP`, 2 `POTENTIAL_MISSING_SLOT`, 1 `SPAGHETTI_CODE`,
   1 `UNPRECISE_LAYER`).
+- **`ProfileController` GOD_OBJECT** (21 attributes) — deferred; group lazy services.
+- **`Invert line`** — future feature; not part of the 2-vertex selector.
 - **`ProfileController` GOD_OBJECT** (21 attributes, `core/controller.py:37`) —
   deferred after the module-size refactor; group lazy services into
   `ControllerServices` and keep compatibility properties.

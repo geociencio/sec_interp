@@ -18,6 +18,7 @@
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
 - [x] **Core QGIS-agnostic** — `core/` sin imports QGIS/PyQt; puertos de i18n/settings y factory de map settings inyectados; `qgis_io.py`/`map_settings.py` en `exporters/`; allowlist vacía; suite **839 OK** (888 static); mergeado en `main` en `af0bfbbb`.
+- [x] **Documentación** — walkthrough v2 consolidada, arquitectura pública reconstruida con redirects raíz y análisis técnico v3.11.0 publicado.`
 - [x] **Code Walkthrough v2 consolidation** — v2 ES/EN como única bóveda; v1 archivada en `docs/archive/code_walkthrough_v1*`; 4 notas migradas + `section_feature_selector`/`interpretation_tab`; mergeada en `main` en `30b90605`.
 - [x] **Interpretation settings tab** — `InterpretationPage` movida a `SettingsPage` como tab **Interpretation Settings**; sidebar 7 → 6; alias `page_interpretation` conservado; suite **829 OK** (878 static); mergeada en `main` en `1cc2c105`.
 - [x] **Validación manual QGIS 4** — selector desplegado y probado: `secc1.shp` muestra 4 de 7 líneas (las de 2 vértices); preview, LOD, export y persistencia OK.

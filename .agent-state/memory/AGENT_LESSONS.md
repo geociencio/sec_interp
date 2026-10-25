@@ -18,6 +18,7 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 
 ```yaml
 lessons:
+  - {date: '2026-10-24', category: ARCHITECTURE, topic: dependency-free layers can still import QGIS through root helpers, lesson: 'core had no qgis imports but logger_config did, so the plain-venv import failed.', action: 'Prove dependency-free imports with a subprocess test; do not rely only on an import grep.'}
   - date: '2026-10-24'
     category: ARCHITECTURE
     topic: cache keys do not prove a parameter reaches the extractor
