@@ -1,3 +1,10 @@
+## [2026-10-25] Tooling: qgis-manage 0.12.0 & Release Readiness
+- **Achievement**: adopted `qgis-manage` 0.12.0 (from 0.10.0), hardened the Makefile/release CI around it, and re-validated the 3.12.0 gate. All quality gates are green; the release artifacts (version, changelog, notes, README, queue/tag) are still pending.
+- **Changes**: repeatable `--type` + `--jobs` compile (resources rebuilt only when their inputs change); project-owned `clean` that preserves `resources.py` and the tracked `.cpg` sample sidecars; `zip`/CI package with `--repo-check --stamp`; `docker-test` post-step via `uv run python`; `[tool.qgis-manager]` pins QGIS 4, one backup and no implicit compile; `.qgis-manage/` ignored.
+- **Verification**: **839 tests OK / 888 static**; Docker suite exit 0; `ruff`, `format`, `mypy` (102 files), `check_docs` (37), `i18n-check`, `security-scan`, Qt6 (0 findings), analyzer CC PASS; `package --repo-check --stamp` = 340 files, 2.4 MB.
+- **Analysis**: `docs/research/qgis_manage_0.12.0_analysis.md` records the 0.10.0 → 0.12.0 fixes, measurements (`--repo-check` 3.2 s → 0.67 s) and the remaining upstream limitations (`--require-docs` layout, `clean` vs tracked `.cpg`, `profiles list` QGIS 3 only).
+- **Maintenance**: [session_2026-10-25_qgis_manage_0120.md](maintenance/session_2026-10-25_qgis_manage_0120.md).
+
 ## [2026-10-24] Session Close: Core QGIS-Agnostic
 - **Achievement**: `core/` has no QGIS/PyQt imports; translations, settings and map settings are injected via ports/adapters; `qgis_io.py` and `map_settings.py` moved to `exporters/`; logger imports QGIS lazily.
 - **Verification**: **839 tests OK / 888 static**; architecture allowlist **empty**; core imports in a plain venv; `ruff`, `format`, `mypy`, `check_docs`, `forge validate`, `sync_metrics --validate` and mirror-check PASS.

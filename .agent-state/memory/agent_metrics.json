@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-25T09:41:47.520838+00:00"
+            "analyzed_at": "2026-10-25T18:09:47.930249+00:00"
         },
         "tests_local": {
             "date": "2026-10-25",
@@ -101,18 +101,29 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-10-24",
-        "topic": "core_qgis_agnostic",
-        "tests_ok": 839,
+        "date": "2026-10-25",
+        "topic": "qgis_manage_0120",
+        "tests_ok": 792,
         "quality_score": 56.6,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
         "tasks": [],
-        "status": "SUCCESS",
-        "tests_static": 888
+        "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-24",
+            "tests_ok": 839,
+            "quality_score": 56.6,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "tests_static": 888,
+            "session": "core_qgis_agnostic"
+        },
         {
             "date": "2026-10-24",
             "tests_ok": 827,

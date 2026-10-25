@@ -18,17 +18,13 @@ archived on 2026-10-19; the most reusable rules are distilled in the project ski
 
 ```yaml
 lessons:
+  - {date: '2026-10-25', category: TOOLING, topic: 'clean deletes tracked sidecars, not just generated .py', lesson: '`qgis-manage clean` unlinks the .py next to every .qrc/.ui and every *.cpg/*.qpj; `--keep-generated` only protects the .py files, so tracked sample data disappears.', action: 'Use a project-owned clean or `clean --dry-run` first; never wire `qgis-manage clean` blindly into a Makefile.'}
+  - {date: '2026-10-25', category: TOOLING, topic: 'package --require-docs hardcodes a single-language help layout', lesson: '0.12.0 checks `help/html/index.html`, but SecInterp ships `help/html/<lang>/index.html` with no root index, so the flag fails on a valid package.', action: 'Keep `make zip` dependent on `docs` and gate on `help/html/<lang>/index.html`; propose a configurable docs entry upstream.'}
+  - {date: '2026-10-25', category: ENVIRONMENT, topic: 'Qt6 on KDE inherits the system dark palette even with UITheme=default', lesson: 'Qt 6.11 reads the KDE/portal color scheme; `UITheme=default` has no colors of its own, and clearing `QT_QPA_PLATFORMTHEME` or forcing Fusion still yields dark.', action: 'For a light UI/screenshots launch with `QT_QPA_PLATFORMTHEME=generic` (tested light palette); keep `UITheme=default` or use a complete QSS theme.'}
+  - {date: '2026-10-25', category: ENVIRONMENT, topic: 'mypy sqlite metastore fails when the cache is outside the writable workspace', lesson: 'Running `make mypy` from the parent directory under the file sandbox made mypy fail with a sqlite database error, not a type error.', action: 'Set `MYPY_CACHE_DIR=$PWD/.mypy_cache` for local sandbox runs; CI needs no override.'}
   - {date: '2026-10-24', category: ARCHITECTURE, topic: dependency-free layers can still import QGIS through root helpers, lesson: 'core had no qgis imports but logger_config did, so the plain-venv import failed.', action: 'Prove dependency-free imports with a subprocess test; do not rely only on an import grep.'}
-  - date: '2026-10-24'
-    category: ARCHITECTURE
-    topic: cache keys do not prove a parameter reaches the extractor
-    lesson: 'section_feature_id was in PreviewParams, the hash and every component cache key, but nine preview/export callers omitted it, so the first feature was always sampled.'
-    action: After adding a selector input, pass it through every extraction path and assert the extractor call kwargs in tests; cache-key changes alone do not prove behavior.
-  - date: '2026-10-24'
-    category: TESTING
-    topic: module-size refactors break tests that patch private methods unless wrappers stay
-    lesson: 'Moving renderer/exporter logic to helper modules changed the patch targets; keeping thin private wrappers on the original class preserved the existing tests and integration hooks without rewriting them.'
-    action: Before splitting a module, list every monkeypatched method and keep a delegating wrapper at the original call site; only update tests when the public contract actually changes.
+  - {date: '2026-10-24', category: ARCHITECTURE, topic: 'cache keys do not prove a parameter reaches the extractor', lesson: 'section_feature_id was in PreviewParams, the hash and every component cache key, but nine preview/export callers omitted it, so the first feature was always sampled.', action: 'After adding a selector input, pass it through every extraction path and assert the extractor call kwargs in tests; cache-key changes alone do not prove behavior.'}
+  - {date: '2026-10-24', category: TESTING, topic: 'module-size refactors break tests that patch private methods unless wrappers stay', lesson: 'Moving renderer/exporter logic to helper modules changed the patch targets; keeping thin private wrappers on the original class preserved the existing tests and integration hooks without rewriting them.', action: 'Before splitting a module, list every monkeypatched method and keep a delegating wrapper at the original call site; only update tests when the public contract actually changes.'}
   - date: '2026-10-24'
     category: TOOLING
     topic: qgis-analyzer quality_score is a size-driven MI average, not a release gate
