@@ -1,6 +1,6 @@
 # Implementation Plan — Make `core/` QGIS-Agnostic
 
-**Status**: PROPUESTO — pendiente de aprobación
+**Status**: MERGEADO en `main` en `af0bfbbb`
 **Created**: 2026-10-24
 **Scope**: eliminar las 7 dependencias QGIS/PyQt de `core/` sin cambiar comportamiento
 **Branch propuesta**: `refactor/core-qgis-agnostic`
@@ -378,5 +378,13 @@ negocio.
 
 ---
 
-**Aprobación requerida**: confirmar el enfoque de puertos/adaptadores y el orden de
-las tres fases antes de crear `refactor/core-qgis-agnostic`.
+## 11. Resultado
+
+Implementado y mergeado en `main` en `af0bfbbb`:
+
+- `core/` no importa `qgis.*` ni `qgis.PyQt`;
+- traducciones, settings y map-settings factory inyectados desde el composition root;
+- `exporters/qgis_io.py` y `exporters/map_settings.py`;
+- `CORE_VIOLATIONS == {}`;
+- `core.controller` y `ExportService` importan en un venv sin QGIS;
+- **839 tests OK / 888 static**; gates verdes.

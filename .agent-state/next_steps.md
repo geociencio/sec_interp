@@ -9,7 +9,7 @@
   `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
   `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
   the deprecated `qa-docker` alias.
-- **Tests**: **829 OK** (878 static). `ruff`, `format`, `mypy`, `check_docs`,
+- **Tests**: **839 OK** (888 static). `ruff`, `format`, `mypy`, `check_docs`,
   `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
   `i18n-check` and release YAML pass.
 - **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
@@ -38,6 +38,10 @@
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
   geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
   merged into `main` at `83e86a2c`.
+- **Core QGIS-agnostic**: `core/` no longer imports QGIS/PyQt. Translations, settings
+  and map settings are injected via ports/adapters; `qgis_io.py` and `map_settings.py`
+  live in `exporters/`; architecture allowlist is empty. Merged into `main` at
+  `af0bfbbb`.
 - **Code Walkthrough v2 consolidation**: v2 ES/EN is the only active vault; v1 is
   archived under `docs/archive/code_walkthrough_v1*`; 4 notes migrated and
   `section_feature_selector` / `interpretation_tab` added. Merged into `main` at
