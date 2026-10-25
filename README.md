@@ -2,7 +2,7 @@
 
 ![QGIS](https://img.shields.io/badge/QGIS-3.28%2B%20%7C%204.x-green.svg)
 ![Qt](https://img.shields.io/badge/Qt-5%20%7C%206-blue.svg)
-![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
+![License](https://img.shields.io/badge/License-GPL--2.0--or--later-blue.svg)
 [![Version](https://img.shields.io/badge/Version-3.12.0-green.svg)](https://plugins.qgis.org/plugins/sec_interp/)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
@@ -208,5 +208,6 @@ Contributions are welcome.
 
 ## 📄 License
 
-This project is licensed under the GNU General Public License v3.0. See
-[LICENSE](LICENSE) for details.
+This project is licensed under the GNU General Public License **v2.0 or later**
+(GPL-2.0-or-later). See [LICENSE](LICENSE) for the notice and the full
+[GPL-2.0](LICENSE-GPL-2.0.txt) / [GPL-3.0](LICENSE-GPL-3.0.txt) texts.

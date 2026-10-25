@@ -39,5 +39,18 @@
    Upload `dist/sec_interp.X.Y.Z.zip` at <https://plugins.qgis.org/plugins/>. There is no
    `plugin_upload.py` in this repository, so this step is always manual.
 
+## QGIS portal pre-upload checks
+
+- `metadata.txt` with every required field (`name`, `qgisMinimumVersion`,
+  `description`, `about`, `version`, `author`, `email`, `repository`).
+- `LICENSE` with no extension; a single `sec_interp/` folder at the ZIP root.
+- ZIP ≤ 25 MB, no binaries or development files; numeric unique `X.Y.Z` version.
+- `qgisMaximumVersion=4.99` for the **QGIS 4 Ready** listing.
+- Bandit and detect-secrets clean (blocking); Flake8 informational (`make flake8`
+  keeps it clean).
+- File modes `0644`/`0755` (normalize before packaging).
+- Full rules and the SecInterp audit:
+  [docs/research/qgis_plugin_repository_requirements.md](../research/qgis_plugin_repository_requirements.md).
+
 Releases are cut from `main`; there are no `release/vX.Y.Z` branches and no fast-forward
 step.

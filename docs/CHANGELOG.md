@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Research — QGIS plugin repository requirements**: added `docs/research/qgis_plugin_repository_requirements.md` (metadata rules, ZIP structure and 25 MB limit, Bandit/detect-secrets blocking vs Flake8 informational, QGIS 4 Ready version range, approval/trust, and a full SecInterp 3.12.0 audit). The README license was corrected to **GPL-2.0-or-later** to match `LICENSE` and `pyproject.toml`.
 - **Tooling/CI — flake8 is now a blocking gate**: `make flake8` (alias `make pep8`, the QGIS convention) runs flake8 7.4.1 with `.flake8` on the packaged plugin scope (`core gui exporters plugin` + root modules). It is part of `make pre-release`, the CI `quality` job and the pre-commit hooks, matching the checker used by the QGIS plugin repository. `.flake8` no longer redirects output to JSON by default; `scripts/security_scan.py` requests the JSON report explicitly.
 
 ### Fixed
