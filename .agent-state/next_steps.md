@@ -35,7 +35,7 @@
   `QT_QPA_PLATFORMTHEME=generic` forces the light palette (empty does not).
   Current profile uses `UITheme=Blend of Gray`; set `default` for the basic theme.
 
-## 🚀 Release 3.12.0 prepared (2026-10-25)
+## 🚀 Release 3.12.0 published on GitHub (2026-10-25)
 
 - Version **3.12.0** in `metadata.txt`/`pyproject.toml`; `[Unreleased]` moved to
   `[3.12.0]`; release notes in `docs/releases/notes/v3.12.0.md`; README and
@@ -45,9 +45,9 @@
 - ZIP `dist/sec_interp.3.12.0.zip` (342 files, 2.4 MB) with
   SHA256 `97d1ac197c53f28e1b8bacf0bfbe9bf869b39affd4add4dc49239332d0e97c38`.
 - Commit `4f7cb048`, tag `v3.12.0`, `main` and the tag pushed to `origin`.
-- GitHub release **draft** `v3.12.0` created with the ZIP attached.
-- **Pending (manual)**: upload the ZIP at <https://plugins.qgis.org/plugins/sec_interp/>
-  and publish the GitHub draft once the portal accepts it.
+- GitHub release **published** as *Latest*:
+  <https://github.com/geociencio/sec_interp/releases/tag/v3.12.0> (ZIP attached).
+- **Pending (manual)**: upload the ZIP at <https://plugins.qgis.org/plugins/sec_interp/>.
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -62,8 +62,8 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Publish the v3.12.0 release**: upload `dist/sec_interp.3.12.0.zip` to the QGIS
-   plugin portal and publish the GitHub draft (`gh release edit v3.12.0 --draft=false`).
+0. **Upload the v3.12.0 ZIP to the QGIS portal**: <https://plugins.qgis.org/plugins/sec_interp/>
+   (the GitHub release is already published as *Latest*).
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
    the `guide_dem_setup` status-bar strip before the release build.

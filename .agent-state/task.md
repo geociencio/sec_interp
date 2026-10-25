@@ -10,7 +10,7 @@
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
 - [x] **Gates 2026-10-25** — 839 tests locales OK / 888 static; Docker OK; ruff/format/mypy/check_docs/i18n/security PASS; Qt6 0; CC PASS; 37 issues; docstring 99.1 %.
 - [x] **Automatización de cola retirada** — eliminados `.release-queue.json`, `scripts/next_scheduled_release.py` y `.github/workflows/scheduled-release.yml`; 3.12.0 en adelante se publican a mano desde `main`.
-- [x] **Release 3.12.0 preparado** — bump/changelog/notas/README, gates verdes, ZIP 3.12.0, commit `4f7cb048`, tag `v3.12.0` y push; GitHub release en **draft**. **Pendiente**: subir el ZIP al portal QGIS y publicar el draft.
+- [x] **Release 3.12.0 publicado en GitHub** — bump/changelog/notas/README, gates verdes, ZIP 3.12.0, commit `4f7cb048`, tag `v3.12.0`, push y GitHub Release publicado como *Latest*. **Pendiente**: subir el ZIP al portal QGIS.
 - [x] **Capturas USER_GUIDE 3.12.0** — 22 figuras integradas (sidebar de 6 entradas, Symbology/Interpretation), `ui_main_dialog_v26` y los `workflow_*` retirados, catálogo es al 100 %; staging en `docs/source/images_v3.12.0/` (ignorado).
 
 ## 📌 Pendientes del proyecto
