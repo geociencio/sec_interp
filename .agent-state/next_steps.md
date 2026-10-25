@@ -38,6 +38,10 @@
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
   geology/drillhole tasks; cache keys already isolate features. **827 OK / 876 static**;
   merged into `main` at `83e86a2c`.
+- **Code Walkthrough v2 consolidation**: v2 ES/EN is the only active vault; v1 is
+  archived under `docs/archive/code_walkthrough_v1*`; 4 notes migrated and
+  `section_feature_selector` / `interpretation_tab` added. Merged into `main` at
+  `30b90605`.
 - **QGIS 4 manual validation (2026-10-24)**: plugin deployed to
   `~/.local/share/QGIS/QGIS4/profiles/default/python/plugins/sec_interp` with
   `uv run qgis-manage deploy --no-compile --qgis-version 4`; backup

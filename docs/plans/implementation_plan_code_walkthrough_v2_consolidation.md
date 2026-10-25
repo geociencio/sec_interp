@@ -1,6 +1,6 @@
 # Implementation Plan — Consolidate Code Walkthrough on v2
 
-**Status**: PROPUESTO — pendiente de aprobación
+**Status**: MERGEADO en `main` en `30b90605`
 **Created**: 2026-10-24
 **Scope**: dejar `code_walkthrough_v2` (ES/EN) como única bóveda, archivar v1 y
 reapuntar índices/enlaces
@@ -236,5 +236,12 @@ Cada fase es un commit atómico; v1 no se mueve hasta que la Fase 2 esté verde.
 
 ---
 
-**Aprobación requerida**: confirmar el archivado de v1 y el mapeo propuesto antes de
-crear la rama `docs/code-walkthrough-v2-consolidation`.
+## 10. Resultado
+
+Implementado y mergeado en `main` en `30b90605`:
+
+- v2 ES/EN es la única bóveda activa;
+- 4 notas migradas y 2 nuevas (`section_feature_selector`, `interpretation_tab`);
+- arquitectura, índices, README y `sync_vault_mirrors.sh` apuntan a v2;
+- v1 archivada en `docs/archive/code_walkthrough_v1*`;
+- `sync_vault_mirrors.sh --check`, `docs-check` y `check_docs` PASS.
