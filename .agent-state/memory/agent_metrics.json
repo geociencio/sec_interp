@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-25T02:48:14.202022+00:00"
+            "analyzed_at": "2026-10-25T09:41:47.520838+00:00"
         },
         "tests_local": {
             "date": "2026-10-25",
@@ -89,7 +89,7 @@
         "sync_metrics": {
             "date": "2026-10-25",
             "command": "uv run python scripts/sync_metrics.py",
-            "cc_gate": "UNCHANGED",
+            "cc_gate": "PASS",
             "i18n_gate": "PASS"
         }
     },

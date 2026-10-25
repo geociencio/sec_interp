@@ -42,10 +42,6 @@
   structures/drillholes, `PreviewService` (LOD/topo/structures) and the async
   geology/drillhole tasks; cache keys already isolate features. **839 OK / 888 static**;
   merged into `main` at `83e86a2c`.
-- **Core QGIS-agnostic**: `core/` no longer imports QGIS/PyQt. Translations, settings
-  and map settings are injected via ports/adapters; `qgis_io.py` and `map_settings.py`
-  live in `exporters/`; architecture allowlist is empty. Merged into `main` at
-  `af0bfbbb`.
 - **Documentation (2026-10-24)**: code walkthrough v2 consolidation; public
   architecture page rebuilt with root redirects; v3.11.0 technical analysis published.
 - **Code Walkthrough v2 consolidation**: v2 ES/EN is the only active vault; v1 is
@@ -63,8 +59,15 @@
   `docs/plans/implementation_plan_module_size_controller.md` ·
   `docs/maintenance/session_2026-10-24_module_size_gate_completion.md`.
 
+- **Release 3.12.0**: code/gates are green, but the release is **not prepared**.
+  Missing: version bump, `[Unreleased]` → `3.12.0`, release notes, queue entry,
+  `make pre-release`/Docker, help rebuild and portal upload.
+
 ## 📌 Pending
 
+0. **Prepare release 3.12.0** — bump `metadata.txt`/`pyproject.toml`, changelog,
+   `docs/releases/notes/v3.12.0.md`, `.release-queue.json`, `make pre-release`,
+   package and portal upload.
 1. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
 2. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.
@@ -84,9 +87,6 @@
   1 `UNPRECISE_LAYER`).
 - **`ProfileController` GOD_OBJECT** (21 attributes) — deferred; group lazy services.
 - **`Invert line`** — future feature; not part of the 2-vertex selector.
-- **`ProfileController` GOD_OBJECT** (21 attributes, `core/controller.py:37`) —
-  deferred after the module-size refactor; group lazy services into
-  `ControllerServices` and keep compatibility properties.
 - **Docs i18n (optional)**: `USER_GUIDE` fr (28 %) / de (18 %).
 - **Framework pytest**: `test_workflow_graph_has_no_broken_refs` assumes only the three
   canonical agents; SecInterp's `qgis_driver` is valid via `opencode.json`. Deselect that
@@ -96,6 +96,7 @@
 
 1. Run `/start-session` (refreshes `AI_CONTEXT.md` and reads this file).
 2. Choose one:
-   - interop §9 **B1** (new feature; recommended), or
+   - prepare release **3.12.0** (recommended), or
+   - interop §9 **B1**, or
    - the deferred `ProfileController` `GOD_OBJECT` refactor.
 3. Before closing: `/close-session` and confirm the release gate is green.
