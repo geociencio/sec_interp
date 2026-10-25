@@ -35,22 +35,19 @@
   `QT_QPA_PLATFORMTHEME=generic` forces the light palette (empty does not).
   Current profile uses `UITheme=Blend of Gray`; set `default` for the basic theme.
 
-## 🚨 Release 3.12.0 is NOT prepared
+## 🚀 Release 3.12.0 prepared (2026-10-25)
 
-Code/gates are green, but the release artifacts are missing:
-
-1. Bump `metadata.txt` + `pyproject.toml` to **3.12.0** (`docs/source/conf.py` reads
-   the version from `metadata.txt`).
-2. `docs/CHANGELOG.md`: move `[Unreleased]` → `[3.12.0] - 2026-10-25`.
-3. Create `docs/releases/notes/v3.12.0.md`.
-4. ~~README: version badge + "What's New"~~ — **done**: README is release-ready for
-   3.12.0 (badge, What's New, features, QGIS 4.x, current screenshots). The version
-   files are bumped in step 1.
-5. `docs/DEVELOPMENT_LOG.md` milestone.
-6. Commit the changes, push `main` (it is ahead of `origin/main`), tag `v3.12.0`.
-7. `make zip` + ZIP audit + `gh release create v3.12.0 ... --draft`.
-8. Portal upload is manual: `plugin_upload.py` no longer exists, so `make upload`
-   is broken.
+- Version **3.12.0** in `metadata.txt`/`pyproject.toml`; `[Unreleased]` moved to
+  `[3.12.0]`; release notes in `docs/releases/notes/v3.12.0.md`; README and
+  `DEVELOPMENT_LOG` updated.
+- Gates green: 839 local tests, Docker suite, ruff/format, mypy (102 files),
+  check_docs, i18n, bandit/detect-secrets, deep security 100/100, Qt6 0, CC PASS.
+- ZIP `dist/sec_interp.3.12.0.zip` (342 files, 2.4 MB) with
+  SHA256 `97d1ac197c53f28e1b8bacf0bfbe9bf869b39affd4add4dc49239332d0e97c38`.
+- Commit `4f7cb048`, tag `v3.12.0`, `main` and the tag pushed to `origin`.
+- GitHub release **draft** `v3.12.0` created with the ZIP attached.
+- **Pending (manual)**: upload the ZIP at <https://plugins.qgis.org/plugins/sec_interp/>
+  and publish the GitHub draft once the portal accepts it.
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -65,7 +62,8 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Prepare release 3.12.0** (recommended next task).
+0. **Publish the v3.12.0 release**: upload `dist/sec_interp.3.12.0.zip` to the QGIS
+   plugin portal and publish the GitHub draft (`gh release edit v3.12.0 --draft=false`).
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
    the `guide_dem_setup` status-bar strip before the release build.
