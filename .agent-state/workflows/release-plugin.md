@@ -4,13 +4,14 @@ agent: qa_engineer
 skills: [release-management, qgis-migration-4x, testing-standards, commit-standards, i18n-standards, changelog-generator]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
-  - "Any quality gate fails (ruff, mypy, docs, i18n, security, analyzer) → Block release and fix it"
+  - "Any quality gate fails (ruff, flake8, mypy, docs, i18n, security, analyzer) → Block release and fix it"
+  - "make flake8 reports any issue in the packaged plugin scope → Block release and fix it"
   - "Docstring coverage regresses below the recorded baseline (99.0%) → Block release and fix documentation"
   - "Forbidden files (.agent, scripts, tests) found in ZIP → Abort and fix .qgisignore"
   - "make security-scan reports CRITICAL findings (Bandit/detect-secrets) → Block release and fix before packaging"
 validation: |
   - Verify that all tests pass in Docker (see `tests/TESTING_STATUS.md`)
-  - Confirm ruff, mypy, check_docs, i18n-check and security-scan pass
+  - Confirm ruff, flake8, mypy, check_docs, i18n-check and security-scan pass
   - Confirm CC <= 10 for all methods (qgis-analyzer --max-cc 10)
   - Ensure Zero High-Severity Security Findings
   - Validate ZIP contents (Plugin-only, no agentic system)
@@ -74,7 +75,16 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
 ### Phase 3: Final Verification (Safety Net)
 
-1. **Security Scan (CRITICAL — includes Bandit)**:
+1. **Flake8 (QGIS portal gate — BLOCKING)**:
+   // turbo
+   ```bash
+   make flake8
+   ```
+   🤖 **Agent Action**: runs flake8 7.4.1 with `.flake8` on the packaged plugin scope
+   (`core gui exporters plugin` + root modules). Any finding blocks the release: the QGIS
+   portal runs the same checker on the uploaded ZIP. `make pep8` is an alias.
+
+2. **Security Scan (CRITICAL — includes Bandit)**:
    // turbo
    ```bash
    make security-scan
@@ -86,7 +96,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 
    🤖 **Agent Action**: `make security-scan` runs **Bandit** (`B110 try_except_pass`, hardcoded passwords, unsafe functions, etc.), **detect-secrets**, and **Flake8** via `scripts/security_scan.py`. It exits non-zero on any CRITICAL finding. Do NOT proceed to packaging if it fails. This is the full scan that catches code smells the `qgis-analyzer security` secrets-only check does not.
 
-2. **Tests (Full Suite)**:
+3. **Tests (Full Suite)**:
    // turbo
    ```bash
    make docker-test

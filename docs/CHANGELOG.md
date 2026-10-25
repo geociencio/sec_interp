@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Tooling/CI — flake8 is now a blocking gate**: `make flake8` (alias `make pep8`, the QGIS convention) runs flake8 7.4.1 with `.flake8` on the packaged plugin scope (`core gui exporters plugin` + root modules). It is part of `make pre-release`, the CI `quality` job and the pre-commit hooks, matching the checker used by the QGIS plugin repository. `.flake8` no longer redirects output to JSON by default; `scripts/security_scan.py` requests the JSON report explicitly.
+
 ### Fixed
 - **Lint (portal checker)**: removed the F811 redefinitions in `gui/preview_layer_factory.py` (renderer imports hoisted to module level) and the E402 late imports in `gui/ui/pages/settings/symbology_tab.py`; both plugin modules now pass flake8 clean.
 

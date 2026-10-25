@@ -10,6 +10,14 @@ repos:
       # Run the formatter
       - id: ruff-format
 
+  # QGIS portal-compatible gate: flake8 on the packaged plugin code only.
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.4.1
+    hooks:
+      - id: flake8
+        files: ^(core/|gui/|exporters/|plugin/|__init__\.py$|logger_config\.py$|sec_interp_plugin\.py$)
+        args: [--config=.flake8, --format=default]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:

@@ -86,7 +86,8 @@ PYTHONPATH=.. uv run python3 -m unittest tests.core.test_geology_service.TestGeo
 ### Code Quality
 ```bash
 make pylint                  # Run static analysis
-make pep8                    # Run ruff style checking
+make flake8                  # QGIS-portal flake8 gate (packaged plugin scope)
+make pep8                    # Alias for `make flake8` (QGIS convention)
 uv run ruff check .          # Direct ruff linting
 uv run ruff format .         # Auto-format code
 pre-commit run --all-files   # Run all pre-commit hooks

@@ -74,6 +74,8 @@ PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui,.venv
 QGIS_VERSION ?= 4
 # Parallel Qt compilation (translations/resources). Override with `make compile COMPILE_JOBS=1`.
 COMPILE_JOBS ?= 4
+# Plugin code shipped in the ZIP; the QGIS portal checker runs flake8 on this scope.
+FLAKE8_TARGETS = core gui exporters plugin __init__.py logger_config.py sec_interp_plugin.py
 QGISDIR=.local/share/QGIS/QGIS$(QGIS_VERSION)/profiles/default
 PLUGIN_DEPLOY_DIR=$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
@@ -270,13 +272,17 @@ pylint:
 #http://pypi.python.org/pypi/pep8
 # Run pep8 style checking
 #http://pypi.python.org/pypi/pep8
-pep8:
+.PHONY: flake8 pep8
+flake8:
 	@echo
 	@echo "-----------"
-	@echo "PEP8 issues (using ruff)"
+	@echo "Flake8 (QGIS portal scope: $(FLAKE8_TARGETS))"
 	@echo "-----------"
-	@uv run ruff check . || true
+	uv run --frozen flake8 $(FLAKE8_TARGETS) --config .flake8 --format=default --output-file=/dev/stdout
 	@echo "-----------"
+
+# QGIS convention: `make pep8` runs the portal-compatible flake8 gate.
+pep8: flake8
 
 # Security scanning (QGIS Portal compatible)
 .PHONY: security-scan
@@ -337,5 +343,5 @@ analyzer:
 
 # Pre-release validation (type check + analyzer + i18n + security + Qt6 + tests)
 .PHONY: pre-release
-pre-release: mypy analyzer i18n-check qt6-check security-scan docker-test
+pre-release: mypy analyzer i18n-check qt6-check flake8 security-scan docker-test
 	@echo "✅ Pre-release validation complete"

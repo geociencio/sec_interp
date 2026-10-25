@@ -1,6 +1,6 @@
 [flake8]
 # Flake8 Configuration for QGIS Portal Compatibility
-# Used only for pre-release security scanning
+# Blocking gate: `make flake8` (plugin scope); `make security-scan` also reports it.
 
 max-line-length = 100
 max-complexity = 15
@@ -33,7 +33,3 @@ ignore =
 per-file-ignores =
     __init__.py:F401,F403
     resources/resources.py:E501
-
-# Output format for security scanner
-format = json
-output-file = flake8_report.json

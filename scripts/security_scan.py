@@ -100,6 +100,7 @@ class SecurityScanner:
             ".",
             "--config",
             ".flake8",
+            "--format=json",
         ]
 
         code, output, report = self._run_command(cmd, "Flake8")

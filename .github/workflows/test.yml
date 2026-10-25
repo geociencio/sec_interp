@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality:
-    name: Lint & Style (Ruff)
+    name: Lint & Style (Ruff + Flake8)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,9 @@ jobs:
 
       - name: Run Ruff
         run: uv run --frozen ruff check .
+
+      - name: Run Flake8 (QGIS portal scope)
+        run: make flake8
 
   typecheck:
     name: Type Check (mypy)
