@@ -2,16 +2,17 @@
 
 ## 1. Introduction
 
-Welcome to the SecInterp plugin! This guide will help you get started with creating geological cross-sections from your QGIS layers.
+Welcome to the SecInterp plugin! This guide will help you create geological cross-sections from your QGIS layers and a Digital Elevation Model (DEM). SecInterp supports **QGIS 3.28+ and QGIS 4.x**.
 
 SecInterp allows you to:
 - Create a topographic profile from a Digital Elevation Model (DEM).
 - Project geological units from a polygon layer onto the profile.
 - Project structural measurements (e.g., dip and strike) onto the profile.
 - Project drillhole traces and geological intervals (sondajes) onto the section.
+- **Section Feature Selector**: choose a specific line from a multi-feature layer. Only single-part lines with **exactly two vertices** (start and end) are listed, as `fid — label`; lines with 3 or more vertices are excluded. Choose `Auto` or any attribute field to label the entries.
 - **Interpretation Tool**: Digitize geological interpretations directly on the section with smart snapping.
 - **3D Export (PolygonZ)**: Export your 2D interpretations as valid 3D Shapefiles.
-- **i18n Support**: Core interface available in 10 languages (English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Hindi, Japanese).
+- **i18n Support**: Interface available in English plus 13 translations (Spanish, German, French, Italian, Portuguese (Brazil), Russian, Chinese (Simplified), Hindi, Japanese, Indonesian, Dutch, Polish and Finnish).
 - View an interactive preview with level-of-detail (LOD) optimization.
 - Measure distances and gradients with automatic snapping to vertices.
 
@@ -41,8 +42,10 @@ The SecInterp dialog is divided into three main areas:
 ### Step 2: Define Section Line
 1.  Navigate to the **Section Line** page.
 2.  **Section Layer**: Select the vector line layer representing your section traces (Mandatory).
-3.  **Buffer Dist. (m)**: Set a buffer distance (e.g., 50m) to capture data around the line (Mandatory).
-4.  **Important**: The line must be single line (not multipart, only P1 and P2) in order to calculate 3d section export.
+3.  **Feature**: Choose the section line from the `fid — label` combo. Only single-part lines with exactly two vertices are listed; lines with 3 or more vertices are excluded.
+4.  **Label Field**: Choose `Auto` or an attribute field to label the feature entries. This changes only the combo text, not the sampled section.
+5.  **Buffer Dist. (m)**: Set a buffer distance (e.g., 50m) to capture data around the line (Mandatory).
+6.  **Important**: The selected line must be a single-part line with exactly two vertices (start and end) for profile and 3D section export.
 
 ![Section Line selection and buffer configuration](images/guide_section_setup.png)
 *Section Line selection and buffer configuration.*
