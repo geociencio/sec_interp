@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.11.0 | Last Updated: 2026-10-24
+> Version 3.12.0 | Last Updated: 2026-10-25
 
 ---
 
@@ -787,5 +787,5 @@ All tools are configured to run in CI pipelines with:
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
 **Last Updated**: 2026-10-24
-**Plugin Version**: 3.11.0
+**Plugin Version**: 3.12.0
 **Author**: Juan M. Bernales

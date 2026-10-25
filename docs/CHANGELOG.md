@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.0] - 2026-10-25
+
 ### Added
 - **Developer tooling — `qgis-manage` 0.10.0 → 0.12.0 analysis**: `docs/research/qgis_manage_0.12.0_analysis.md` records the follow-up review of 0.10.1/0.11.0/0.12.0: which findings were fixed (backup collisions, repeatable `--type`, release-version guard, non-interactive purge, pruned repository scan), the new measurements (`--repo-check` 3.2 s → 0.67 s; the deploy manifest is neutral on a small plugin) and the remaining limitations (`--require-docs` assumes `help/html/index.html`, `clean` deletes tracked `.cpg`, `profiles list` only lists QGIS 3). Historical/research note; no plugin-runtime impact.
 - **Developer tooling — QGIS smoke testing via MCP**: added a vendored fork of [`nkarasiak/qgis-mcp`](https://github.com/nkarasiak/qgis-mcp) under `tools/qgis_mcp/` with a `secinterp` tool group that drives the plugin's dialog over the Model Context Protocol (`status`, `open`, `preview`, `ready`, `results`, `export`). This lets an agent run the QGIS 4 smoke test (`/smoke-qgis4` workflow, `qgis_driver` subagent) programmatically instead of by hand. Dev-only: excluded from the plugin ZIP, static analysis and translation scopes; **no plugin-runtime impact**.

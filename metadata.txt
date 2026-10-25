@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 description=Data extraction for geological interpretation
 general_description=Supported languages: English, German, Spanish, Finnish, French, Hindi, Indonesian, Italian, Japanese, Dutch, Polish, Portuguese (Brazil), Russian, Chinese (Simplified)
-version=3.11.0
+version=3.12.0
 author=Juan M Bernales
 email=juanbernales@gmail.com
 about=Data extraction from DEM, geological outcrops and structural points, for geological interpretation
@@ -12,6 +12,13 @@ tracker=https://github.com/geociencio/sec_interp/issues
 repository=https://github.com/geociencio/sec_interp
 hasProcessingProvider=False
 changelog=
+	3.12.0 (2026-10-25)
+	* Section Selection & Interpretation Settings:
+	- Section Line: new "fid - label" selector that lists only 2-vertex lines, with a selectable label field; the chosen section feature is used by preview, export, LOD and async tasks.
+	- Settings: Interpretation moved into a fifth tab (Interpretation Settings) with storage source, custom attributes and geology/drillhole attribute inheritance; existing projects keep working.
+	- Core: QGIS-agnostic business core with injected translation/settings/map-settings ports; no QGIS imports in core/.
+	- Maintainability: controller 465->295 lines, geometry 598->69, preview layer factory 535->202, 3D exporter 472->155, preview renderer 438->335; no module over 400 lines.
+	- Documentation: User Guide refreshed with the new UI, Symbology and Interpretation figures.
 	3.11.0 (2026-10-18)
 	* Live Symbology & Legend Styling:
 	- Settings > Symbology: a new tab styles the preview/export live (topography, structures, drillhole traces and interpretations); settings are stored in the project.

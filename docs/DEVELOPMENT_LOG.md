@@ -1,3 +1,9 @@
+## [2026-10-25] Release: v3.12.0
+- **Achievement**: v3.12.0 prepared for release — section-line `fid — label` selector, Interpretation Settings tab, QGIS-agnostic core and module-size refactors; README and User Guide refreshed.
+- **Verification**: **839 tests OK / 888 static**; CC PASS; i18n and security gates PASS; Qt6 checker 0 findings; package `3.12.0` (340 files, 2.4 MB).
+- **Docs**: README at 3.12.0, release notes [v3.12.0.md](releases/notes/v3.12.0.md), 22 User Guide screenshots, Spanish guide catalog at 100 %.
+- **Maintenance**: [session_2026-10-25_qgis_manage_0120.md](maintenance/session_2026-10-25_qgis_manage_0120.md).
+
 ## [2026-10-25] Tooling: qgis-manage 0.12.0 & Release Readiness
 - **Achievement**: adopted `qgis-manage` 0.12.0 (from 0.10.0), hardened the Makefile/packaging around it, retired the scheduled release train, and re-validated the 3.12.0 gate. All quality gates are green; the release artifacts (version, changelog, notes, README, tag) are still pending.
 - **Changes**: repeatable `--type` + `--jobs` compile (resources rebuilt only when their inputs change); project-owned `clean` that preserves `resources.py` and the tracked `.cpg` sample sidecars; `zip` with `--repo-check`; `docker-test` post-step via `uv run python`; `[tool.qgis-manager]` pins QGIS 4, one backup and no implicit compile; `.qgis-manage/` ignored.
