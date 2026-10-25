@@ -21,6 +21,5 @@ Submodules
    :maxdepth: 4
 
    sec_interp.core.services.export.compat
-   sec_interp.core.services.export.map_settings_factory
    sec_interp.core.services.export.orchestrator
    sec_interp.core.services.export.path_resolver

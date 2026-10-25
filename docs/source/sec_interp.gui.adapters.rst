@@ -23,5 +23,6 @@ Submodules
    sec_interp.gui.adapters.geometry_stats
    sec_interp.gui.adapters.layer_resolver
    sec_interp.gui.adapters.profile_extractor
+   sec_interp.gui.adapters.qgs_settings_store
    sec_interp.gui.adapters.structure_extractor
    sec_interp.gui.adapters.validation_extractor

@@ -28,7 +28,9 @@ Submodules
    sec_interp.exporters.image_exporter
    sec_interp.exporters.interpretation_3d_exporter
    sec_interp.exporters.interpretation_exporters
+   sec_interp.exporters.map_settings
    sec_interp.exporters.pdf_exporter
    sec_interp.exporters.profile_exporters
+   sec_interp.exporters.qgis_io
    sec_interp.exporters.svg_exporter
    sec_interp.exporters.vector_exporter
