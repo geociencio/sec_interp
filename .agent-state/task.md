@@ -6,10 +6,11 @@
 ## 🎯 Foco actual: preparación del release 3.12.0
 
 - [x] **`qgis-manage` 0.10.0 → 0.12.0** — lock/sync; análisis en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.10.1/0.11/0.12 corrigieron backups, `--type`, guard de versión, `clean`, poda de `--repo-check` (3.2 s → 0.67 s) y añadieron manifiesto, `deploy --dry-run`, `ignore check`, `--json`.
-- [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; CI `package --repo-check --stamp`; `docker-test` usa `uv run python` en el post-paso.
+- [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
 - [x] **Gates 2026-10-25** — 839 tests locales OK / 888 static; Docker OK; ruff/format/mypy/check_docs/i18n/security PASS; Qt6 0; CC PASS; 37 issues; docstring 99.1 %.
-- [ ] **Preparar release 3.12.0** — bump, changelog/notas, README, `make pre-release`, ZIP, `gh release`, portal. **Release manual**: las releases de cola (3.9.1–3.11.0) ya terminaron; no añadir entrada a `.release-queue.json` ni rama `release/v3.12.0`.
+- [x] **Automatización de cola retirada** — eliminados `.release-queue.json`, `scripts/next_scheduled_release.py` y `.github/workflows/scheduled-release.yml`; 3.12.0 en adelante se publican a mano desde `main`.
+- [ ] **Preparar release 3.12.0** — bump, changelog/notas, README, `make pre-release`, ZIP, `gh release`, portal. **Release manual** (sin cola ni rama).
 - [ ] **Capturas USER_GUIDE 3.12.0** — sidebar de 6 entradas e *Interpretation Settings* dentro de Settings; lista de capturas acordada; staging `docs/source/images_v3.12.0/` (ignorado).
 
 ## 📌 Pendientes del proyecto

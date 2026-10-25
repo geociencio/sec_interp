@@ -70,7 +70,6 @@ antigravity-framerepo/
 project_context.json
 ARCHITECTURE.mmd
 skills-lock.json
-.release-queue.json
 context_manifest.json
 forge.toml
 .gitmodules

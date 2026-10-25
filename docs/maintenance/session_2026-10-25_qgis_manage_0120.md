@@ -38,10 +38,13 @@ and 340 files.
   lacks `qgis_plugin_analyzer`).
 - `test`/`deploy`: `transcompile` removed (already covered by `compile`).
 
-### Release CI
+### Release automation
 
-- `scheduled-release.yml`: `package --repo-check --stamp --release-version X.Y.Z`.
-  `--stamp` guarantees the packaged `metadata.txt` matches the ZIP name and adds
+- Retired the scheduled/queue train: removed `.release-queue.json`,
+  `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml`.
+  v3.9.1–v3.11.0 were the last queue-driven releases; 3.12.0 onward are manual.
+- Manual packaging still uses `package --repo-check --stamp --release-version X.Y.Z`
+  when needed: `--stamp` makes the packaged `metadata.txt` match the ZIP name and adds
   `commitSha1`/`commitNumber`/`dateTime`.
 
 ### Documentation
@@ -94,11 +97,11 @@ and 340 files.
 Green: code, tests, static gates, Docker, Qt6, packaging. Missing: version bump
 (3.11.0), `[Unreleased]` → `[3.12.0]`, release notes, README badge/"What's New",
 development-log milestone, commit/push/tag, GitHub release and manual portal
-upload. **Queue releases are over** (3.9.1–3.11.0 are the last entries and all are
-published); 3.12.0 is a manual release, with no `.release-queue.json` entry or
-`release/v3.12.0` branch. The Gen 8 release workflow still contains obsolete steps
-(`docsec` changelog, `make package VERSION=main`, `plugin_upload.py`, partial
-`git add`).
+upload. **Queue releases were retired** (3.9.1–3.11.0 were the last entries and all are
+published): the queue, its selector script and the scheduled workflow were removed, so
+3.12.0 is cut manually from `main` (no queue entry, no `release/v3.12.0` branch). The
+Gen 8 release workflow still contains obsolete steps (`docsec` changelog,
+`make package VERSION=main`, `plugin_upload.py`, partial `git add`).
 
 ## Impact
 

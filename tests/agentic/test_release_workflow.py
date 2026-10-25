@@ -1,40 +1,40 @@
-"""Guards for the scheduled release workflow quality gates."""
+"""Guards for the retired scheduled-release train.
+
+The queue-driven releases (v3.9.1–v3.11.0) were retired on 2026-10-25; releases are
+now cut manually from ``main``. These tests keep the automation from creeping back
+without a deliberate decision.
+"""
 
 import unittest
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[2]
-_WORKFLOW = _ROOT / ".github" / "workflows" / "scheduled-release.yml"
+_WORKFLOWS = _ROOT / ".github" / "workflows"
+_SCHEDULE = _ROOT / "docs" / "releases" / "SCHEDULE.md"
 
 
-class TestScheduledReleaseGates(unittest.TestCase):
-    """The release train must run the same gates as CI before packaging."""
+class TestReleaseWorkflowRetired(unittest.TestCase):
+    """The scheduled/queue release train must stay retired."""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.text = _WORKFLOW.read_text(encoding="utf-8")
+    def test_scheduled_workflow_is_removed(self):
+        self.assertFalse((_WORKFLOWS / "scheduled-release.yml").exists())
 
-    def test_runs_ruff_and_mypy(self):
-        self.assertIn("uv run --frozen ruff check .", self.text)
-        self.assertIn("UV_FROZEN=1 make mypy", self.text)
+    def test_release_queue_is_removed(self):
+        self.assertFalse((_ROOT / ".release-queue.json").exists())
 
-    def test_runs_security_and_i18n(self):
-        self.assertIn("make security-scan", self.text)
-        self.assertIn("i18n-check", self.text)
+    def test_selector_script_is_removed(self):
+        self.assertFalse((_ROOT / "scripts" / "next_scheduled_release.py").exists())
 
-    def test_runs_docs_and_analyzer(self):
-        self.assertIn("python3 scripts/check_docs.py", self.text)
-        self.assertIn("uv run qgis-analyzer analyze . --max-cc 10", self.text)
+    def test_schedule_doc_describes_manual_release(self):
+        text = _SCHEDULE.read_text(encoding="utf-8")
+        self.assertIn("Manual release checklist", text)
+        self.assertIn("make pre-release", text)
 
-    def test_quality_gates_precede_packaging(self):
-        quality = self.text.index("Quality gates")
-        package = self.text.index("Build package")
-        self.assertLess(quality, package)
-
-    def test_quality_gates_precede_docker_tests(self):
-        quality = self.text.index("Quality gates")
-        tests = self.text.index("Run tests (Docker")
-        self.assertLess(quality, tests)
+    def test_no_workflow_references_the_retired_queue(self):
+        for workflow in _WORKFLOWS.glob("*.yml"):
+            text = workflow.read_text(encoding="utf-8")
+            self.assertNotIn("next_scheduled_release", text, workflow.name)
+            self.assertNotIn("release-queue", text, workflow.name)
 
 
 if __name__ == "__main__":

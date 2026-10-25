@@ -1,53 +1,43 @@
-# Release Schedule — Incremental Train from v3.8.0
+# Release Process — Manual
 
-This document describes the scheduled rollout of the releases prepared from the
-`feature/dem-section-v3.9.0` work. Each release lives on its own cumulative branch and is
-published automatically on its Sunday.
+> **Status (2026-10-25)**: the scheduled release train was retired. The queue
+> (`.release-queue.json`), its selector (`scripts/next_scheduled_release.py`) and the
+> `scheduled-release.yml` workflow were removed. **v3.9.1, v3.10.0 and v3.11.0 were the
+> last queue-driven releases**; from 3.12.0 on, releases are cut manually from `main`.
 
-## Calendar
+## Manual release checklist
 
-| Version | Scheduled | Branch | Highlights |
-| :--- | :--- | :--- | :--- |
-| v3.9.0 | 2026-09-27 (published) | `main` | DEM/Section insights, CRS safety, Adaptive VE |
-| v3.9.1 | **2026-10-04** | `release/v3.9.1` | Optional smoothed topography profile |
-| v3.10.0 | **2026-10-11** | `release/v3.10.0` | Interactive preview legend (side panel, per-unit controls, drillhole lithologies) |
-| v3.11.0 | **2026-10-18** | `release/v3.11.0` | Live symbology, per-unit editor, legend layout |
-
-## How it works
-
-- `.release-queue.json` lists the pending releases with their date and branch.
-- `.github/workflows/scheduled-release.yml` runs **every Sunday at 15:00 UTC** on a standard
-  runner. It picks the first release that is **due** (date reached) and **not yet published**
-  (tag absent on `origin`), then:
-  1. checks out the release branch,
-  2. runs the full test suite in the QGIS Docker image (headless),
-  3. builds `sec_interp.<version>.zip`,
-  4. publishes the GitHub release with the versioned ZIP and `docs/releases/notes/v<version>.md`.
-- If nothing is due (all published or dates in the future), the workflow does nothing.
-
-### Manual trigger
-
-To publish a specific version immediately (or retry a failed run), use
-*Actions → Scheduled Release → Run workflow* and enter the version (e.g. `3.9.1`), or:
-
-```bash
-gh workflow run scheduled-release.yml -f version=3.9.1
-```
-
-## Manual steps (not automatable here)
-
-1. **QGIS plugin repository**: upload `dist/sec_interp.<version>.zip` at
-   <https://plugins.qgis.org/plugins/>. There is no `plugin_upload.py` in this repository, so
-   this step is manual for every release.
-2. **Sync `main`**: the scheduled workflow publishes from the release branch and does **not**
-   advance `main` (to keep the automation non-destructive). Once a release is validated,
-   fast-forward `main`:
-
+1. **Prepare the version**
+   - `metadata.txt` and `pyproject.toml` → `X.Y.Z` (`docs/source/conf.py` reads the version
+     from `metadata.txt`).
+   - `docs/CHANGELOG.md`: move `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`.
+   - Create `docs/releases/notes/vX.Y.Z.md`.
+   - Update the README version badge and "What's New", plus `docs/DEVELOPMENT_LOG.md`.
+2. **Run the gates**
    ```bash
-   git checkout main && git merge --ff-only release/v3.11.0 && git push origin main
+   make pre-release   # mypy, analyzer, i18n, Qt6, security, Docker tests
    ```
+3. **Build and audit the ZIP**
+   ```bash
+   make zip
+   unzip -l dist/sec_interp.X.Y.Z.zip | grep -E "\.agent|scripts|tests|AI_CONTEXT"
+   ```
+   The audit must return nothing.
+4. **Commit, tag and push**
+   ```bash
+   git add metadata.txt pyproject.toml docs/ README.md
+   git commit -m "chore(release): prepare vX.Y.Z"
+   git tag -a vX.Y.Z -m "Release vX.Y.Z"
+   git push origin main && git push origin vX.Y.Z
+   ```
+5. **GitHub release**
+   ```bash
+   gh release create vX.Y.Z --title "vX.Y.Z" \
+     --notes-file docs/releases/notes/vX.Y.Z.md dist/*.zip --draft
+   ```
+6. **QGIS plugin repository (manual, unavoidable)**
+   Upload `dist/sec_interp.X.Y.Z.zip` at <https://plugins.qgis.org/plugins/>. There is no
+   `plugin_upload.py` in this repository, so this step is always manual.
 
-## Adding the next releases
-
-Append an entry to `.release-queue.json` (version, branch, date) after preparing the branch —
-no workflow change is required.
+Releases are cut from `main`; there are no `release/vX.Y.Z` branches and no fast-forward
+step.

@@ -47,12 +47,11 @@ Code/gates are green, but the release artifacts are missing:
 8. Portal upload is manual: `plugin_upload.py` no longer exists, so `make upload`
    is broken.
 
-**Queue releases are over**: `.release-queue.json` only contains 3.9.1, 3.10.0 and
-3.11.0, all already tagged/published (`next_scheduled_release.py` returns
-`nothing_due=true` with a working remote). Do **not** add a 3.12.0 queue entry or a
-`release/v3.12.0` branch; 3.12.0 is a manual release. The dormant
-`scheduled-release.yml` will keep doing nothing while the queue stays exhausted
-(consider retiring it separately).
+**Queue releases are retired (2026-10-25)**: `.release-queue.json`,
+`scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
+removed. v3.9.1, v3.10.0 and v3.11.0 were the last queue-driven releases; 3.12.0 is a
+manual release from `main` (no queue entry, no `release/v3.12.0` branch). The manual
+checklist lives in `docs/releases/SCHEDULE.md`.
 
 **Release-readiness caveats**: the Gen 8 release workflow still mentions the legacy
 `docs/docsec/CHANGELOG.md`, `make package VERSION=main` (the Makefile ignores
