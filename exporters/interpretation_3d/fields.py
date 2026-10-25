@@ -8,7 +8,7 @@ from typing import Any
 from qgis.core import QgsField, QgsFields, QgsVectorFileWriter
 from qgis.PyQt.QtCore import QMetaType
 
-import sec_interp.core.utils.io as scu_io
+import sec_interp.exporters.qgis_io as scu_io
 from sec_interp.core.exceptions import ExportError
 
 

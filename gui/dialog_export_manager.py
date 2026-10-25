@@ -19,6 +19,7 @@ from sec_interp.core.exceptions import SecInterpError
 from sec_interp.core.performance_metrics import MetricsCollector, PerformanceTimer
 from sec_interp.core.services.export_service import ExportService
 from sec_interp.exporters import get_exporter
+from sec_interp.exporters.map_settings import create_map_settings
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
@@ -43,7 +44,10 @@ class ExportManager:
         """
         self.dialog = dialog
         self.metrics = MetricsCollector()
-        self.export_service = ExportService(self.dialog.plugin_instance.controller)
+        self.export_service = ExportService(
+            self.dialog.plugin_instance.controller,
+            map_settings_factory=create_map_settings,
+        )
 
     def export_preview(self) -> bool:
         """Export the current preview to a file."""

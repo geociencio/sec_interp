@@ -15,7 +15,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QMetaType
 
-from sec_interp.core.utils import io as scu_io
+from sec_interp.exporters import qgis_io as scu_io
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter

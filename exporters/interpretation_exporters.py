@@ -22,7 +22,7 @@ from qgis.core import (  # noqa: E402
 )
 from qgis.PyQt.QtCore import QMetaType  # noqa: E402
 
-import sec_interp.core.utils.io as scu_io  # noqa: E402
+import sec_interp.exporters.qgis_io as scu_io  # noqa: E402
 from sec_interp.exporters.base_exporter import BaseExporter  # noqa: E402
 from sec_interp.logger_config import get_logger  # noqa: E402
 

@@ -24,11 +24,6 @@ from .geology import (
     calculate_apparent_dip,
 )
 
-# I/O utilities
-from .io import (
-    create_shapefile_writer,
-)
-
 # Structural data parsing and attribute extraction
 from .parsing import (
     cardinal_to_azimuth,
@@ -69,8 +64,6 @@ __all__ = [
     "cardinal_to_azimuth",
     # Rendering
     "create_coordinate_transform",
-    # I/O
-    "create_shapefile_writer",
     # Parsing
     "extract_feature_attributes",
     # Sampling

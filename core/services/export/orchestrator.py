@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +13,6 @@ from sec_interp.core.utils.i18n import translate
 from sec_interp.logger_config import get_logger
 
 from .compat import ExportServiceCompatMixin
-from .map_settings_factory import create_map_settings
 
 logger = get_logger(__name__)
 
@@ -24,6 +24,7 @@ class ExportService(ExportServiceCompatMixin):
         self,
         controller: Any | None = None,
         access_control: AccessControlService | None = None,
+        map_settings_factory: Callable[..., Any] | None = None,
     ) -> None:
         """Initialize the export service.
 
@@ -31,10 +32,13 @@ class ExportService(ExportServiceCompatMixin):
             controller: Optional reference to ProfileController for data access.
             access_control: Optional access control service; core defaults to an
                 in-memory store, the plugin injects the QgsSettings adapter.
+            map_settings_factory: QGIS-free injection for the image/PDF/SVG
+                exporter; the composition root supplies ``create_map_settings``.
 
         """
         self.controller = controller
         self.access_control = access_control or AccessControlService()
+        self._map_settings_factory = map_settings_factory
 
     def tr(self, message: str) -> str:
         """Translate a message using the injected translator."""
@@ -216,5 +220,7 @@ class ExportService(ExportServiceCompatMixin):
         size: Any | None,
         background_color: Any,
     ) -> Any:
-        """Create and configure QgsMapSettings for canvas or image export."""
-        return create_map_settings(layers, extent, size, background_color)
+        """Create map settings through the injected QGIS factory."""
+        if self._map_settings_factory is None:
+            raise RuntimeError("map_settings_factory is required for image/PDF/SVG export")
+        return self._map_settings_factory(layers, extent, size, background_color)

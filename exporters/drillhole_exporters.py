@@ -13,7 +13,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QMetaType
 
-import sec_interp.core.utils.io as scu_io
+import sec_interp.exporters.qgis_io as scu_io
 from sec_interp.core.domain import DrillholeProjection
 from sec_interp.logger_config import get_logger
 

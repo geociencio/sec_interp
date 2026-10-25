@@ -1,18 +1,19 @@
 """Tests for the export orchestration service."""
 
-from unittest.mock import MagicMock, patch
 from pathlib import Path
-from tests.base_test import BaseTestCase
+from unittest.mock import MagicMock, patch
+
 from qgis.core import (
-    QgsVectorLayer,
+    QgsCoordinateReferenceSystem,
     QgsRasterLayer,
     QgsRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsGeometry,
+    QgsVectorLayer,
 )
 
+from sec_interp.core.domain import PreviewParams
 from sec_interp.core.services.export_service import ExportService
-from sec_interp.core.domain import PreviewParams, GeologyData, StructureData
+from sec_interp.exporters.map_settings import create_map_settings
+from tests.base_test import BaseTestCase
 
 
 class TestExportService(BaseTestCase):
@@ -20,15 +21,13 @@ class TestExportService(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.service = ExportService()
+        self.service = ExportService(map_settings_factory=create_map_settings)
         self.output_folder = Path("/tmp/export_test")
 
         # Setup common mock behavior
         self.mock_line_lyr = QgsVectorLayer()
         self.mock_line_lyr.isValid = MagicMock(return_value=True)
-        self.mock_line_lyr.crs = MagicMock(
-            return_value=QgsCoordinateReferenceSystem("EPSG:4326")
-        )
+        self.mock_line_lyr.crs = MagicMock(return_value=QgsCoordinateReferenceSystem("EPSG:4326"))
 
         self.params = PreviewParams(
             raster_layer=QgsRasterLayer(), line_layer=self.mock_line_lyr, band_num=1
@@ -102,10 +101,8 @@ class TestExportService(BaseTestCase):
 
         # Interpretation3DExporter depends on can_export_3d() settings; keep
         # this test focused on the 2D path (3D is covered separately).
-        with patch.object(
-            self.service.access_control, "can_export_3d", return_value=False
-        ):
-            result = self.service.export_data(
+        with patch.object(self.service.access_control, "can_export_3d", return_value=False):
+            self.service.export_data(
                 self.output_folder,
                 self.params,
                 profile_data=profile_data,
@@ -136,9 +133,7 @@ class TestExportService(BaseTestCase):
         interp_data = [{"id": 1}]
 
         # Case 1: Restricted
-        with patch.object(
-            self.service.access_control, "can_export_3d", return_value=False
-        ):
+        with patch.object(self.service.access_control, "can_export_3d", return_value=False):
             self.service.export_data(
                 self.output_folder,
                 self.params,
@@ -156,9 +151,7 @@ class TestExportService(BaseTestCase):
         line_feat = MagicMock()
         self.mock_line_lyr.getFeatures.return_value = iter([line_feat])
 
-        with patch.object(
-            self.service.access_control, "can_export_3d", return_value=True
-        ):
+        with patch.object(self.service.access_control, "can_export_3d", return_value=True):
             self.service.export_data(
                 self.output_folder,
                 self.params,
@@ -239,9 +232,7 @@ class TestExportService(BaseTestCase):
         mock_dh.return_value.export.side_effect = Exception("error")
 
         with self.assertRaises(ExportError):
-            self.service._export_drillholes(
-                self.output_folder, [{"id": 1}], MagicMock(), []
-            )
+            self.service._export_drillholes(self.output_folder, [{"id": 1}], MagicMock(), [])
 
     @patch("sec_interp.exporters.AxesVectorExporter")
     def test_export_axes_error(self, mock_axes):
@@ -260,9 +251,7 @@ class TestExportService(BaseTestCase):
         interp_data = [{"id": 1}]
         self.mock_line_lyr.isValid.return_value = False
 
-        with patch.object(
-            self.service.access_control, "can_export_3d", return_value=True
-        ):
+        with patch.object(self.service.access_control, "can_export_3d", return_value=True):
             # Should skip 3D but NOT raise error if line is invalid
             self.service._export_interpretations(
                 self.output_folder, interp_data, self.mock_line_lyr, MagicMock(), []
@@ -283,7 +272,6 @@ class TestExportService(BaseTestCase):
 
     def test_get_map_settings(self):
         """Test QgsMapSettings configuration."""
-        from qgis.core import QgsRectangle
         from qgis.PyQt.QtCore import QSize
         from qgis.PyQt.QtGui import QColor
 

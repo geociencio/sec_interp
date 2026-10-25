@@ -19,6 +19,7 @@ from sec_interp.core.config import ConfigService
 from sec_interp.core.services.access_control_service import AccessControlService
 from sec_interp.core.utils.i18n import TranslatableMixin, set_translator
 from sec_interp.core.utils.safe_loader import SafeLoader
+from sec_interp.exporters.map_settings import create_map_settings
 from sec_interp.gui.adapters.qgs_settings_store import QgsSettingsStore
 from sec_interp.logger_config import get_logger, setup_logging
 from sec_interp.plugin import (
@@ -101,6 +102,7 @@ class SecInterp(TranslatableMixin, PluginLifecycleMixin, InputValidationMixin, R
             export_klass(
                 self.controller,
                 access_control=AccessControlService(self.settings_store),
+                map_settings_factory=create_map_settings,
             )
             if export_klass
             else None
