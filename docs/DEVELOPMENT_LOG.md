@@ -1,3 +1,9 @@
+## [2026-10-24] Refactor: Core QGIS-Agnostic
+- **Achievement**: `core/` no longer imports `qgis.*` or `qgis.PyQt`. Translations are injected (`TranslatableMixin.set_translator`), settings use the `SettingsStore` port (`QgsSettingsStore` in `gui/adapters`), and `ExportService` receives `create_map_settings` from `exporters/map_settings.py`. `core/utils/io.py` moved to `exporters/qgis_io.py`.
+- **Composition**: `SecInterp` creates `QgsSettingsStore`, `ConfigService` and `AccessControlService`; `ProfileController`, `SettingsPage`, `ExportService` receive them. Headless core defaults to `InMemorySettingsStore`; `logger_config` lazy-loads QGIS handlers.
+- **Tests**: **839 OK** (static count synced next); new `test_i18n_port`, `test_settings_store` and `test_core_purity`; architecture allowlist is **empty**.
+- **Plan**: [implementation_plan_core_qgis_agnostic.md](plans/implementation_plan_core_qgis_agnostic.md).
+
 ## [2026-10-24] Docs: Code Walkthrough v2 Consolidation
 - **Achievement**: v2 (ES/EN) is now the single active code-walkthrough vault. Migrated `access_control_service`, `i18n`, `projection_engine` and `survey_processor`; added `section_feature_selector` and `interpretation_tab`; retargeted architecture/index/README links.
 - **Archive**: v1 moved to `docs/archive/code_walkthrough_v1*` with `DEPRECATED` banners and archive READMEs; history preserved via `git mv`.

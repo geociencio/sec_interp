@@ -54,6 +54,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `Makefile` — Automation (deploy, tests, docs)
   - `logger_config.py` → [[logger_config]] · [doc](code_walkthrough_v2/logger_config.md)
 - `core/` ⚙️ — Business Logic (QGIS-agnostic, thread-safe) → [[layer_core]]
+  - **Boundary**: no `qgis.*`/`qgis.PyQt` imports; settings and translations are injected through ports, and image/PDF map settings are supplied by `exporters.map_settings`. The architecture allowlist is empty.
   - `controller.py` — Orchestrator `ProfileController` → [[controller]] · [doc](code_walkthrough_v2/controller.md)
   - `config.py` → [[config]] · [doc](code_walkthrough_v2/config.md)
   - `data_cache.py` → [[data_cache]] · [doc](code_walkthrough_v2/data_cache.md)
@@ -61,7 +62,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `performance_metrics.py` → [[performance_metrics]] · [doc](code_walkthrough_v2/performance_metrics.md)
   - `algorithms.py` — Reserved placeholder for pure business-logic algorithms → [[layer_core]]
   - `domain/` — DTOs `ProfileData`, `GeologySegment`; modules `dtos.py`, `entities.py`, `enums.py`, `spatial_meta.py`, `task_inputs.py` → [[domain]] · [[layer_core_domain]] · [doc](code_walkthrough_v2/domain.md)
-  - `interfaces/` — ABCs for DI (`IGeologyService`, `IDrillholeService`, `IPreviewService`, …) → [[layer_core_interfaces]]
+  - `interfaces/` — ABCs/ports for DI (`IGeologyService`, `IDrillholeService`, `IPreviewService`, `SettingsStore`, …) → [[layer_core_interfaces]]
   - `models/settings_model.py` — Typed settings → [[layer_core_models]]
   - `validation/` — Modular pipeline → [[core_validation]] · [[layer_core_validation]] · [doc](code_walkthrough_v2/layer_core_validation.md)
     - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [[core_validation]]
@@ -77,7 +78,7 @@ The project organization follows a highly modular architecture based on the **Se
     - `services/drillhole_service.py` → [[drillhole_service]] · [doc](code_walkthrough_v2/drillhole_service.md)
     - `services/export_service.py` — 13-line compatibility shim → [[core_services]] · [doc](code_walkthrough_v2/layer_core_services.md)
     - `services/export/` — Export package (orchestrator + handlers) → [[core_services_export]] · [[layer_core_services_export]] · [doc](code_walkthrough_v2/layer_core_services_export.md)
-      - `services/export/orchestrator.py`, `path_resolver.py`, `map_settings_factory.py`, `compat.py`
+      - `services/export/orchestrator.py`, `path_resolver.py`, `compat.py`; map settings factory lives in `exporters/map_settings.py`
       - `services/export/handlers/` (topography, geology, structures, drillholes, drillholes_3d, interpretations, axes) → [[layer_core_services_export_handlers]]
     - `services/preview_service.py` → [[preview_service]] · [doc](code_walkthrough_v2/preview_service.md)
     - `services/vertical_exaggeration_service.py` → [[vertical_exaggeration_service]] · [doc](code_walkthrough_v2/vertical_exaggeration_service.md)
@@ -592,7 +593,7 @@ Modular validation framework with 11 validators coordinated by `ValidationPipeli
 | Geology Utils | `geology.py` → [[layer_core_utils]] | Geological computations, unit conversions. |
 | Geometry Utils | `geometry_utils/` → [[layer_core_utils_geometry_utils]] | Advanced geometry operations (intersections, buffers). |
 | i18n Utils | `i18n.py` → [[core_utils]] | Translation helpers, locale management. |
-| IO Utils | `io.py` → [[layer_core_utils]] | File I/O, serialization, format handling. |
+| QGIS I/O | `exporters/qgis_io.py` → [[layer_exporters]] | Vector writer adapter (Shapefile/GPKG/DXF). |
 | Metadata Reader | `metadata_reader.py` → [[layer_core_utils]] | QGIS layer metadata extraction. |
 | Parsing Utils | `parsing.py` → [[layer_core_utils]] | Text/CSV/XML parsing with error recovery. |
 | Rendering Utils | `rendering.py` → [[layer_core_utils]] | Render-ready data preparation. |

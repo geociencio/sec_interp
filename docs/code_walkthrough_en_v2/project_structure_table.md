@@ -57,7 +57,6 @@
 | | | | | `topography.py` |
 | | | | `__init__.py` | |
 | | | | `compat.py` | |
-| | | | `map_settings_factory.py` | |
 | | | | `orchestrator.py` | |
 | | | | `path_resolver.py` | |
 | | | `__init__.py` | | |
@@ -78,7 +77,6 @@
 | | | `drillhole.py` | | |
 | | | `geology.py` | | |
 | | | `i18n.py` | | |
-| | | `io.py` | | |
 | | | `metadata_reader.py` | | |
 | | | `parsing.py` | | |
 | | | `rendering.py` | | |
@@ -212,6 +210,8 @@
 | | `profile_exporters.py` | | | |
 | | `svg_exporter.py` | | | |
 | | `vector_exporter.py` | | | |
+| | `qgis_io.py` | | | |
+| | `map_settings.py` | | | |
 | **`plugin/`** | | | | |
 | | `__init__.py` | | | |
 | | `input_validator.py` | | | |

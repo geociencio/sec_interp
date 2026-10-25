@@ -20,6 +20,11 @@ The `core/` layer must be **100% QGIS-agnostic** and **100% thread-safe**.
 It must be testable with `PYTHONPATH=.. uv run python3 -m unittest discover tests/core`
 — no QGIS installation required.
 
+QGIS-dependent behavior is injected at the composition root: `SettingsStore`
+(settings), `TranslatableMixin.set_translator` (i18n) and the map-settings
+factory used by `ExportService`. The architecture gate
+(`tests/core/test_architecture_boundary.py`) has an empty allowlist.
+
 ---
 
 ## ✅ Required Patterns

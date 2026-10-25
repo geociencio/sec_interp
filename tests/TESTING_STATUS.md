@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->878<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->888<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-24<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -14,7 +14,7 @@
 | Category | Tests | Progress | Status |
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
-| **Core Services** | <!-- CORE_COUNT -->349<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
+| **Core Services** | <!-- CORE_COUNT -->359<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
 | **GUI Components** | <!-- GUI_COUNT -->370<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
@@ -33,6 +33,7 @@
 - **tests/core/test_controller_characterization.py**: 12 tests
 - **tests/core/test_controller_di.py**: 2 tests
 - **tests/core/test_controller_orchestration.py**: 3 tests
+- **tests/core/test_core_purity.py**: 1 tests
 - **tests/core/test_crs_plausibility.py**: 8 tests
 - **tests/core/test_data_cache_fix.py**: 3 tests
 - **tests/core/test_drillhole_service.py**: 5 tests
@@ -45,6 +46,7 @@
 - **tests/core/test_geology_service_optional.py**: 1 tests
 - **tests/core/test_geometry_utils.py**: 8 tests
 - **tests/core/test_i18n_catalogs.py**: 6 tests
+- **tests/core/test_i18n_port.py**: 5 tests
 - **tests/core/test_layer_validator.py**: 5 tests
 - **tests/core/test_path_validator.py**: 6 tests
 - **tests/core/test_preview_service.py**: 4 tests
@@ -56,6 +58,7 @@
 - **tests/core/test_python_compat.py**: 5 tests
 - **tests/core/test_rendering_utils.py**: 6 tests
 - **tests/core/test_settings_model.py**: 7 tests
+- **tests/core/test_settings_store.py**: 4 tests
 - **tests/core/test_spatial_utils.py**: 4 tests
 - **tests/core/test_structural_parsing_advanced.py**: 9 tests
 - **tests/core/test_structure_service.py**: 5 tests

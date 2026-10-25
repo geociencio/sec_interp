@@ -58,7 +58,6 @@ sec_interp/
 │   │   │   │   └── topography.py
 │   │   │   ├── __init__.py
 │   │   │   ├── compat.py
-│   │   │   ├── map_settings_factory.py
 │   │   │   ├── orchestrator.py
 │   │   │   └── path_resolver.py
 │   │   ├── __init__.py
@@ -79,7 +78,6 @@ sec_interp/
 │   │   ├── drillhole.py
 │   │   ├── geology.py
 │   │   ├── i18n.py
-│   │   ├── io.py
 │   │   ├── metadata_reader.py
 │   │   ├── parsing.py
 │   │   ├── rendering.py
