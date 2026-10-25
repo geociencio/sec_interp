@@ -61,9 +61,7 @@ class SettingsPage(BasePage):
         self.tab_widget.addTab(self.symbology_tab, self.tr("Symbology"))
 
         self.interpretation_tab = InterpretationTab()
-        self.tab_widget.addTab(
-            self.interpretation_tab, self.interpretation_tab.tr("Interpretation Settings")
-        )
+        self.tab_widget.addTab(self.interpretation_tab, self.tr("Interpretation"))
 
         self.info_tab = build_info_tab(self.tr)
         self.tab_widget.addTab(self.info_tab, self.tr("Plugin Information"))

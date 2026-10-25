@@ -571,109 +571,6 @@ Si prega di controllare i registri per i dettagli.</translation>
         </message>
     </context>
     <context>
-        <name>InterpretationPage</name>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="32" />
-            <source>Interpretation Settings</source>
-            <translation>Impostazioni Interpretazione</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="45" />
-            <source>Interpretation Storage</source>
-            <translation>Archiviazione dell'interpretazione</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Project (Internal JSON)</source>
-            <translation>Progetto (JSON interno)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Vector Layer (External)</source>
-            <translation>Livello vettoriale (esterno)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="51" />
-            <source>Source:</source>
-            <translation>Fonte:</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="65" />
-            <source>Auto-Sync on layer edits</source>
-            <translation>Sincronizzazione automatica sulle modifiche ai livelli</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="67" />
-            <source>Listen for changes in the target layer and update the preview.</source>
-            <translation>Ascolta le modifiche nel livello di destinazione e aggiorna l'anteprima.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="74" />
-            <source>Custom Attributes</source>
-            <translation>Attributi Personalizzati</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Field Name</source>
-            <translation>Nome Campo</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Type</source>
-            <translation>Tipo</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Default Value</source>
-            <translation>Valore Predefinito</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="85" />
-            <source>Add Field</source>
-            <translation>Aggiungi Campo</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="86" />
-            <source>Remove Field</source>
-            <translation>Rimuovi Campo</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="94" />
-            <source>Attribute Inheritance</source>
-            <translation>Ereditarietà Attributi</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="96" />
-            <source>Auto-inherit from Geology layers</source>
-            <translation>Eredita automaticamente dai layer Geologia</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="98" />
-            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
-            <translation>Copia nome unità e attributi dal segmento geologico più vicino.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="102" />
-            <source>Auto-inherit from Drillhole intervals</source>
-            <translation>Eredita automaticamente dagli intervalli di Drillhole</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="104" />
-            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
-            <translation>Copia codice roccia e attributi dall'intervallo di sondaggio più vicino.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="211" />
-            <source>Field name cannot be empty</source>
-            <translation>Il nome del campo non può essere vuoto</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="213" />
-            <source>Duplicate field name: {}</source>
-            <translation>Nome campo duplicato: {}</translation>
-        </message>
-    </context>
-    <context>
         <name>InterpretationPropertiesDialog</name>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="50" />
@@ -709,6 +606,104 @@ Si prega di controllare i registri per i dettagli.</translation>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="119" />
             <source>Select Color</source>
             <translation>Seleziona Colore</translation>
+        </message>
+    </context>
+    <context>
+        <name>InterpretationTab</name>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="42" />
+            <source>Interpretation Storage</source>
+            <translation>Archiviazione dell'interpretazione</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Project (Internal JSON)</source>
+            <translation>Progetto (JSON interno)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Vector Layer (External)</source>
+            <translation>Livello vettoriale (esterno)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="48" />
+            <source>Source:</source>
+            <translation>Fonte:</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="62" />
+            <source>Auto-Sync on layer edits</source>
+            <translation>Sincronizzazione automatica sulle modifiche ai livelli</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="64" />
+            <source>Listen for changes in the target layer and update the preview.</source>
+            <translation>Ascolta le modifiche nel livello di destinazione e aggiorna l'anteprima.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="70" />
+            <source>Custom Attributes</source>
+            <translation>Attributi Personalizzati</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Field Name</source>
+            <translation>Nome Campo</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Type</source>
+            <translation>Tipo</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Default Value</source>
+            <translation>Valore Predefinito</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="81" />
+            <source>Add Field</source>
+            <translation>Aggiungi Campo</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="82" />
+            <source>Remove Field</source>
+            <translation>Rimuovi Campo</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="89" />
+            <source>Attribute Inheritance</source>
+            <translation>Ereditarietà Attributi</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="91" />
+            <source>Auto-inherit from Geology layers</source>
+            <translation>Eredita automaticamente dai layer Geologia</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="93" />
+            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
+            <translation>Copia nome unità e attributi dal segmento geologico più vicino.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="97" />
+            <source>Auto-inherit from Drillhole intervals</source>
+            <translation>Eredita automaticamente dagli intervalli di Drillhole</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="99" />
+            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
+            <translation>Copia codice roccia e attributi dall'intervallo di sondaggio più vicino.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="199" />
+            <source>Field name cannot be empty</source>
+            <translation>Il nome del campo non può essere vuoto</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="201" />
+            <source>Duplicate field name: {}</source>
+            <translation>Nome campo duplicato: {}</translation>
         </message>
     </context>
     <context>
@@ -1293,42 +1288,37 @@ Topografia: {0} punti</translation>
     <context>
         <name>SecInterpMainWindow</name>
         <message>
-            <location filename="../gui/ui/main_window.py" line="45" />
+            <location filename="../gui/ui/main_window.py" line="44" />
             <source>Sec Interp</source>
             <translation>Sec Interp</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="136" />
+            <location filename="../gui/ui/main_window.py" line="135" />
             <source>Output Folder</source>
             <translation>Cartella Output</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="148" />
+            <location filename="../gui/ui/main_window.py" line="147" />
             <source>Geology</source>
             <translation>Geologia</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="149" />
+            <location filename="../gui/ui/main_window.py" line="148" />
             <source>Structural</source>
             <translation>Strutturale</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="150" />
+            <location filename="../gui/ui/main_window.py" line="149" />
             <source>Drillholes</source>
             <translation>Sondaggi</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="153" />
-            <source>Interpretation</source>
-            <translation>Interpretazione</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/main_window.py" line="154" />
+            <location filename="../gui/ui/main_window.py" line="152" />
             <source>Settings</source>
             <translation>Ajusti</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="145" />
+            <location filename="../gui/ui/main_window.py" line="144" />
             <source>Mandatory</source>
             <translation>Obbligatorio</translation>
         </message>
@@ -1336,27 +1326,27 @@ Topografia: {0} punti</translation>
     <context>
         <name>SectionFeatureSelector</name>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="153" />
             <source>Feature</source>
             <translation>Elemento</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="155" />
             <source>Select the section line feature</source>
             <translation>Seleziona l'elemento della linea di sezione</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="158" />
             <source>Label field</source>
             <translation>Campo etichetta</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="160" />
             <source>Field used to label each section feature</source>
             <translation>Campo usato per etichettare ogni elemento della sezione</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="179" />
             <source>Auto</source>
             <translation>Auto</translation>
         </message>
@@ -1457,29 +1447,34 @@ Topografia: {0} punti</translation>
     <context>
         <name>SettingsPage</name>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="35" />
+            <location filename="../gui/ui/pages/settings_page.py" line="36" />
             <source>Plugin Settings</source>
             <translation>Impostazioni Plugin</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="54" />
+            <location filename="../gui/ui/pages/settings_page.py" line="55" />
             <source>Default</source>
             <translation>Predefinito</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="57" />
+            <location filename="../gui/ui/pages/settings_page.py" line="58" />
             <source>Advanced</source>
             <translation>Avanzate</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="63" />
+            <location filename="../gui/ui/pages/settings_page.py" line="67" />
             <source>Plugin Information</source>
             <translation>Informazioni Plugin</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="60" />
+            <location filename="../gui/ui/pages/settings_page.py" line="61" />
             <source>Symbology</source>
             <translation>Simbologia</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings_page.py" line="64" />
+            <source>Interpretation</source>
+            <translation>Interpretazione</translation>
         </message>
     </context>
     <context>

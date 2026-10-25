@@ -571,109 +571,6 @@ Please check the logs for details.</source>
         </message>
     </context>
     <context>
-        <name>InterpretationPage</name>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="32" />
-            <source>Interpretation Settings</source>
-            <translation>व्याख्या सेटिंग्स</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="74" />
-            <source>Custom Attributes</source>
-            <translation>कस्टम विशेषताएँ</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Field Name</source>
-            <translation>फ़ील्ड का नाम</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Type</source>
-            <translation>प्रकार</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Default Value</source>
-            <translation>डिफ़ॉल्ट मान</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="85" />
-            <source>Add Field</source>
-            <translation>फ़ील्ड जोड़ें</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="86" />
-            <source>Remove Field</source>
-            <translation>फ़ील्ड हटाएँ</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="94" />
-            <source>Attribute Inheritance</source>
-            <translation>विशेषता विरासत (Inheritance)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="96" />
-            <source>Auto-inherit from Geology layers</source>
-            <translation>भूविज्ञान परतों से स्वतः-विरासत</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="98" />
-            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
-            <translation>निकटतम भूविज्ञान खंड से यूनिट का नाम और विशेषताएँ स्वचालित रूप से कॉपी करें।</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="102" />
-            <source>Auto-inherit from Drillhole intervals</source>
-            <translation>ड्रिलहोल अंतराल से स्वतः-विरासत</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="104" />
-            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
-            <translation>निकatतम ड्रिलहोल अंतराल से रॉक कोड और विशेषताएँ स्वचालित रूप से कॉपी करें।</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="211" />
-            <source>Field name cannot be empty</source>
-            <translation>फ़ील्ड का नाम खाली नहीं हो सकता</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="213" />
-            <source>Duplicate field name: {}</source>
-            <translation>डुप्लिकेट फ़ील्ड नाम: {}</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="45" />
-            <source>Interpretation Storage</source>
-            <translation>इंटरप्रिटेशन स्टोरेज</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Project (Internal JSON)</source>
-            <translation>प्रोजेक्ट (आंतरिक JSON)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Vector Layer (External)</source>
-            <translation>सदिश परत (बाहरी)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="51" />
-            <source>Source:</source>
-            <translation>सोर्स:</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="65" />
-            <source>Auto-Sync on layer edits</source>
-            <translation>लेयर एडिट पर ऑटो - सिंक करें</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="67" />
-            <source>Listen for changes in the target layer and update the preview.</source>
-            <translation>लक्ष्य परत में परिवर्तन के लिए सुनें और पूर्वावलोकन अपडेट करें।</translation>
-        </message>
-    </context>
-    <context>
         <name>InterpretationPropertiesDialog</name>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="50" />
@@ -709,6 +606,104 @@ Please check the logs for details.</source>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="119" />
             <source>Select Color</source>
             <translation>रंग चुनें</translation>
+        </message>
+    </context>
+    <context>
+        <name>InterpretationTab</name>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="42" />
+            <source>Interpretation Storage</source>
+            <translation>इंटरप्रिटेशन स्टोरेज</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Project (Internal JSON)</source>
+            <translation>प्रोजेक्ट (आंतरिक JSON)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Vector Layer (External)</source>
+            <translation>सदिश परत (बाहरी)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="48" />
+            <source>Source:</source>
+            <translation>सोर्स:</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="62" />
+            <source>Auto-Sync on layer edits</source>
+            <translation>लेयर एडिट पर ऑटो - सिंक करें</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="64" />
+            <source>Listen for changes in the target layer and update the preview.</source>
+            <translation>लक्ष्य परत में परिवर्तन के लिए सुनें और पूर्वावलोकन अपडेट करें।</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="70" />
+            <source>Custom Attributes</source>
+            <translation>कस्टम विशेषताएँ</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Field Name</source>
+            <translation>फ़ील्ड का नाम</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Type</source>
+            <translation>प्रकार</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Default Value</source>
+            <translation>डिफ़ॉल्ट मान</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="81" />
+            <source>Add Field</source>
+            <translation>फ़ील्ड जोड़ें</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="82" />
+            <source>Remove Field</source>
+            <translation>फ़ील्ड हटाएँ</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="89" />
+            <source>Attribute Inheritance</source>
+            <translation>विशेषता विरासत (Inheritance)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="91" />
+            <source>Auto-inherit from Geology layers</source>
+            <translation>भूविज्ञान परतों से स्वतः-विरासत</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="93" />
+            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
+            <translation>निकटतम भूविज्ञान खंड से यूनिट का नाम और विशेषताएँ स्वचालित रूप से कॉपी करें।</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="97" />
+            <source>Auto-inherit from Drillhole intervals</source>
+            <translation>ड्रिलहोल अंतराल से स्वतः-विरासत</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="99" />
+            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
+            <translation>निकatतम ड्रिलहोल अंतराल से रॉक कोड और विशेषताएँ स्वचालित रूप से कॉपी करें।</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="199" />
+            <source>Field name cannot be empty</source>
+            <translation>फ़ील्ड का नाम खाली नहीं हो सकता</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="201" />
+            <source>Duplicate field name: {}</source>
+            <translation>डुप्लिकेट फ़ील्ड नाम: {}</translation>
         </message>
     </context>
     <context>
@@ -1293,42 +1288,37 @@ Topography: {0} points</source>
     <context>
         <name>SecInterpMainWindow</name>
         <message>
-            <location filename="../gui/ui/main_window.py" line="45" />
+            <location filename="../gui/ui/main_window.py" line="44" />
             <source>Sec Interp</source>
             <translation>Sec Interp</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="136" />
+            <location filename="../gui/ui/main_window.py" line="135" />
             <source>Output Folder</source>
             <translation>आउटपुट फ़ोल्डर</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="148" />
+            <location filename="../gui/ui/main_window.py" line="147" />
             <source>Geology</source>
             <translation>भूविज्ञान</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="149" />
+            <location filename="../gui/ui/main_window.py" line="148" />
             <source>Structural</source>
             <translation>संरचनात्मक</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="150" />
+            <location filename="../gui/ui/main_window.py" line="149" />
             <source>Drillholes</source>
             <translation>ड्रिलहोल</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="153" />
-            <source>Interpretation</source>
-            <translation>व्याख्या</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/main_window.py" line="154" />
+            <location filename="../gui/ui/main_window.py" line="152" />
             <source>Settings</source>
             <translation>सेटिंग्स</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="145" />
+            <location filename="../gui/ui/main_window.py" line="144" />
             <source>Mandatory</source>
             <translation>अनिवार्य</translation>
         </message>
@@ -1336,27 +1326,27 @@ Topography: {0} points</source>
     <context>
         <name>SectionFeatureSelector</name>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="153" />
             <source>Feature</source>
             <translation>फ़ीचर</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="155" />
             <source>Select the section line feature</source>
             <translation>सेक्शन लाइन फ़ीचर चुनें</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="158" />
             <source>Label field</source>
             <translation>लेबल फ़ील्ड</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="160" />
             <source>Field used to label each section feature</source>
             <translation>प्रत्येक सेक्शन फ़ीचर को लेबल करने के लिए उपयोग किया गया फ़ील्ड</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="179" />
             <source>Auto</source>
             <translation>स्वत:</translation>
         </message>
@@ -1457,29 +1447,34 @@ Topography: {0} points</source>
     <context>
         <name>SettingsPage</name>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="35" />
+            <location filename="../gui/ui/pages/settings_page.py" line="36" />
             <source>Plugin Settings</source>
             <translation>प्लगइन सेटिंग्स</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="54" />
+            <location filename="../gui/ui/pages/settings_page.py" line="55" />
             <source>Default</source>
             <translation>गलती करना</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="57" />
+            <location filename="../gui/ui/pages/settings_page.py" line="58" />
             <source>Advanced</source>
             <translation>उन्नत</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="63" />
+            <location filename="../gui/ui/pages/settings_page.py" line="67" />
             <source>Plugin Information</source>
             <translation>प्लगइन जानकारी</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="60" />
+            <location filename="../gui/ui/pages/settings_page.py" line="61" />
             <source>Symbology</source>
             <translation>प्रतीक-विज्ञान</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings_page.py" line="64" />
+            <source>Interpretation</source>
+            <translation>व्याख्या</translation>
         </message>
     </context>
     <context>

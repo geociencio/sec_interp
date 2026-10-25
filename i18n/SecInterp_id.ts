@@ -571,109 +571,6 @@ Silakan periksa log untuk detailnya.</translation>
         </message>
     </context>
     <context>
-        <name>InterpretationPage</name>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="32" />
-            <source>Interpretation Settings</source>
-            <translation>Pengaturan Interpretasi</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="45" />
-            <source>Interpretation Storage</source>
-            <translation>Penyimpanan Interpretasi</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Project (Internal JSON)</source>
-            <translation>Proyek (JSON Internal)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="48" />
-            <source>Vector Layer (External)</source>
-            <translation>Lapisan Vektor (Eksternal)</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="51" />
-            <source>Source:</source>
-            <translation>Sumber:</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="65" />
-            <source>Auto-Sync on layer edits</source>
-            <translation>Sinkronisasi Otomatis pada pengeditan lapisan</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="67" />
-            <source>Listen for changes in the target layer and update the preview.</source>
-            <translation>Dengarkan perubahan pada lapisan target dan perbarui pratinjau.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="74" />
-            <source>Custom Attributes</source>
-            <translation>Atribut Kustom</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Field Name</source>
-            <translation>Nama Bidang</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Type</source>
-            <translation>Tipe</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="77" />
-            <source>Default Value</source>
-            <translation>Nilai Default</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="85" />
-            <source>Add Field</source>
-            <translation>Tambah Bidang</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="86" />
-            <source>Remove Field</source>
-            <translation>Hapus Bidang</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="94" />
-            <source>Attribute Inheritance</source>
-            <translation>Pewarisan Atribut</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="96" />
-            <source>Auto-inherit from Geology layers</source>
-            <translation>Mewarisi secara otomatis dari lapisan Geologi</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="98" />
-            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
-            <translation>Salin otomatis nama unit dan atribut dari segmen geologi terdekat.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="102" />
-            <source>Auto-inherit from Drillhole intervals</source>
-            <translation>Pewarisan otomatis dari interval Lubang Bor</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="104" />
-            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
-            <translation>Salin otomatis kode batuan dan atribut dari interval lubang bor terdekat.</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="211" />
-            <source>Field name cannot be empty</source>
-            <translation>Nama bidang tidak boleh kosong</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/pages/interpretation_page.py" line="213" />
-            <source>Duplicate field name: {}</source>
-            <translation>Nama kolom duplikat: {}</translation>
-        </message>
-    </context>
-    <context>
         <name>InterpretationPropertiesDialog</name>
         <message>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="50" />
@@ -709,6 +606,104 @@ Silakan periksa log untuk detailnya.</translation>
             <location filename="../gui/dialogs/interpretation_properties_dialog.py" line="119" />
             <source>Select Color</source>
             <translation>Pilih Warna</translation>
+        </message>
+    </context>
+    <context>
+        <name>InterpretationTab</name>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="42" />
+            <source>Interpretation Storage</source>
+            <translation>Penyimpanan Interpretasi</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Project (Internal JSON)</source>
+            <translation>Proyek (JSON Internal)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="45" />
+            <source>Vector Layer (External)</source>
+            <translation>Lapisan Vektor (Eksternal)</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="48" />
+            <source>Source:</source>
+            <translation>Sumber:</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="62" />
+            <source>Auto-Sync on layer edits</source>
+            <translation>Sinkronisasi Otomatis pada pengeditan lapisan</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="64" />
+            <source>Listen for changes in the target layer and update the preview.</source>
+            <translation>Dengarkan perubahan pada lapisan target dan perbarui pratinjau.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="70" />
+            <source>Custom Attributes</source>
+            <translation>Atribut Kustom</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Field Name</source>
+            <translation>Nama Bidang</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Type</source>
+            <translation>Tipe</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="73" />
+            <source>Default Value</source>
+            <translation>Nilai Default</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="81" />
+            <source>Add Field</source>
+            <translation>Tambah Bidang</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="82" />
+            <source>Remove Field</source>
+            <translation>Hapus Bidang</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="89" />
+            <source>Attribute Inheritance</source>
+            <translation>Pewarisan Atribut</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="91" />
+            <source>Auto-inherit from Geology layers</source>
+            <translation>Mewarisi secara otomatis dari lapisan Geologi</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="93" />
+            <source>Automatically copy unit name and attributes from the nearest geology segment.</source>
+            <translation>Salin otomatis nama unit dan atribut dari segmen geologi terdekat.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="97" />
+            <source>Auto-inherit from Drillhole intervals</source>
+            <translation>Pewarisan otomatis dari interval Lubang Bor</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="99" />
+            <source>Automatically copy rock code and attributes from the nearest drillhole interval.</source>
+            <translation>Salin otomatis kode batuan dan atribut dari interval lubang bor terdekat.</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="199" />
+            <source>Field name cannot be empty</source>
+            <translation>Nama bidang tidak boleh kosong</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings/interpretation_tab.py" line="201" />
+            <source>Duplicate field name: {}</source>
+            <translation>Nama kolom duplikat: {}</translation>
         </message>
     </context>
     <context>
@@ -1293,42 +1288,37 @@ Topografi: {0} poin</translation>
     <context>
         <name>SecInterpMainWindow</name>
         <message>
-            <location filename="../gui/ui/main_window.py" line="45" />
+            <location filename="../gui/ui/main_window.py" line="44" />
             <source>Sec Interp</source>
             <translation>Sec Interp</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="136" />
+            <location filename="../gui/ui/main_window.py" line="135" />
             <source>Output Folder</source>
             <translation>Folder Keluaran</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="148" />
+            <location filename="../gui/ui/main_window.py" line="147" />
             <source>Geology</source>
             <translation>Geologi</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="149" />
+            <location filename="../gui/ui/main_window.py" line="148" />
             <source>Structural</source>
             <translation>Struktural</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="150" />
+            <location filename="../gui/ui/main_window.py" line="149" />
             <source>Drillholes</source>
             <translation>Lubang Bor</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="153" />
-            <source>Interpretation</source>
-            <translation>Interpretasi</translation>
-        </message>
-        <message>
-            <location filename="../gui/ui/main_window.py" line="154" />
+            <location filename="../gui/ui/main_window.py" line="152" />
             <source>Settings</source>
             <translation>Pengaturan</translation>
         </message>
         <message>
-            <location filename="../gui/ui/main_window.py" line="145" />
+            <location filename="../gui/ui/main_window.py" line="144" />
             <source>Mandatory</source>
             <translation>Wajib</translation>
         </message>
@@ -1336,27 +1326,27 @@ Topografi: {0} poin</translation>
     <context>
         <name>SectionFeatureSelector</name>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="40" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="153" />
             <source>Feature</source>
             <translation>Fitur</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="42" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="155" />
             <source>Select the section line feature</source>
             <translation>Pilih fitur garis penampang</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="45" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="158" />
             <source>Label field</source>
             <translation>Bidang label</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="47" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="160" />
             <source>Field used to label each section feature</source>
             <translation>Bidang yang digunakan untuk memberi label setiap fitur penampang</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/section_feature_selector.py" line="129" />
+            <location filename="../gui/ui/pages/section_feature_selector.py" line="179" />
             <source>Auto</source>
             <translation>Oto</translation>
         </message>
@@ -1457,29 +1447,34 @@ Topografi: {0} poin</translation>
     <context>
         <name>SettingsPage</name>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="35" />
+            <location filename="../gui/ui/pages/settings_page.py" line="36" />
             <source>Plugin Settings</source>
             <translation>Pengaturan Plugin</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="54" />
+            <location filename="../gui/ui/pages/settings_page.py" line="55" />
             <source>Default</source>
             <translation>Bawaan</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="57" />
+            <location filename="../gui/ui/pages/settings_page.py" line="58" />
             <source>Advanced</source>
             <translation>Lanjutan</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="63" />
+            <location filename="../gui/ui/pages/settings_page.py" line="67" />
             <source>Plugin Information</source>
             <translation>Informasi Plugin</translation>
         </message>
         <message>
-            <location filename="../gui/ui/pages/settings_page.py" line="60" />
+            <location filename="../gui/ui/pages/settings_page.py" line="61" />
             <source>Symbology</source>
             <translation>Simbologi</translation>
+        </message>
+        <message>
+            <location filename="../gui/ui/pages/settings_page.py" line="64" />
+            <source>Interpretation</source>
+            <translation>Interpretasi</translation>
         </message>
     </context>
     <context>
