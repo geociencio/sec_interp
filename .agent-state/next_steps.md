@@ -43,7 +43,9 @@ Code/gates are green, but the release artifacts are missing:
    the version from `metadata.txt`).
 2. `docs/CHANGELOG.md`: move `[Unreleased]` → `[3.12.0] - 2026-10-25`.
 3. Create `docs/releases/notes/v3.12.0.md`.
-4. README: version badge + "What's New" (still v3.9.1).
+4. ~~README: version badge + "What's New"~~ — **done**: README is release-ready for
+   3.12.0 (badge, What's New, features, QGIS 4.x, current screenshots). The version
+   files are bumped in step 1.
 5. `docs/DEVELOPMENT_LOG.md` milestone.
 6. Commit the changes, push `main` (it is ahead of `origin/main`), tag `v3.12.0`.
 7. `make zip` + ZIP audit + `gh release create v3.12.0 ... --draft`.
