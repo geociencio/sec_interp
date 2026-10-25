@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.11.0 | Last Updated: 2026-10-18
+> Version 3.11.0 | Last Updated: 2026-10-24
 
 ---
 
@@ -136,11 +136,13 @@ The project organization follows a highly modular architecture based on the **Se
   - `ui/` — Programmatic window + sidebar → [[layer_gui_ui]]
     - `ui/main_window.py`, `ui/sidebar.py` → [[gui_ui_pages]] · [doc](layer_gui_ui_pages.md)
     - `ui/pages/` — Tab-based pages → [[layer_gui_ui_pages]]
-      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `interpretation_page.py`, `preview_page.py` → [[gui_ui_pages]]
+      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `preview_page.py` → [[gui_ui_pages]]
+      - `ui/pages/section_feature_selector.py` — 2-vertex section selector (`fid — label`, label field) → [[gui_ui_pages]]
+      - `ui/pages/interpretation_page.py` — compatibility shim for `InterpretationTab`
       - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](drillhole_page.md)
       - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[gui_ui_pages_drillhole]] · [[layer_gui_ui_pages_drillhole]] · [doc](layer_gui_ui_pages_drillhole.md)
       - `ui/pages/settings_page.py` → [[settings_page]] · [doc](settings_page.md)
-      - `ui/pages/settings/` (default / advanced / info tabs + persistence) → [[gui_ui_pages_settings]] · [[layer_gui_ui_pages_settings]] · [doc](layer_gui_ui_pages_settings.md)
+      - `ui/pages/settings/` (default / advanced / symbology / interpretation tabs + persistence) → [[gui_ui_pages_settings]] · [[layer_gui_ui_pages_settings]] · [doc](layer_gui_ui_pages_settings.md)
 - `exporters/` 📤 — Factory `BaseExporter` → [[layer_exporters]]
   - `base_exporter.py` → [[base_exporter]] · [doc](base_exporter.md)
   - `vector_exporter.py` → [[vector_exporter]] · [doc](vector_exporter.md)
@@ -496,7 +498,9 @@ graph TD
 ### 4. Map Tools & UI Components
 
 - **Map Tools** (`tools/`): `QgsMapTool` implementations for interactive editing (pan, measure, interpretation drawing).
-- **UI Pages** (`ui/pages/`): Tab-based page components for each plugin section.
+- **UI Pages** (`ui/pages/`): Page components for each plugin module; Interpretation Settings is hosted as a tab in `SettingsPage`, not a sidebar page.
+- **Section feature selector** (`ui/pages/section_feature_selector.py`): only single-part lines with exactly two vertices; shows `fid — label`, supports `Auto` or an attribute label field, and forwards `section_feature_id` to preview/export/LOD.
+- **Interpretation settings tab** (`ui/pages/settings/interpretation_tab.py`): storage source (project JSON vs vector layer), custom fields and attribute inheritance; `MainWindow.page_interpretation` aliases the tab for compatibility.
 - **UI Adapters** (`adapters/`): Adapters bridging QGIS widgets to internal models.
 - **PreviewSidePanel** (`preview_side_panel.py`): Collapsible legend beside the preview, synchronized with the renderers; per-unit hide/color/alias, drillhole lithologies and the interpretations list.
 - **Symbology tab** (`ui/pages/settings/symbology_tab.py`, `symbology_units.py`): Live per-layer styles (topography, structures, drillholes, interpretations), the shared per-unit editor and the legend layout (position, font size, max items).
@@ -686,11 +690,12 @@ SecInterp v3.9.1 follows industry-standard architectural patterns to ensure high
 
 | Metric | Value |
 |--------|-------|
-| **Python Modules** | 177 |
-| **Source Lines of Code (SLOC)** | ~17,400 |
-| **Core Layer** | ~43% |
-| **GUI Layer** | ~45% |
-| **Exporters Layer** | ~7% |
+| **Python Modules** | 200 |
+| **Source Lines of Code (SLOC)** | ~24,400 |
+| **Core Layer** | ~34% |
+| **GUI Layer** | ~54% |
+| **Exporters Layer** | ~9% |
+| **Plugin Layer** | ~2% |
 
 ---
 
@@ -780,6 +785,6 @@ All tools are configured to run in CI pipelines with:
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2026-10-04
+**Last Updated**: 2026-10-24
 **Plugin Version**: 3.11.0
 **Author**: Juan M. Bernales

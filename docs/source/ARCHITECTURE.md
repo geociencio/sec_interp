@@ -1,7 +1,7 @@
 # SecInterp - Detailed Project Architecture
 
 > **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.11.0 | Last update: 2026-10-18
+> Version 3.11.0 | Last update: 2026-10-24
 >
 > ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
 >
@@ -267,6 +267,13 @@ graph LR
 
 (gui-layer---user-interface)=
 ## 🖥️ GUI Layer - User Interface
+
+> **Current UI layout (2026-10-24)**: the sidebar has six entries — DEM, Section,
+> Geology, Structural, Drillholes and Settings. **Interpretation Settings** is a tab
+> inside `SettingsPage` (`ui/pages/settings/interpretation_tab.py`); the old
+> `InterpretationPage` remains only as a compatibility shim. The section page now uses
+> `ui/pages/section_feature_selector.py` to list only single-part lines with exactly
+> two vertices, as `fid — label`, with an optional attribute label field.
 
 ### 1. SecInterpDialog (main_dialog.py)
 
@@ -1397,6 +1404,6 @@ The plugin uses a `Makefile`-based system to facilitate local deployment and pac
 
 This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last update**: 2026-01-18
+**Last update**: 2026-10-24
 **Plugin Version**: 3.11.0
 **Author**: Juan M. Bernales

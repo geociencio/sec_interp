@@ -122,11 +122,13 @@ The project organization follows a highly modular architecture based on the **Se
   - `ui/` — Programmatic window + sidebar → [[layer_gui_ui]]
     - `ui/main_window.py`, `ui/sidebar.py` → [[ui_pages]] · [doc](ui_pages.md)
     - `ui/pages/` — Tab-based pages → [[layer_gui_ui_pages]]
-      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `interpretation_page.py`, `preview_page.py` → [[ui_pages]]
+      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `preview_page.py` → [[ui_pages]]
+      - `ui/pages/section_feature_selector.py` — 2-vertex section selector (`fid — label`, label field) → [[ui_pages]]
+      - `ui/pages/interpretation_page.py` — compatibility shim for `InterpretationTab`
       - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](drillhole_page.md)
       - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[drillhole_tabs]] · [[layer_gui_ui_pages_drillhole]] · [doc](drillhole_tabs.md)
       - `ui/pages/settings_page.py` → [[settings_page]] · [doc](settings_page.md)
-      - `ui/pages/settings/` (default / advanced / info tabs + persistence) → [[settings_tabs]] · [[layer_gui_ui_pages_settings]] · [doc](settings_tabs.md)
+      - `ui/pages/settings/` (default / advanced / symbology / interpretation tabs + persistence) → [[settings_tabs]] · [[layer_gui_ui_pages_settings]] · [doc](settings_tabs.md)
 - `exporters/` 📤 — Factory `BaseExporter` → [[layer_exporters]]
   - `base_exporter.py` → [[base_exporter]] · [doc](base_exporter.md)
   - `vector_exporter.py` → [[vector_exporter]] · [doc](vector_exporter.md)
@@ -486,7 +488,9 @@ graph TD
 ### 4. Map Tools & UI Components
 
 - **Map Tools** (`tools/`): `QgsMapTool` implementations for interactive editing (pan, measure, interpretation drawing).
-- **UI Pages** (`ui/pages/`): Tab-based page components for each plugin section.
+- **UI Pages** (`ui/pages/`): Page components for each plugin module; Interpretation Settings is hosted as a tab in `SettingsPage`, not a sidebar page.
+- **Section feature selector** (`ui/pages/section_feature_selector.py`): only single-part lines with exactly two vertices; shows `fid — label`, supports `Auto` or an attribute label field, and forwards `section_feature_id` to preview/export/LOD.
+- **Interpretation settings tab** (`ui/pages/settings/interpretation_tab.py`): storage source (project JSON vs vector layer), custom fields and attribute inheritance; `MainWindow.page_interpretation` aliases the tab for compatibility.
 - **UI Adapters** (`adapters/`): Adapters bridging QGIS widgets to internal models.
 - **LegendWidget** (`legend_widget.py`): Dynamic legend synchronized with renderers.
 
@@ -766,6 +770,6 @@ All tools are configured to run in CI pipelines with:
 
 This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last Updated**: 2026-09-20
+**Last Updated**: 2026-10-24
 **Plugin Version**: 3.8.0
 **Author**: Juan M. Bernales
