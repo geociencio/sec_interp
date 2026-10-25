@@ -54,7 +54,7 @@ Use a `prefix_` + descriptive, lowercase, underscore-separated name:
 | 3. Step 5 Drillhole | `guide_drillhole_{collars,survey,intervals}.png` |
 | 3. Step 6 Preview | `preview_all.png`, `preview_panels_collapsed.png` |
 | 4.1 Interpretation | `guide_interpretation_tool_{1,2,3}.png` |
-| 4.4 Settings | `guide_settings_{default,advanced,info}.png` |
+| 4.4 Settings | `guide_settings_{default,advanced,symbology,interpretation,info}.png` |
 | 5.4 Tools | `guide_measure_tool.png` |
 
 ## 4. After adding/updating images

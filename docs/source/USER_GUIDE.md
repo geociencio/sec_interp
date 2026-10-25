@@ -19,12 +19,12 @@ SecInterp allows you to:
 ## 2. The Main Window
 
 The SecInterp dialog is divided into three main areas:
-1.  **Sidebar Navigation (Left)**: Navigate between different modules: DEM, Drillholes, Geology, Structure, Settings, and Help.
+1.  **Sidebar Navigation (Left)**: Navigate between the modules: DEM / Raster, Section Line, Geology, Structural, Drillholes and Settings.
 2.  **Configuration Page (Center)**: Where you configure the parameters for the selected module.
 3.  **Preview Panel (Right)**: An interactive canvas showing your cross-section in real-time.
 
-![The consolidated v2.9.0 Main Window with Sidebar navigation](images/ui_main_dialog_v26.png)
-*The consolidated v2.9.0 Main Window with Sidebar navigation.*
+![The SecInterp main window with sidebar navigation](images/ui_main_dialog.png)
+*The SecInterp main window with sidebar navigation.*
 
 ## 3. Step-by-Step Tutorial: Creating a Profile
 
@@ -130,6 +130,8 @@ Configures geological or attribute intervals.
 ### 4.1 Interpretation Tool (Drawing)
 The new **Interpretation Tool** allows you to draw geological polygons directly on the profile section.
 
+Interpretation defaults (storage source, custom attributes and inheritance) are configured in **Settings → Interpretation Settings** (see §4.4).
+
 1.  Enable the tool by clicking the **Interpret** button in the preview toolbar.
 2.  **Drawing**: Left-click to add vertices.
 3.  **Snapping**: The cursor will automatically snap to:
@@ -166,7 +168,7 @@ SecInterp now bridges the gap between 2D sections and 3D modeling. This feature 
 5.  **Note**: This feature is now standard and available to all users.
 
 ### 4.4 Settings Page
-The **Settings** page manages export configurations and advanced features. It is organized into three sub-tabs:
+The **Settings** page manages export, symbology, interpretation and plugin options. It is organized into five tabs:
 
 #### 1. Default Tab (Export Selection)
 Control exactly what gets generated when you click **Save**.
@@ -177,15 +179,34 @@ Control exactly what gets generated when you click **Save**.
 - **Interpretations (2D)**: Exports your drawn polygons (SHP).
 
 ![Default settings showing Export Selection](images/guide_settings_default.png)
-*Default settings showing Export Selection.*
+*Default settings showing Export Selection and the output format.*
 
 #### 2. Advanced Tab
 - **Enable 3D Interpretation Export**: Toggles the generation of **PolygonZ** Shapefiles for your interpretations. This creates true 3D geometries based on the section plane.
+- **Drillhole 3D Export Options**: export traces and intervals, and choose original (real 3D) or projected (section-plane) coordinates.
 
 ![Advanced settings with 3D Export feature](images/guide_settings_advanced.png)
-*Advanced settings with 3D Export feature.*
+*Advanced settings with the 3D export options.*
 
-#### 3. Plugin Information Tab
+#### 3. Symbology Tab
+Styles the preview and the export live, without modifying the source layers:
+- **Layer Symbology**: topography color mode/ramp/line width, structure color and width, drillhole trace style and labels, and the default interpretation color.
+- **Legend**: position, font size and maximum number of items.
+- **Units**: hide, recolor, rename and reorder geological and drillhole units.
+
+![Symbology settings for live styling](images/guide_settings_symbology.png)
+*Symbology tab: live styles for the preview and the exported section.*
+
+#### 4. Interpretation Tab
+Controls how interpretations are stored and which attributes they inherit:
+- **Source**: project-internal JSON or an external vector layer.
+- **Custom Attributes**: add or remove fields with their type and default value.
+- **Attribute Inheritance**: automatically inherit from geology layers and drillhole intervals.
+
+![Interpretation settings](images/guide_settings_interpretation.png)
+*Interpretation settings: storage source, custom attributes and inheritance.*
+
+#### 5. Plugin Information Tab
 Displays version information, credits, and contact details for SecInterp.
 
 ![Plugin Information](images/guide_settings_info.png)

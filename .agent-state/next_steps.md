@@ -28,6 +28,9 @@
   37 issues, docstring 99.1 % (baseline 99.0), security 100, module size PASS.
 - **Packaging**: `package --repo-check --stamp --release-version 3.12.0` passes;
   ZIP = 340 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
+- **USER_GUIDE v3.12.0 refreshed**: 22 figures in `docs/source/images/` (six-entry
+  sidebar, new Symbology/Interpretation tabs), stale `ui_main_dialog_v26` and
+  `workflow_*` assets removed, `es` guide catalog at 100 %.
 - **QGIS UI reference** (for screenshots): Qt6 follows the KDE dark scheme;
   `QT_QPA_PLATFORMTHEME=generic` forces the light palette (empty does not).
   Current profile uses `UITheme=Blend of Gray`; set `default` for the basic theme.
@@ -61,10 +64,9 @@ obsolete.
 ## 📌 Pending
 
 0. **Prepare release 3.12.0** (recommended next task).
-1. **USER_GUIDE screenshots for 3.12.0**: the guide still shows the old 7-entry
-   sidebar; the 3.12 layout has 6 entries and *Interpretation Settings* inside
-   Settings. Shot list agreed; staging folder `docs/source/images_v3.12.0/`
-   (gitignored) contains only references, not final assets.
+1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
+   Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
+   the `guide_dem_setup` status-bar strip before the release build.
 2. **`uv` 0.12.10 → 0.13.0** — blocked by pacman (Manjaro stable serves 0.12.10).
 3. **Interop plan §9** — start with **B1** (drillhole 3D styles) → B3 → B2 → B4 → Phase A:
    `docs/plans/implementation_plan_interop_stereonet_3d.md`.

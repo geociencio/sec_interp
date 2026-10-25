@@ -4,6 +4,7 @@
 - **Release automation**: removed `.release-queue.json`, `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml`; 3.9.1–3.11.0 were the last queue releases and 3.12.0 onward are manual (`docs/releases/SCHEDULE.md`).
 - **Verification**: **839 tests OK / 888 static**; Docker suite exit 0; `ruff`, `format`, `mypy` (102 files), `check_docs` (37), `i18n-check`, `security-scan`, Qt6 (0 findings), analyzer CC PASS; `package --repo-check --stamp` = 340 files, 2.4 MB.
 - **Analysis**: `docs/research/qgis_manage_0.12.0_analysis.md` records the 0.10.0 → 0.12.0 fixes, measurements (`--repo-check` 3.2 s → 0.67 s) and the remaining upstream limitations (`--require-docs` layout, `clean` vs tracked `.cpg`, `profiles list` QGIS 3 only).
+- **Docs**: refreshed the USER_GUIDE v3.12.0 screenshots (22 figures, six-entry sidebar, Symbology/Interpretation tabs), removed the superseded assets and completed the Spanish guide catalog (100 %).
 - **Maintenance**: [session_2026-10-25_qgis_manage_0120.md](maintenance/session_2026-10-25_qgis_manage_0120.md).
 
 ## [2026-10-24] Session Close: Core QGIS-Agnostic

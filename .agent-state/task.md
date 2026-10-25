@@ -11,7 +11,7 @@
 - [x] **Gates 2026-10-25** — 839 tests locales OK / 888 static; Docker OK; ruff/format/mypy/check_docs/i18n/security PASS; Qt6 0; CC PASS; 37 issues; docstring 99.1 %.
 - [x] **Automatización de cola retirada** — eliminados `.release-queue.json`, `scripts/next_scheduled_release.py` y `.github/workflows/scheduled-release.yml`; 3.12.0 en adelante se publican a mano desde `main`.
 - [ ] **Preparar release 3.12.0** — bump, changelog/notas, README, `make pre-release`, ZIP, `gh release`, portal. **Release manual** (sin cola ni rama).
-- [ ] **Capturas USER_GUIDE 3.12.0** — sidebar de 6 entradas e *Interpretation Settings* dentro de Settings; lista de capturas acordada; staging `docs/source/images_v3.12.0/` (ignorado).
+- [x] **Capturas USER_GUIDE 3.12.0** — 22 figuras integradas (sidebar de 6 entradas, Symbology/Interpretation), `ui_main_dialog_v26` y los `workflow_*` retirados, catálogo es al 100 %; staging en `docs/source/images_v3.12.0/` (ignorado).
 
 ## 📌 Pendientes del proyecto
 
