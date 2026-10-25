@@ -5,7 +5,6 @@ from __future__ import annotations
 import contextlib
 from typing import Any
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -29,10 +28,6 @@ class InterpretationTab(QWidget):
         """Initialize the interpretation settings tab."""
         super().__init__(parent)
         self._setup_ui()
-
-    def tr(self, message: str) -> str:
-        """Translate a message using the legacy interpretation context."""
-        return QCoreApplication.translate("InterpretationPage", message)  # type: ignore[no-any-return]
 
     def _setup_ui(self) -> None:
         """Set up the tab, preserving the previous widget attribute names."""
