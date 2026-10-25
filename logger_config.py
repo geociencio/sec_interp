@@ -12,8 +12,6 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any
 
-from qgis.core import Qgis, QgsMessageLog
-
 
 class ImmediateFlushFileHandler(RotatingFileHandler):
     """File handler that flushes immediately after each write.
@@ -51,6 +49,7 @@ class QgsLogHandler(logging.Handler):
     def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record to QGIS message log safely."""
         try:
+            from qgis.core import Qgis, QgsMessageLog
             from qgis.PyQt.QtCore import QCoreApplication, QThread
 
             msg = self.format(record)
@@ -145,12 +144,17 @@ def setup_logging(level: int = logging.DEBUG) -> logging.Logger:
             root_logger.debug(f"File logging path: {log_file}")
 
         except Exception as e:
-            # If file logging fails, continue with QGIS logging only
-            QgsMessageLog.logMessage(
-                f"Warning: Could not initialize file logging: {e}",
-                ROOT_LOGGER_NAME,
-                Qgis.MessageLevel.Warning,
-            )
+            # If file logging fails, continue with QGIS logging when available.
+            try:
+                from qgis.core import Qgis, QgsMessageLog
+
+                QgsMessageLog.logMessage(
+                    f"Warning: Could not initialize file logging: {e}",
+                    ROOT_LOGGER_NAME,
+                    Qgis.MessageLevel.Warning,
+                )
+            except ImportError:
+                sys.stderr.write(f"Warning: Could not initialize file logging: {e}\n")
 
         # Ensure propagation is enabled for children
         root_logger.propagate = True
