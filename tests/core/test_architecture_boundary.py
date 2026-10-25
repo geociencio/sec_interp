@@ -44,8 +44,6 @@ _FORBIDDEN_PATTERNS: dict[str, re.Pattern[str]] = {
 # Allowlist of current violations: relative path -> frozenset of patterns.
 # Each entry MUST be removed once the file is migrated to be QGIS-agnostic.
 CORE_VIOLATIONS: dict[str, frozenset[str]] = {
-    "config.py": frozenset({"qgis.core"}),
-    "services/access_control_service.py": frozenset({"qgis.core"}),
     "services/export/map_settings_factory.py": frozenset({"qgis.core"}),
     "utils/io.py": frozenset({"qgis.core", "QgsProject.instance()"}),
 }

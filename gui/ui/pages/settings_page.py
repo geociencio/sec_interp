@@ -15,6 +15,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
 from sec_interp.core.config import ConfigService
+from sec_interp.gui.adapters.qgs_settings_store import QgsSettingsStore
 from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
@@ -29,10 +30,14 @@ logger = get_logger(__name__)
 class SettingsPage(BasePage):
     """Page for managing plugin settings and restricted features."""
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        config_service: ConfigService | None = None,
+    ) -> None:
         """Initialize the settings page."""
         self.settings = QgsSettings()
-        self.config_service = ConfigService()
+        self.config_service = config_service or ConfigService(QgsSettingsStore())
         super().__init__(QCoreApplication.translate("SettingsPage", "Plugin Settings"), parent)
 
     def _setup_ui(self) -> None:

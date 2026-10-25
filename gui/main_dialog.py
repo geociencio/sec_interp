@@ -65,7 +65,8 @@ class SecInterpDialog(
 
     def __init__(self, iface=None, plugin_instance=None, parent=None) -> None:
         """Initialize the dialog."""
-        super().__init__(iface, parent)
+        config_service = getattr(plugin_instance, "config_service", None)
+        super().__init__(iface, parent, config_service=config_service)
 
         self.iface = iface
         self.plugin_instance = plugin_instance

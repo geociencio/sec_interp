@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from sec_interp.core.config import ConfigService
 from sec_interp.core.models.settings_model import PluginSettings
@@ -10,17 +10,8 @@ class TestConfigServiceIntegration(BaseTestCase):
     """Integration test between ConfigService and PluginSettings."""
 
     def setUp(self):
-        # We need a clean ConfigService and mock QgsSettings if possible.
-        # Since QgsSettings is a core object, we might need to mock its response.
-        self.patcher = patch("sec_interp.core.config.QgsSettings")
-        self.mock_qgs_settings_class = self.patcher.start()
         self.mock_qgs_settings = MagicMock()
-        self.mock_qgs_settings_class.return_value = self.mock_qgs_settings
-
-        self.config = ConfigService()
-
-    def tearDown(self):
-        self.patcher.stop()
+        self.config = ConfigService(self.mock_qgs_settings)
 
     def test_get_all_settings_mapping(self):
         """Test that get_all_settings correctly maps and validates QgsSettings."""

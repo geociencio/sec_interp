@@ -32,12 +32,18 @@ from .sidebar import Sidebar
 class SecInterpMainWindow(QDialog):
     """Main Programmatic Interface for SecInterp."""
 
-    def __init__(self, iface: Any | None = None, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        iface: Any | None = None,
+        parent: QWidget | None = None,
+        config_service: Any | None = None,
+    ) -> None:
         """Initialize the main dialog.
 
         Args:
             iface: QGIS interface.
             parent: Parent widget.
+            config_service: Optional settings service from the composition root.
 
         """
         super().__init__(parent)
@@ -65,7 +71,7 @@ class SecInterpMainWindow(QDialog):
         self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
         self.page_drillhole = DrillholePage()
-        self.page_settings = SettingsPage()
+        self.page_settings = SettingsPage(config_service=config_service)
         # Compatibility alias: interpretation settings now live in Settings.
         self.page_interpretation = self.page_settings.interpretation_tab
 

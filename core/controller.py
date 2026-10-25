@@ -44,6 +44,7 @@ class ProfileController(TranslatableMixin):
         geology_extractor: Any | None = None,
         profile_extractor: Any | None = None,
         drillhole_extractor: Any | None = None,
+        config_service: ConfigService | None = None,
     ) -> None:
         """Initialize services and the data cache using Dependency Injection.
 
@@ -58,9 +59,11 @@ class ProfileController(TranslatableMixin):
                 provided by the GUI composition root.
             drillhole_extractor: Optional drillhole extractor (Extract adapter),
                 provided by the GUI composition root.
+            config_service: Optional settings service; core defaults to an
+                in-memory store, the plugin injects the QgsSettings adapter.
 
         """
-        self.config_service = ConfigService()
+        self.config_service = config_service or ConfigService()
         self.data_cache = DataCache()
         self.settings = self.config_service.get_all_settings()
         self.data_fetcher = data_fetcher

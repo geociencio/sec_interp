@@ -1,6 +1,6 @@
 """Tests for ConfigService."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
 from sec_interp.core.config import ConfigService
 from tests.base_test import BaseTestCase
@@ -11,15 +11,8 @@ class TestConfigService(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        # Start patching QgsSettings
-        self.settings_patcher = patch("sec_interp.core.config.QgsSettings")
-        self.mock_settings_cls = self.settings_patcher.start()
-        self.mock_settings = self.mock_settings_cls.return_value
-
-        self.service = ConfigService()
-
-        # Ensure patch is stopped after test
-        self.addCleanup(self.settings_patcher.stop)
+        self.mock_settings = MagicMock()
+        self.service = ConfigService(self.mock_settings)
 
     def test_get_default(self):
         """Test getting a value that is not set (should return default)."""

@@ -15,8 +15,11 @@ from qgis.PyQt.QtCore import (
     QTranslator,
 )
 
+from sec_interp.core.config import ConfigService
+from sec_interp.core.services.access_control_service import AccessControlService
 from sec_interp.core.utils.i18n import TranslatableMixin, set_translator
 from sec_interp.core.utils.safe_loader import SafeLoader
+from sec_interp.gui.adapters.qgs_settings_store import QgsSettingsStore
 from sec_interp.logger_config import get_logger, setup_logging
 from sec_interp.plugin import (
     InputValidationMixin,
@@ -52,6 +55,9 @@ class SecInterp(TranslatableMixin, PluginLifecycleMixin, InputValidationMixin, R
         set_translator(QCoreApplication.translate)
 
         # Prepare core services BEFORE the dialog (required by PreviewManager)
+        self.settings_store = QgsSettingsStore()
+        self.config_service = ConfigService(self.settings_store)
+
         self.preview_renderer = SafeLoader.lazy_load(
             "sec_interp.gui.preview_renderer", "PreviewRenderer"
         )
@@ -80,6 +86,7 @@ class SecInterp(TranslatableMixin, PluginLifecycleMixin, InputValidationMixin, R
             geology_extractor=geology_extractor,
             profile_extractor=profile_extractor,
             drillhole_extractor=drillhole_extractor,
+            config_service=self.config_service,
         )
 
         self.layer_notification_manager = SafeLoader.lazy_load(
@@ -90,7 +97,14 @@ class SecInterp(TranslatableMixin, PluginLifecycleMixin, InputValidationMixin, R
 
         export_mod = SafeLoader.safe_import("sec_interp.core.services.export_service")
         export_klass = SafeLoader.get_class(export_mod, "ExportService")
-        self.export_service = export_klass(self.controller) if export_klass else None
+        self.export_service = (
+            export_klass(
+                self.controller,
+                access_control=AccessControlService(self.settings_store),
+            )
+            if export_klass
+            else None
+        )
 
         dialog_mod = SafeLoader.safe_import("sec_interp.gui.main_dialog")
         dialog_klass = SafeLoader.get_class(dialog_mod, "SecInterpDialog")

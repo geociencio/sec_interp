@@ -5,8 +5,7 @@ This module provides a service to manage access to restricted features.
 
 from __future__ import annotations
 
-from qgis.core import QgsSettings
-
+from sec_interp.core.interfaces.settings_store import InMemorySettingsStore, SettingsStore
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -15,9 +14,9 @@ logger = get_logger(__name__)
 class AccessControlService:
     """Service to manage access to restricted features."""
 
-    def __init__(self) -> None:
-        """Initialize the access control service."""
-        self.settings = QgsSettings()
+    def __init__(self, store: SettingsStore | None = None) -> None:
+        """Initialize the access control service with a settings store."""
+        self.settings: SettingsStore = store or InMemorySettingsStore()
 
     def can_export_3d(self) -> bool:
         """Check if the user has permission to export 3D data.

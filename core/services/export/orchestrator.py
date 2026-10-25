@@ -20,15 +20,21 @@ logger = get_logger(__name__)
 class ExportService(ExportServiceCompatMixin):
     """Service to orchestrate all export operations."""
 
-    def __init__(self, controller: Any | None = None) -> None:
+    def __init__(
+        self,
+        controller: Any | None = None,
+        access_control: AccessControlService | None = None,
+    ) -> None:
         """Initialize the export service.
 
         Args:
             controller: Optional reference to ProfileController for data access.
+            access_control: Optional access control service; core defaults to an
+                in-memory store, the plugin injects the QgsSettings adapter.
 
         """
         self.controller = controller
-        self.access_control = AccessControlService()
+        self.access_control = access_control or AccessControlService()
 
     def tr(self, message: str) -> str:
         """Translate a message using the injected translator."""

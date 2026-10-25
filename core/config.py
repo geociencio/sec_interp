@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from qgis.core import QgsSettings
-
+from sec_interp.core.interfaces.settings_store import InMemorySettingsStore, SettingsStore
 from sec_interp.core.models.settings_model import PluginSettings
 from sec_interp.core.utils.i18n import translate
 from sec_interp.logger_config import get_logger
@@ -35,9 +34,13 @@ class ConfigService:
     SUPPORTED_VECTOR_FORMATS = [".shp"]
     SUPPORTED_DOCUMENT_FORMATS = [".pdf", ".svg"]
 
-    def __init__(self) -> None:
-        """Initialize the Configuration Service with QgsSettings."""
-        self.settings = QgsSettings()
+    def __init__(self, store: SettingsStore | None = None) -> None:
+        """Initialize the Configuration Service with a settings store.
+
+        The plugin injects ``QgsSettingsStore``; headless/core callers get an
+        in-memory store that is immediately usable and never touches QGIS.
+        """
+        self.settings: SettingsStore = store or InMemorySettingsStore()
         self._current_settings: PluginSettings | None = None
 
     def get_all_settings(self, reload: bool = False) -> PluginSettings:
@@ -51,7 +54,7 @@ class ConfigService:
         return translate("ConfigService", message)
 
     def _load_from_qgs_settings(self) -> PluginSettings:
-        """Gather all settings from QgsSettings and create a validated model."""
+        """Gather all settings from the injected store and create a validated model."""
         data = {}
         # We could implement a more sophisticated mapping here if needed.
         # For now, we'll rely on the existing get() pattern to populate categories.

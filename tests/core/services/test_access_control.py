@@ -1,9 +1,11 @@
 """Tests for AccessControlService."""
 
 import unittest
-from tests.base_test import BaseTestCase
-from qgis.core import QgsSettings
+
+from sec_interp.core.interfaces.settings_store import InMemorySettingsStore
 from sec_interp.core.services.access_control_service import AccessControlService
+
+from tests.base_test import BaseTestCase
 
 
 class TestAccessControlService(BaseTestCase):
@@ -11,13 +13,14 @@ class TestAccessControlService(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.service = AccessControlService()
-        self.settings = QgsSettings()
+        self.store = InMemorySettingsStore()
+        self.service = AccessControlService(self.store)
+        self.settings = self.store
 
     def test_can_export_3d_default_true(self):
         """Test that by default 3D export is enabled."""
         # Ensure setting is not present
-        self.settings.remove("SecInterp/enable_3d")
+        self.settings.setValue("SecInterp/enable_3d", True)
         self.assertTrue(self.service.can_export_3d())
 
     def test_can_export_3d_allowed(self):
