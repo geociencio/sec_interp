@@ -21,6 +21,7 @@ Welcome to the SecInterp plugin technical documentation.
    :caption: Project Archive
    :hidden:
 
+   v3.11.0_technical_analysis
    v2.9.0_technical_analysis
    phase_closure_v2.7.0
    phase_closure_v2.8.0
