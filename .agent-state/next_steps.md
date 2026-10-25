@@ -9,7 +9,7 @@
   `forge_metrics_checks`/`forge_metrics_report`, `memory prune --apply` and
   `workflow_graph`/`skill_conflicts`; active workflows use `testing-standards` instead of
   the deprecated `qa-docker` alias.
-- **Tests**: **827 OK** (876 static). `ruff`, `format`, `mypy`, `check_docs`,
+- **Tests**: **829 OK** (878 static). `ruff`, `format`, `mypy`, `check_docs`,
   `forge validate` (17 skills / 18 workflows), `sync_metrics --validate`,
   `i18n-check` and release YAML pass.
 - **Controller refactor**: `core/controller.py` is **295 lines** (was 465); cache keys
@@ -27,6 +27,11 @@
   collection and cleanup live in `preview_renderer_layers.py` (123) and
   `preview_renderer_cleanup.py` (68). Merged into `main` at `2e05e4f8`.
 - **`module_size_gate`: PASS** — 0 modules >400 after all five refactors.
+- **Interpretation settings tab (branch `refactor/interpretation-settings-tab`)**: moved
+  `InterpretationPage` into `SettingsPage` as the **Interpretation Settings** tab;
+  sidebar is now 6 entries. `MainWindow.page_interpretation` aliases
+  `page_settings.interpretation_tab`, so persistence/consumers are unchanged. Merged into
+  `main` at `1cc2c105`.
 - **`section_feature_id` fix (branch `fix/section-feature-id`)**: `SectionPage` now has
   an `fid — label` selector that lists only 2-vertex lines, with a selectable label
   field (`Auto` or any attribute). The id is forwarded to topography/geology/

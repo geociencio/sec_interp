@@ -1,6 +1,6 @@
 # Implementation Plan — Move Interpretation Settings into the Settings Page
 
-**Status**: PROPUESTO — pendiente de aprobación
+**Status**: MERGEADO en `main` en `1cc2c105`
 **Created**: 2026-10-24
 **Scope**: mover `InterpretationPage` a `SettingsPage` como tab **“Interpretation”**
 **Branch propuesta**: `refactor/interpretation-settings-tab`
@@ -299,5 +299,13 @@ mergeado.
 
 ---
 
-**Aprobación requerida**: confirmar el movimiento y el alias de compatibilidad antes de
-crear la rama `refactor/interpretation-settings-tab`.
+## 9. Resultado
+
+Implementado y mergeado en `main` en `1cc2c105`:
+
+- `InterpretationTab` en `gui/ui/pages/settings/interpretation_tab.py`;
+- Settings con 5 tabs (Default, Advanced, Symbology, Interpretation, Plugin Information);
+- sidebar con 6 ítems;
+- `MainWindow.page_interpretation` apunta al tab;
+- persistencia, claves y contexto i18n sin cambios;
+- 829 tests OK / 878 static; gates verdes.

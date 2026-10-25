@@ -17,6 +17,7 @@
 
 ## ✅ Cerrado recientemente (2026-10-18/24)
 
+- [x] **Interpretation settings tab** — `InterpretationPage` movida a `SettingsPage` como tab **Interpretation Settings**; sidebar 7 → 6; alias `page_interpretation` conservado; suite **829 OK** (878 static); mergeada en `main` en `1cc2c105`.
 - [x] **Validación manual QGIS 4** — selector desplegado y probado: `secc1.shp` muestra 4 de 7 líneas (las de 2 vértices); preview, LOD, export y persistencia OK.
 - [x] **`section_feature_id` fix** — selector `fid — label` con filtro de 2 vértices y campo de etiqueta seleccionable; propagación a topo/geología/estructuras/sondajes, LOD y tasks async; suite **827 OK** (876 static); mergeada en `main` en `83e86a2c`.
 - [x] **`module_size_gate` — PASS (0 módulos >400)** — cerrados controller (465→295), geometry (598→69), preview layer factory (535→202), 3D exporter (472→155) y preview renderer (438→335); suite **808 OK** (857 static); quality **56.5**.
