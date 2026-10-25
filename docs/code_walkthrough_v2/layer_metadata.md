@@ -436,7 +436,7 @@ métodos. La robustez vive en el extractor que lo puebla:
 - [[project_validator]] — `ValidationParams` que agrupa los DTOs
 - [[layer_validator]] — consume `kind`, `geometry_type`, `feature_count`, `band_count`
 - [[project_validators]] — validadores que leen `is_valid`/`crs_is_geographic`
-- [[enums]] — define `FieldType`
+- [[layer_core_domain]] — define `FieldType`
 - [[core_validation]] — índice del paquete `validation/`
 
 ---

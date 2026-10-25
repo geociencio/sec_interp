@@ -1,3 +1,9 @@
+## [2026-10-24] Docs: Code Walkthrough v2 Consolidation
+- **Achievement**: v2 (ES/EN) is now the single active code-walkthrough vault. Migrated `access_control_service`, `i18n`, `projection_engine` and `survey_processor`; added `section_feature_selector` and `interpretation_tab`; retargeted architecture/index/README links.
+- **Archive**: v1 moved to `docs/archive/code_walkthrough_v1*` with `DEPRECATED` banners and archive READMEs; history preserved via `git mv`.
+- **Validation**: `sync_vault_mirrors.sh --check`, `check_docs`, `make docs-check` PASS; v2 link audit has no missing note targets.
+- **Reference**: [implementation_plan_code_walkthrough_v2_consolidation.md](plans/implementation_plan_code_walkthrough_v2_consolidation.md).
+
 ## [2026-10-24] Refactor: Interpretation Settings Tab
 - **Achievement**: moved `InterpretationPage` into `SettingsPage` as the **Interpretation Settings** tab; sidebar now has 6 entries (DEM, Section, Geology, Structural, Drillholes, Settings).
 - **Compatibility**: `MainWindow.page_interpretation` aliases `page_settings.interpretation_tab`; persisted keys (`source_type`, `custom_fields`, `interp_inherit_*`), the `dump/load` protocol, the `"InterpretationPage"` translation context and all consumers remain unchanged.

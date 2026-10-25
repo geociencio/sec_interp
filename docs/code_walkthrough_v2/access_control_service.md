@@ -172,8 +172,8 @@ graph TD
 ## 🔗 Notas relacionadas
 
 - [[Index]] — índice de la bóveda
-- [[export_package]] — orquestador que lo instancia
-- [[export_service]] — shim histórico que consultaba el gate
+- [[layer_core_services_export]] — orquestador que lo instancia
+- [[orchestrator]] — shim histórico que consultaba el gate
 - [[config]] — servicio de settings con el mismo patrón `QgsSettings`
 - [[layer_gui_ui_pages_settings]] — UI que escribe el toggle 3D
 - [[settings_page]] — página de Settings que persiste `enable_3d`

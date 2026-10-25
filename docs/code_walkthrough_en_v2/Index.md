@@ -16,13 +16,13 @@ cssclass: secinterp-moc
 > file-by-file: **151 substantive notes + 23 `layer_*` hubs per language**
 > (ES in `code_walkthrough_v2/`, EN in `code_walkthrough_en_v2/`), with
 > method-by-method walkthroughs, data flow, patterns, error handling and tests.
-> The v1 vault (`code_walkthrough/`) is left untouched.
+> The v1 vault is **archived** under `docs/archive/`; v2 is the only active vault.
 
 > [!info] Context
 > - **Plugin**: SecInterp — QGIS ≥ 3.28, QGIS 4.x ready
 > - **Architecture**: Clean Architecture (Core/GUI separation, Extract-then-Compute)
-> - **Documented version**: 3.8.0
-> - **Status**: ✅ Complete — 302 substantive notes + 46 hubs (both languages), 0 skeletons
+> - **Documented version**: 3.11.0
+> - **Status**: ✅ Active — v2 consolidated; v1 archived; 0 skeletons
 
 ---
 
@@ -54,6 +54,12 @@ cssclass: secinterp-moc
 | [[layer_exporters]] | `exporters/` | 13 | File writers |
 | [[layer_plugin]] | `plugin/` | 4 | Entry and lifecycle |
 | — | root + `resources/` | 5 | [[sec_interp_plugin]], [[logger_config]], [[resources]], [[resources_pkg]], [[root]] |
+
+### Notes added during v2 consolidation
+
+- [[section_feature_selector]] — 2-vertex section selector.
+- [[interpretation_tab]] — Interpretation tab in Settings.
+- [[access_control_service]], [[i18n]], [[projection_engine]] and [[survey_processor]] — migrated from v1.
 
 ---
 

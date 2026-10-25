@@ -2,7 +2,7 @@
 # Sync mirror architecture/report docs and structure docs into the code-walkthrough vaults.
 # Keeps wikilinks ([[ARCHITECTURE_EN]], [[project_structure_table]], …) resolvable in Obsidian.
 #
-# - Architecture/report mirrors -> v2 vaults only (v1 is frozen).
+# - Architecture/report mirrors -> v2 vaults only (v1 archived).
 # - Structure docs (project_structure*.md/txt) -> v2 vaults only (v1 is frozen).
 #
 # Usage:
@@ -19,8 +19,7 @@ DOCS=(
   "ARCHITECTURE_MONOLITHIC_VS_CLEAN_EN.md"
   "PLUGIN_REPORT_AND_COMPARISON_EN.md"
 )
-# Legacy v1 vaults (docs/code_walkthrough, docs/code_walkthrough_en) are frozen
-# and intentionally excluded: mirrored docs are now v2-first.
+# Legacy v1 vaults are archived under docs/archive/; only v2 vaults are mirrored.
 VAULTS=(
   "docs/code_walkthrough_v2"
   "docs/code_walkthrough_en_v2"
@@ -43,11 +42,11 @@ if [[ "${1:-}" == "--check" ]]; then
 fi
 
 # The source docs live in docs/ and link vault notes as
-# `[doc](code_walkthrough/<slug>.md)`. Inside a vault the note is a sibling,
-# so the `code_walkthrough/` prefix must be stripped or the link resolves to a
-# non-existent nested `code_walkthrough/code_walkthrough/` directory.
+# `[doc](code_walkthrough_v2/<slug>.md)` (or the legacy v1 prefix). Inside a
+# vault the note is a sibling, so the directory prefix must be stripped or the
+# link resolves to a non-existent nested directory.
 transform() {
-  sed 's#](code_walkthrough/#](#g' "$1"
+  sed -e 's#](code_walkthrough_v2/#](#' -e 's#](code_walkthrough/#](#' "$1"
 }
 
 stale=0

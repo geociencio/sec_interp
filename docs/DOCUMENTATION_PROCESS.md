@@ -102,7 +102,7 @@ The local `.git/hooks/pre-push` also runs the docs gate before the CC gate.
 | `WARNING: duplicate object description` / `toctree contains reference to nonexisting document` | Orphan `.rst` stubs for removed modules — delete them in `docs/source/`. `sphinx-apidoc --force` does not prune orphans. |
 | API pages are empty / `No module named 'sec_interp'` | `conf.py` must add the **repository root's parent** to `sys.path`. |
 | `sphinx-intl update` → `expected str ... not NoneType` | Missing `-d docs/locales` (handled by `translate_docs.py update`). |
-| Phantom `code_walkthrough/code_walkthrough/` or `*.py.md` files | Obsidian creating targets for unresolved links; ignored via `.gitignore`. |
+| Phantom `code_walkthrough_v2/code_walkthrough_v2/` or `*.py.md` files | Obsidian creating targets for unresolved links; ignored via `.gitignore`. |
 | Version drift in docs | Run `make docs-version` (or `build_docs.sh` syncs automatically). |
 
 ## Related documents

@@ -172,8 +172,8 @@ graph TD
 ## 🔗 Related notes
 
 - [[Index]] — vault index
-- [[export_package]] — orchestrator that instantiates it
-- [[export_service]] — historical shim that queried the gate
+- [[layer_core_services_export]] — orchestrator that instantiates it
+- [[orchestrator]] — historical shim that queried the gate
 - [[config]] — settings service with the same `QgsSettings` pattern
 - [[layer_gui_ui_pages_settings]] — UI that writes the 3D toggle
 - [[settings_page]] — Settings page that persists `enable_3d`

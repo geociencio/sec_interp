@@ -25,8 +25,8 @@
 
 ## Code-walkthrough vaults (Obsidian)
 
-- [code_walkthrough/Index.md](code_walkthrough/Index.md) — Spanish vault (file notes + layer notes).
-- [code_walkthrough_en/Index.md](code_walkthrough_en/Index.md) — English vault.
+- [code_walkthrough_v2/Index.md](code_walkthrough_v2/Index.md) — Spanish vault (canonical).
+- [code_walkthrough_en_v2/Index.md](code_walkthrough_en_v2/Index.md) — English vault (canonical).
 - Mirror docs (`ARCHITECTURE_EN`, …) are auto-synced from `docs/` by `scripts/sync_vault_mirrors.sh`.
 
 ## Generated structure tree

@@ -17,8 +17,8 @@
 | Context | Convention |
 |---------|------------|
 | Obsidian vault notes | short-slug wikilinks: `[[controller]]`, `[[layer_core]]` |
-| `docs/` (GitHub/Sphinx) | `[text](code_walkthrough/slug.md)` or relative markdown links |
-| Vault mirrors | auto-rewritten by `scripts/sync_vault_mirrors.sh` (`](code_walkthrough/` → `](`) |
+| `docs/` (GitHub/Sphinx) | `[text](code_walkthrough_v2/slug.md)` or relative markdown links |
+| Vault mirrors | auto-rewritten by `scripts/sync_vault_mirrors.sh` (`](code_walkthrough_v2/` → `](`) |
 
 - Do **not** use relative links that escape the Sphinx source dir (`docs/source/`) — use inline code or a full URL instead.
 - Prefer linking to a canonical doc; avoid duplicating content.

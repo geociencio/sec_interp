@@ -42,7 +42,7 @@
 
 The project organization follows a highly modular architecture based on the **Separation of Concerns** (SoC) principle, decoupling the interface, business logic, and export formats. Each layer has a distinct responsibility and communicates through well-defined interfaces.
 
-<!-- Directory tree is linkified: each Python module links to its vault note (Obsidian [[slug]] + GitHub Markdown). See docs/code_walkthrough/Index.md -->
+<!-- Directory tree is linkified: each Python module links to its vault note (Obsidian [[slug]] + GitHub Markdown). See docs/code_walkthrough_v2/Index.md -->
 - `sec_interp/` — plugin root → [[layer_plugin]] · [[plugin]]
   - `__init__.py` — Plugin entry point (registers with QGIS) → [[root]] · [doc](layer_plugin.md)
   - `sec_interp_plugin.py` — Root class `SecInterp` (facade) → [[sec_interp_plugin]] · [doc](sec_interp_plugin.md)
@@ -137,8 +137,8 @@ The project organization follows a highly modular architecture based on the **Se
     - `ui/main_window.py`, `ui/sidebar.py` → [[gui_ui_pages]] · [doc](layer_gui_ui_pages.md)
     - `ui/pages/` — Tab-based pages → [[layer_gui_ui_pages]]
       - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `preview_page.py` → [[gui_ui_pages]]
-      - `ui/pages/section_feature_selector.py` — 2-vertex section selector (`fid — label`, label field) → [[gui_ui_pages]]
-      - `ui/pages/interpretation_page.py` — compatibility shim for `InterpretationTab`
+      - `ui/pages/section_feature_selector.py` — 2-vertex section selector (`fid — label`, label field) → [[gui_ui_pages]] · [doc](section_feature_selector.md)
+      - `ui/pages/interpretation_page.py` — compatibility shim for `InterpretationTab` · [doc](interpretation_tab.md)
       - `ui/pages/drillhole_page.py` → [[drillhole_page]] · [doc](drillhole_page.md)
       - `ui/pages/drillhole/` (collar / survey / interval tabs) → [[gui_ui_pages_drillhole]] · [[layer_gui_ui_pages_drillhole]] · [doc](layer_gui_ui_pages_drillhole.md)
       - `ui/pages/settings_page.py` → [[settings_page]] · [doc](settings_page.md)
@@ -155,7 +155,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `pdf_exporter.py` → [[pdf_exporter]] · [doc](pdf_exporter.md)
   - `svg_exporter.py` → [[svg_exporter]] · [doc](svg_exporter.md)
   - `image_exporter.py` → [[image_exporter]] · [doc](image_exporter.md)
-- `docs/` 📚 — `ARCHITECTURE_EN.md` (this file) · `ARCHITECTURE.mmd` · `code_walkthrough/` vault
+- `docs/` 📚 — `ARCHITECTURE_EN.md` (this file) · `ARCHITECTURE.mmd` · `code_walkthrough_v2/` vault
 - `tests/` 🧪 — `base_test.py`, `core/`, `gui/`, `exporters/`, `integration/`, `agentic/`, `mcp/`, `mocks/`, `benchmarks/` (Mock-First, `unittest`)
 - `scripts/` 🔧 — `security_scan.py` · `build_docs.sh` · `i18n/` · `sync_vault_mirrors.sh`
 - `resources/` 🎨 — `icons/`, `styles/`, `resources.qrc` → `resources.py`

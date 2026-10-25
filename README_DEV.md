@@ -125,7 +125,7 @@ make docs                       # build + export + publicar (equivale a ./script
 - [docs/docsec/DEVELOPMENT_GUIDE.md](docs/docsec/DEVELOPMENT_GUIDE.md) — Guía para desarrolladores.
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — Historial de versiones.
 - [docs/structure/project_structure.md](docs/structure/project_structure.md) — Árbol de directorios del plugin.
-- [docs/code_walkthrough/Index.md](docs/code_walkthrough/Index.md) — Bóveda de code walkthrough (ES/EN).
+- [docs/code_walkthrough_v2/Index.md](docs/code_walkthrough_v2/Index.md) — Bóveda canónica de code walkthrough (ES/EN).
 - [docs/maintainer/uv_modernization_guide.md](docs/maintainer/uv_modernization_guide.md) — Modernización con `uv`.
 - Docs publicados: https://geociencio.github.io/sec_interp_docs/
 

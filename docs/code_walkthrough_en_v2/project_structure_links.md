@@ -70,7 +70,7 @@
 | `core/utils/parsing.py` | 222 | A | [[parsing]] |
 | `core/utils/rendering.py` | 129 | A | [[rendering]] |
 | `core/utils/safe_loader.py` | 79 | B | [[safe_loader]] |
-| `core/utils/sampling.py` | 99 | B | [[sampling]] |
+| `core/utils/sampling.py` | 99 | B | [[layer_core_utils]] |
 | `core/utils/spatial.py` | 30 | C | [[core_utils]] |
 | `core/validation/__init__.py` | 49 | C | [[core_validation]] |
 | `core/validation/base_validator.py` | 25 | C | [[core_validation]] |

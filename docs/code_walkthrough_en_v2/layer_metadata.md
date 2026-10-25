@@ -436,7 +436,7 @@ The robustness lives in the extractor that populates it:
 - [[project_validator]] — `ValidationParams` that groups the DTOs
 - [[layer_validator]] — consumes `kind`, `geometry_type`, `feature_count`, `band_count`
 - [[project_validators]] — validators that read `is_valid`/`crs_is_geographic`
-- [[enums]] — defines `FieldType`
+- [[layer_core_domain]] — defines `FieldType`
 - [[core_validation]] — `validation/` package index
 
 ---

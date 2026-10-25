@@ -8,6 +8,10 @@ aliases:
 cssclass: secinterp-moc
 ---
 
+> [!warning] ARCHIVED VAULT
+> Since 2026-10-24 the active vault is `docs/code_walkthrough_v2/Index.md`.
+> This directory is kept for history only.
+
 # 🗺️ SecInterp — Code Walkthrough (MOC)
 
 > [!abstract] Purpose

@@ -16,13 +16,13 @@ cssclass: secinterp-moc
 > implementación de SecInterp: **151 notas sustantivas + 23 hubs `layer_*` por idioma**
 > (ES en `code_walkthrough_v2/`, EN en `code_walkthrough_en_v2/`), con recorrido
 > método-por-método, flujo de datos, patrones, manejo de errores y tests.
-> La bóveda v1 (`code_walkthrough/`) se mantiene intacta.
+> La bóveda v1 está **archivada** en `docs/archive/`; v2 es la única bóveda activa.
 
 > [!info] Contexto
 > - **Plugin**: SecInterp — QGIS ≥ 3.28, QGIS 4.x ready
 > - **Arquitectura**: Clean Architecture (separación Core/GUI, Extract-then-Compute)
-> - **Versión documentada**: 3.8.0
-> - **Estado**: ✅ Completa — 302 notas sustantivas + 46 hubs (ambos idiomas), 0 esqueletos
+> - **Versión documentada**: 3.11.0
+> - **Estado**: ✅ Activa — v2 consolidada; v1 archivada; 0 esqueletos
 
 ---
 
@@ -54,6 +54,12 @@ cssclass: secinterp-moc
 | [[layer_exporters]] | `exporters/` | 13 | Escritores de ficheros |
 | [[layer_plugin]] | `plugin/` | 4 | Entrada y ciclo de vida |
 | — | raíz + `resources/` | 5 | [[sec_interp_plugin]], [[logger_config]], [[resources]], [[resources_pkg]], [[root]] |
+
+### Notas incorporadas en la consolidación v2
+
+- [[section_feature_selector]] — selector de sección de 2 vértices.
+- [[interpretation_tab]] — tab de Interpretation en Settings.
+- [[access_control_service]], [[i18n]], [[projection_engine]] y [[survey_processor]] — migradas desde v1.
 
 ---
 

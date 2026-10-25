@@ -9,6 +9,10 @@ aliases:
 cssclass: secinterp-moc
 ---
 
+> [!warning] BÓVEDA ARCHIVADA
+> Desde 2026-10-24 la bóveda activa es `docs/code_walkthrough_v2/Index.md`.
+> Este directorio se conserva solo como histórico.
+
 # 🗺️ SecInterp — Code Walkthrough (MOC)
 
 > [!abstract] Propósito
