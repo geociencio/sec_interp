@@ -21,17 +21,17 @@ from sec_interp.gui.preview_layers.topography import (
     create_topo_fill_layer,
     create_topo_layer,
 )
+from sec_interp.gui.renderers.color_manager import ColorManager
+from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
+from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
+from sec_interp.gui.renderers.interpretation_renderer import InterpretationRenderer
+from sec_interp.gui.renderers.structure_renderer import StructureRenderer
+from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 from sec_interp.gui.utils import create_memory_layer as make_memory_layer
 from sec_interp.logger_config import get_logger
 
 if TYPE_CHECKING:
     from qgis.core import QgsVectorDataProvider
-
-    from sec_interp.gui.renderers.color_manager import ColorManager
-    from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
-    from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
-    from sec_interp.gui.renderers.structure_renderer import StructureRenderer
-    from sec_interp.gui.renderers.topo_renderer import TopoRenderer
 
 logger = get_logger(__name__)
 
@@ -52,15 +52,6 @@ class PreviewLayerFactory:
 
     def __init__(self) -> None:
         """Initialize the layer factory with specialized renderers."""
-        from sec_interp.gui.renderers.color_manager import ColorManager
-        from sec_interp.gui.renderers.drillhole_renderer import DrillholeRenderer
-        from sec_interp.gui.renderers.geology_renderer import GeologyRenderer
-        from sec_interp.gui.renderers.interpretation_renderer import (
-            InterpretationRenderer,
-        )
-        from sec_interp.gui.renderers.structure_renderer import StructureRenderer
-        from sec_interp.gui.renderers.topo_renderer import TopoRenderer
-
         self.color_manager: ColorManager = ColorManager()
         self.topo_renderer: TopoRenderer = TopoRenderer()
         self.geol_renderer: GeologyRenderer = GeologyRenderer(self.color_manager)

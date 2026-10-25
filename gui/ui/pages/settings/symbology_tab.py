@@ -27,12 +27,12 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-_LEGEND_POSITIONS = ("top-right", "top-left", "bottom-right", "bottom-left")
-
 from sec_interp.gui.main_dialog_config import DialogDefaults
 from sec_interp.gui.preview_side_panel import UnitStyleEditor
 from sec_interp.gui.ui.pages.settings.symbology_units import UnitsEditorMixin
 from sec_interp.logger_config import get_logger
+
+_LEGEND_POSITIONS = ("top-right", "top-left", "bottom-right", "bottom-left")
 
 logger = get_logger(__name__)
 

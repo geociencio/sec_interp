@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Lint (portal checker)**: removed the F811 redefinitions in `gui/preview_layer_factory.py` (renderer imports hoisted to module level) and the E402 late imports in `gui/ui/pages/settings/symbology_tab.py`; both plugin modules now pass flake8 clean.
+
 ## [3.12.0] - 2026-10-25
 
 ### Added
