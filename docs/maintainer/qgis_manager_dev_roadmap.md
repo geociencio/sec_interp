@@ -2,6 +2,8 @@
 
 Este documento está dirigido a los desarrolladores y mantenedores de la herramienta `qgis-manage` (paquete `qgis-manager`). Describe las estrategias técnicas para resolver las limitaciones identificadas.
 
+> **Estado (2026-10-25)**: buena parte de este roadmap ya está implementada en **qgis-manage 0.12.0**: `.qgisignore` con semántica Git, sincronización incremental con manifiesto de huellas, rotación de backups con microsegundos y reflink, `deploy --purge-backups --yes`, hooks nativos en Python (`plugin_hooks.py`, con `--trust` y no-shell por defecto), validación de slug/nombres, empaquetado con `--repo-check`, `--require-docs` y `--stamp`, salida `--json`, `ignore check`/`--explain`, `deploy --dry-run` y `profiles list`. Las secciones que siguen se conservan como registro del diseño original.
+
 ---
 
 ## 1. Flexibilidad de Archivos mediante `.pluginignore`

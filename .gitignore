@@ -82,8 +82,14 @@ antigravity-framerepo/
 # graphify code graph artifacts
 graphify-out/
 
+# qgis-manage deploy manifest (local content fingerprints)
+.qgis-manage/
+
 # LibreOffice lock files (transient)
 .~lock.*#
 
 # Internal field data (not for the public repo)
 examples/sample_data/GGL4MFT751-08_V3TABLAESTRUCTURAL.ods
+
+# Local screenshot staging for the user guide (not part of the guide)
+docs/source/images_v3.12.0/

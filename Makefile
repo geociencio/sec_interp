@@ -72,6 +72,8 @@ PEP8EXCLUDE=pydev,resources.py,conf.py,third_party,ui,.venv
 ## in targets below). Default is kept relative so Make targets that prefix
 ## $(HOME)/$(QGISDIR) work as intended.
 QGIS_VERSION ?= 4
+# Parallel Qt compilation (translations/resources). Override with `make compile COMPILE_JOBS=1`.
+COMPILE_JOBS ?= 4
 QGISDIR=.local/share/QGIS/QGIS$(QGIS_VERSION)/profiles/default
 PLUGIN_DEPLOY_DIR=$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
@@ -95,14 +97,23 @@ default:
 	@echo See https://g-sherman.github.io/plugin_build_tool/ for info.
 
 compile:
-	uv run qgis-manage compile --type resources --type translations
-	@# Patch resources.py to use qgis.PyQt instead of PyQt5 (QGIS Policy)
-	@sed -i 's/from PyQt5 import QtCore/from qgis.PyQt import QtCore/g' resources/resources.py
+	@# 0.12.0 repeats --type correctly and writes compile output atomically, but
+	@# the committed rcc output was produced by a different pyrcc build (quote
+	@# style + embedded mtimes), so a fresh compile never matches byte-for-byte.
+	@# Rebuild resources only when their inputs changed; keep resources.py clean
+	@# otherwise (it is tracked and required by CI packaging).
+	@if [ ! -f resources/resources.py ] || ! git rev-parse --git-dir >/dev/null 2>&1 || \
+		! git diff --quiet HEAD -- resources/resources.qrc icon.png; then \
+		uv run qgis-manage compile --type resources --type translations --jobs $(COMPILE_JOBS); \
+	else \
+		echo "⏭️  resources/resources.py is up to date"; \
+		uv run qgis-manage compile --type translations --jobs $(COMPILE_JOBS); \
+	fi
 
 %.qm : %.ts
-	uv run qgis-manage compile --type translations
+	uv run qgis-manage compile --type translations --jobs $(COMPILE_JOBS)
 
-test: compile transcompile
+test: compile
 	@echo
 	@echo "----------------------"
 	@echo "Regression Test Suite"
@@ -119,7 +130,7 @@ test: compile transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: docs compile transcompile
+deploy: docs compile
 	@echo "🚀 Deploying to QGIS $(QGIS_VERSION)..."
 	uv run qgis-manage deploy --no-compile --qgis-version $(QGIS_VERSION)
 	@echo "✨ Deployment to QGIS $(QGIS_VERSION) complete."
@@ -127,7 +138,7 @@ deploy: docs compile transcompile
 # The dclean target removes compiled python files from plugin directory
 
 zip: docs compile
-	uv run qgis-manage package
+	uv run qgis-manage package --repo-check
 
 package: zip
 
@@ -176,7 +187,16 @@ transclean:
 	rm -f i18n/*.qm
 
 clean:
-	uv run qgis-manage clean
+	@# Deliberately NOT `qgis-manage clean`: it deletes every *.cpg/*.qpj and the
+	@# generated .py next to each .qrc, and this repo tracks sample-data sidecars
+	@# (examples/sample_data/*.cpg) plus resources/resources.py. Keep tracked
+	@# files intact and clean only caches/build output.
+	@echo "🧹 Cleaning caches and build output (tracked files preserved)..."
+	find . \( -path ./.venv -o -path ./.git -o -path ./node_modules \) -prune -o \
+		-name "__pycache__" -type d -prune -exec rm -rf {} +
+	find . \( -path ./.venv -o -path ./.git -o -path ./node_modules \) -prune -o \
+		-name "*.pyc" -type f -exec rm -f {} +
+	rm -rf .pytest_cache .ruff_cache help/html help/build .qgis-manage
 
 # Docker targets
 docker-build:
@@ -184,7 +204,7 @@ docker-build:
 
 docker-test: docker-build
 	docker run --rm -v $(CURDIR):/app/sec_interp sec_interp_test
-	python3 scripts/sync_metrics.py --testing-status
+	uv run python scripts/sync_metrics.py --testing-status
 
 # --- Context & architecture tooling (ai-context-core) ----------------------
 # Refresh ground-truth metrics (qgis-plugin-analyzer) and re-render the ai-ctx

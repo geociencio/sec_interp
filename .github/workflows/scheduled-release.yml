@@ -124,7 +124,12 @@ jobs:
 
       - name: Build package
         if: ${{ steps.pick.outputs.version != '' }}
-        run: uv run qgis-manage package --output dist --release-version "${{ steps.pick.outputs.version }}"
+        run: |
+          uv run qgis-manage package \
+            --output dist \
+            --repo-check \
+            --stamp \
+            --release-version "${{ steps.pick.outputs.version }}"
 
       - name: Publish GitHub release
         if: ${{ steps.pick.outputs.version != '' && !inputs.dry_run }}

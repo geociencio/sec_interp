@@ -54,6 +54,7 @@ ENV/
 # AI, Agents, and Contexts
 .agent/
 .agent-state/
+.qgis-manage/
 .opencode/
 opencode.json
 opencode.jsonc
