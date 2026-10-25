@@ -92,6 +92,29 @@ for lang in $WEB_LOCALES; do
     cp -r "$BUILD_DIR/$lang/html/"* "$OUTPUT_DIR/$lang/"
 done
 
+# 4b. Root redirects: keep legacy root URLs working without shipping a stale
+#     copy of the site. The language build (usually ``en``) is the source of truth.
+ROOT_LANG="${WEB_LOCALES%% *}"
+if [ -d "$OUTPUT_DIR/$ROOT_LANG" ]; then
+    for target in index.html ARCHITECTURE.html; do
+        cat > "$OUTPUT_DIR/$target" <<HTML
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=$ROOT_LANG/$target">
+  <link rel="canonical" href="$ROOT_LANG/$target">
+  <title>SecInterp documentation</title>
+</head>
+<body>
+  <p>Redirecting to <a href="$ROOT_LANG/$target">$ROOT_LANG/$target</a>…</p>
+</body>
+</html>
+HTML
+    done
+    echo "🔁 Root redirects updated: index.html, ARCHITECTURE.html -> $ROOT_LANG/"
+fi
+
 # 5. [OPTIONAL] Sync with internal help directory (for plugin usage - OPTIMIZED)
 INTERNAL_HELP_DIR="help/html"
 mkdir -p help

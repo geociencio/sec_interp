@@ -15,6 +15,7 @@ Submodules
    sec_interp.gui.ui.pages.settings.advanced_tab
    sec_interp.gui.ui.pages.settings.default_tab
    sec_interp.gui.ui.pages.settings.info_tab
+   sec_interp.gui.ui.pages.settings.interpretation_tab
    sec_interp.gui.ui.pages.settings.settings_persistence
    sec_interp.gui.ui.pages.settings.symbology_tab
    sec_interp.gui.ui.pages.settings.symbology_units

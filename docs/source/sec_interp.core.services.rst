@@ -14,6 +14,7 @@ Subpackages
 
    sec_interp.core.services.drillhole
    sec_interp.core.services.export
+   sec_interp.core.services.profile
 
 Submodules
 ----------

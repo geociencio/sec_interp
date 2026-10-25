@@ -27,6 +27,7 @@ Submodules
    sec_interp.gui.ui.pages.geology_page
    sec_interp.gui.ui.pages.interpretation_page
    sec_interp.gui.ui.pages.preview_page
+   sec_interp.gui.ui.pages.section_feature_selector
    sec_interp.gui.ui.pages.section_page
    sec_interp.gui.ui.pages.settings_page
    sec_interp.gui.ui.pages.structure_page

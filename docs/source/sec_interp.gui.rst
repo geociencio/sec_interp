@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    sec_interp.gui.adapters
+   sec_interp.gui.preview_layers
    sec_interp.gui.renderers
    sec_interp.gui.services
    sec_interp.gui.tasks
@@ -50,8 +51,10 @@ Submodules
    sec_interp.gui.preview_param_hasher
    sec_interp.gui.preview_render_mixin
    sec_interp.gui.preview_renderer
-   sec_interp.gui.preview_side_panel
+   sec_interp.gui.preview_renderer_cleanup
+   sec_interp.gui.preview_renderer_layers
    sec_interp.gui.preview_reporter
+   sec_interp.gui.preview_side_panel
    sec_interp.gui.preview_state
    sec_interp.gui.preview_task_orchestrator
    sec_interp.gui.ui_status_manager

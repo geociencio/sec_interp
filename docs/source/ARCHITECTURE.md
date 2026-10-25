@@ -1,1409 +1,790 @@
 # SecInterp - Detailed Project Architecture
 
-> **Complete Technical Documentation for the SecInterp QGIS Plugin**
-> Version 3.11.0 | Last update: 2026-10-24
->
-> ⚠️ **Version note**: This document was originally written for v2.9.0 and is being progressively updated. For the current architecture (Extract-then-Compute, `core/services/export/`, `plugin/` mixins, `dialog_*_mixin`, drillhole/settings tabs) see the repository document `docs/ARCHITECTURE_EN.md`.
->
-> ⚠️ **Important Note**: See the [Core Components Distinction Guide (EN)](CORE_DISTINCTION_GUIDE_EN.md) or [Core Distinction Guide](CORE_DISTINCTION_GUIDE.md) to differentiate between the `SecInterp Core` and the `qgis.core` API.
+> **Comprehensive Technical Documentation for the SecInterp QGIS Plugin**
+> Version 3.11.0 | Last Updated: 2026-10-24
 
 ---
 
 ## 📑 Table of Contents
 
 1. [Overview](#overview)
-2. [System Architecture](#system-architecture)
-3. [GUI Layer - User Interface](#gui-layer---user-interface)
-4. [Core Layer - Business Logic](#core-layer---business-logic)
-5. [Exporters Layer - Data Export](#exporters-layer---data-export)
-6. [Main Data Flows](#main-data-flows)
-7. [Design Patterns](#design-patterns)
-8. [External Dependencies](#external-dependencies)
-9. [Performance Optimizations](#performance-optimizations)
-10. [Project Metrics](#project-metrics)
+2. [Directory Structure](#directory-structure)
+3. [System Architecture](#system-architecture)
+4. [GUI Layer - User Interface](#gui-layer---user-interface)
+5. [Core Layer - Business Logic](#core-layer---business-logic)
+6. [Exporters Layer - Data Export](#exporters-layer---data-export)
+7. [Design Principles](#design-principles)
+8. [Extensibility](#extensibility)
+9. [Project Metrics](#project-metrics)
+10. [Quality Assurance & Security Scanning](#quality-assurance--security-scanning)
 
 ---
 
-(overview)=
 ## 🎯 Overview
 
-**SecInterp** (Section Interpreter) is a QGIS plugin designed for the extraction and visualization of geological data in cross-sections. The plugin allows geologists to generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
+**SecInterp** (Section Interpreter) is a QGIS plugin designed for extracting and visualizing geological data in cross-sections. The plugin allows geologists to generate topographic profiles, project geological outcrops, and analyze structural data in a unified 2D view.
 
-### Main Features
+### Key Features
 
-- ✅ **Interactive Preview System** with real-time rendering
-- ✅ **Parallel Processing** for complex geological intersections
-- ✅ **Adaptive LOD** (Level of Detail) based on zoom
-- ✅ **Measurement Tools** with automatic snapping
-- ✅ **Drillhole Support** with 3D→2D projection
-- ✅ **Multi-format Export** (SHP, CSV, PDF, SVG, PNG)
+- ✅ **Interactive Preview System** with real-time rendering and adaptive LOD (Level of Detail) based on zoom.
+- ✅ **Parallel Processing** for complex geological intersections.
+- ✅ **DEM & Profile Insights**: DEM band statistics and profile-vs-DEM min/max/mean, plus gradient/single-color profile styling.
+- ✅ **CRS Safety**: mixed-CRS warnings and a blocking check for mislabelled layer CRS.
+- ✅ **Adaptive Vertical Exaggeration** (auto, clamped `0.5×–20×`) with manual override.
+- ✅ **Optional Smoothed Topography** profile (distance-window moving average) with matching smoothed geology.
+- ✅ **Measurement Tools** with automatic snapping.
+- ✅ **Drillhole Support** with 3D→2D trajectory projection.
+- ✅ **Multi-format Export** (SHP, GPKG, DXF, CSV, PDF, SVG, PNG).
 
 ---
 
 ## 📂 Directory Structure
 
-The project organization follows a clear modular structure to separate the interface, business logic, and utilities.
+The project organization follows a highly modular architecture based on the **Separation of Concerns** (SoC) principle, decoupling the interface, business logic, and export formats. Each layer has a distinct responsibility and communicates through well-defined interfaces.
 
-```
-sec_interp/
-├── __init__.py                 # Plugin entry point
-├── sec_interp_plugin.py        # Root class (SecInterp)
-├── metadata.txt                # QGIS metadata
-├── Makefile                    # Automation (deploy, docs)
-│
-├── core/                       # ⚙️ Business Logic (Core Layer)
-│   ├── controller.py           # Orchestrator (ProfileController)
-│   ├── algorithms.py           # Pure intersection logic
-│   ├── models/                 # Dataclasses and settings models
-│   ├── services/               # Specialized services
-│   │   ├── profile_service.py  # Topography and sampling
-│   │   ├── geology_service.py  # Geological intersections
-│   │   ├── structure_service.py# Structural projection
-│   │   ├── drillhole_service.py# Desurvey and 3D intervals
-│   │   └── preview_service.py  # Preview orchestrator
-│   ├── validation/             # 🛡️ 3-Level Validation Architecture
-│   │   ├── validators.py       # Level 1: Reusable Type/Range validators
-│   │   ├── validation_helpers.py# Level 2: Business field constraints
-│   │   └── project_validator.py# Level 3: Cross-layer domain logic
-│   ├── domain/                 # [NEW] Domain Layer (Entities & DTOs)
-│   │   ├── entities.py         # Business objects with identity
-│   │   ├── dtos.py             # Data Transfer Objects
-│   │   ├── task_inputs.py      # Async Task Inputs
-│   │   └── enums.py            # Domain-pure enumerations
-│   └── utils/                  # Utilities (Geometry, Spatial, etc.)
-│
-├── gui/                        # 🖥️ User Interface (GUI Layer)
-│   ├── main_dialog.py          # Main dialog (Simplified)
-│   ├── preview_renderer.py     # Native PyQGIS rendering
-│   ├── tasks/                  # 🚀 Asynchronous QgsTasks
-│   │   ├── geology_task.py     # Background geology intersection
-│   │   └── drillhole_task.py   # Background drillhole projection
-│   ├── managers/               # 🧩 UI Logic Managers
-│   │   ├── interpretation_mgr.py # Interpretation persistence
-│   │   └── message_mgr.py      # Feedback and alerts
-│   ├── ui/                     # Components and Pages (Layouts)
-│   └── tools/                  # Map tools (Measure Tool)
-│
-├── exporters/                  # 📤 Export Layer
-│   ├── base_exporter.py        # Export interface
-│   ├── shp_exporter.py         # Generic Shapefile exporter
-│   ├── profile_exporters.py    # Specific profile exporters
-│   └── drillhole_exporters.py  # Drillhole exporters
-│
-├── docs/                       # 📚 Technical documentation and manuals
-├── tests/                      # 🧪 Unit test suite
-└── resources/                  # 🎨 Icons and Qt resources
-```
+<!-- Directory tree is linkified: each Python module links to its vault note (Obsidian [`slug`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/slug.md) + GitHub Markdown). See docs/code_walkthrough_v2/Index.md -->
+- `sec_interp/` — plugin root → [`layer_plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_plugin.md) · [`plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/plugin.md)
+  - `__init__.py` — Plugin entry point (registers with QGIS) → [`root`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/root.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_plugin.md)
+  - `sec_interp_plugin.py` — Root class `SecInterp` (facade) → [`sec_interp_plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/sec_interp_plugin.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/sec_interp_plugin.md)
+  - `plugin/` — Plugin mixins composed by `SecInterp` → [`plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/plugin.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_plugin.md)
+    - `plugin/lifecycle.py` — `PluginLifecycleMixin` (`add_action`, `initGui`, `run`, `unload`) → [`plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/plugin.md)
+    - `plugin/input_validator.py` — `InputValidationMixin` (`_get_and_validate_inputs`) → [`plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/plugin.md)
+    - `plugin/render_pipeline.py` — `RenderPipelineMixin` (`draw_preview`) → [`plugin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/plugin.md)
+  - `metadata.txt` — QGIS plugin metadata
+  - `Makefile` — Automation (deploy, tests, docs)
+  - `logger_config.py` → [`logger_config`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/logger_config.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/logger_config.md)
+- `core/` ⚙️ — Business Logic (QGIS-agnostic, thread-safe) → [`layer_core`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core.md)
+  - `controller.py` — Orchestrator `ProfileController` → [`controller`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/controller.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/controller.md)
+  - `config.py` → [`config`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/config.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/config.md)
+  - `data_cache.py` → [`data_cache`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/data_cache.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/data_cache.md)
+  - `exceptions.py` → [`exceptions`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/exceptions.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/exceptions.md)
+  - `performance_metrics.py` → [`performance_metrics`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/performance_metrics.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/performance_metrics.md)
+  - `algorithms.py` — Reserved placeholder for pure business-logic algorithms → [`layer_core`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core.md)
+  - `domain/` — DTOs `ProfileData`, `GeologySegment`; modules `dtos.py`, `entities.py`, `enums.py`, `spatial_meta.py`, `task_inputs.py` → [`domain`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/domain.md) · [`layer_core_domain`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_domain.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/domain.md)
+  - `interfaces/` — ABCs for DI (`IGeologyService`, `IDrillholeService`, `IPreviewService`, …) → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md)
+  - `models/settings_model.py` — Typed settings → [`layer_core_models`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_models.md)
+  - `validation/` — Modular pipeline → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) · [`layer_core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_validation.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_validation.md)
+    - `validation/pipeline.py`, `layer_validator.py`, `field_validator.py`, `path_validator.py`, `project_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md)
+    - `validation/crs_plausibility.py` — Best-effort mislabelled-CRS detection from extent plausibility → [`crs_plausibility`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/crs_plausibility.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_validation.md)
+    - `validation/layer_metadata.py` — QGIS-agnostic layer metadata for validation → [`layer_metadata`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_metadata.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_validation.md)
+  - `utils/` — Helpers (pure Python) → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md)
+    - `utils/safe_loader.py` → [`safe_loader`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/safe_loader.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/safe_loader.md)
+    - `utils/i18n.py` → [`core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_utils.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md)
+    - `utils/geometry_utils/` (`measurement.py`, `optimization.py`, `processing.py`) → [`layer_core_utils_geometry_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils_geometry_utils.md)
+  - `services/` — Concrete implementations → [`layer_core_services`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services.md)
+    - `services/geology_service.py` → [`geology_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/geology_service.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/geology_service.md)
+    - `services/structure_service.py` → [`structure_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/structure_service.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/structure_service.md)
+    - `services/drillhole_service.py` → [`drillhole_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_service.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_service.md)
+    - `services/export_service.py` — 13-line compatibility shim → [`core_services`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services.md)
+    - `services/export/` — Export package (orchestrator + handlers) → [`core_services_export`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services_export.md) · [`layer_core_services_export`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_export.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_export.md)
+      - `services/export/orchestrator.py`, `path_resolver.py`, `map_settings_factory.py`, `compat.py`
+      - `services/export/handlers/` (topography, geology, structures, drillholes, drillholes_3d, interpretations, axes) → [`layer_core_services_export_handlers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_export_handlers.md)
+    - `services/preview_service.py` → [`preview_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_service.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_service.md)
+    - `services/vertical_exaggeration_service.py` → [`vertical_exaggeration_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vertical_exaggeration_service.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vertical_exaggeration_service.md)
+    - `services/access_control_service.py` → [`core_services`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services.md)
+    - `services/drillhole/` — Drillhole pipeline → [`layer_core_services_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_drillhole.md)
+      - `services/drillhole/collar_processor.py` → [`collar_processor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/collar_processor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/collar_processor.md)
+      - `services/drillhole/survey_processor.py` → [`core_services_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services_drillhole.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_drillhole.md)
+      - `services/drillhole/interval_processor.py` → [`interval_processor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interval_processor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interval_processor.md)
+      - `services/drillhole/projection_engine.py` → [`core_services_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services_drillhole.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_services_drillhole.md)
+      - `services/drillhole/trajectory_engine.py` → [`trajectory_engine`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/trajectory_engine.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/trajectory_engine.md)
+- `gui/` 🖥️ — UI Layer (QGIS-dependent) → [`layer_gui`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+  - `gui/main_dialog.py` — `SecInterpDialog` orchestrator → [`main_dialog`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/main_dialog.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/main_dialog.md)
+  - `gui/dialog_dependencies.py` — Narrow dependency containers injected into managers (composition root) → [`layer_gui`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+  - `gui/dialog_message_mixin.py`, `dialog_lifecycle_mixin.py`, `dialog_facade_mixin.py` — Message / lifecycle / facade mixins → [`main_dialog`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/main_dialog.md)
+  - `gui/interpretation_inheritance_mixin.py`, `interpretation_persistence_mixin.py` — Attribute inheritance (nearest geology/drillhole) + project persistence → [`dialog_interpretation_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_interpretation_manager.md)
+  - `gui/main_dialog_config.py`, `main_dialog_utils.py` — Dialog configuration, defaults and UI helpers → [`main_dialog`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/main_dialog.md)
+  - `gui/utils.py` — General-purpose UI helpers and user messaging → [`layer_gui`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+  - `gui/adapters/` — Extract phase (QGIS → DTOs) → [`gui_adapters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_adapters.md) · [`layer_gui_adapters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_adapters.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_adapters.md)
+    - `adapters/drillhole_extractor.py` → [`drillhole_extractor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_extractor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_extractor.md)
+    - `adapters/geology_extractor.py` → [`geology_extractor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/geology_extractor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/geology_extractor.md)
+    - `adapters/structure_extractor.py` → [`structure_extractor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/structure_extractor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/structure_extractor.md)
+    - `adapters/validation_extractor.py` → [`validation_extractor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/validation_extractor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/validation_extractor.md)
+    - `adapters/profile_extractor.py` → [`profile_extractor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/profile_extractor.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_adapters.md)
+    - `adapters/feature_fetcher.py`, `layer_resolver.py`, `geometry.py` → [`gui_adapters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_adapters.md)
+  - Managers (orchestration)
+    - `dialog_signal_manager.py` → [`dialog_signal_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_signal_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `dialog_input_manager.py` → [`dialog_input_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_input_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `dialog_preview_manager.py` → [`dialog_preview_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_preview_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_preview_manager.md)
+    - `dialog_export_manager.py` → [`dialog_export_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_export_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_export_manager.md)
+    - `dialog_interpretation_manager.py` → [`dialog_interpretation_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_interpretation_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `dialog_state_manager.py` → [`dialog_state_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_state_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `dialog_settings_persistence.py` → [`dialog_state_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_state_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `dialog_tool_manager.py` → [`dialog_tool_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_tool_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `layer_notification_manager.py` → [`layer_notification_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_notification_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_notification_manager.md)
+    - `ui_status_manager.py` → [`ui_status_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/ui_status_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/ui_status_manager.md)
+  - `dialogs/` — Modal dialogs → [`layer_gui_dialogs`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_dialogs.md)
+    - `dialogs/interpretation_properties_dialog.py` → [`layer_gui_dialogs`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_dialogs.md)
+  - Rendering Engine
+    - `preview_renderer.py` → [`preview_renderer`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_renderer.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_renderer.md)
+    - `preview_layer_factory.py` → [`preview_layer_factory`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_layer_factory.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_layer_factory.md)
+    - `preview_axes_manager.py` → [`preview_axes_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_axes_manager.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_axes_manager.md)
+    - `preview_param_hasher.py` — Render-parameter hashing for LOD cache invalidation → [`preview_param_hasher`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_param_hasher.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `preview_render_mixin.py`, `preview_callbacks_mixin.py` — Rendering and async-task callback mixins → [`preview_render_mixin`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_render_mixin.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `preview_task_orchestrator.py` — Queues, prioritizes and monitors background preview tasks → [`preview_task_orchestrator`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_task_orchestrator.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `preview_legend_renderer.py` — Draws the legend (topography, structures, units) on a `QPainter` → [`preview_legend_renderer`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_legend_renderer.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui.md)
+    - `preview_reporter.py` → [`preview_state`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md)
+    - `preview_state.py` → [`preview_state`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md)
+    - `preview_side_panel.py` — collapsible legend side panel (per-unit hide/color/alias, interpretations list)
+  - `renderers/` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) · [`layer_gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_renderers.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_renderers.md)
+    - `renderers/base_renderer.py`, `topo/geology/drillhole/structure/interpretation_renderer.py`, `color_manager.py`
+  - `tasks/` (`geology_task.py`, `drillhole_task.py`) → [`gui_tasks`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_tasks.md) · [`layer_gui_tasks`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_tasks.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_tasks.md)
+  - `tools/` — Interactive map tools → [`layer_gui_tools`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_tools.md)
+    - `tools/measure_tool.py` → [`measure_tool`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/measure_tool.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/measure_tool.md)
+    - `tools/interpretation_tool.py` → [`interpretation_tool`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_tool.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_tool.md)
+    - `tools/snapper.py`
+  - `ui/` — Programmatic window + sidebar → [`layer_gui_ui`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui.md)
+    - `ui/main_window.py`, `ui/sidebar.py` → [`gui_ui_pages`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_ui_pages.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages.md)
+    - `ui/pages/` — Tab-based pages → [`layer_gui_ui_pages`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages.md)
+      - `ui/pages/base_page.py`, `dem_page.py`, `section_page.py`, `geology_page.py`, `structure_page.py`, `preview_page.py` → [`gui_ui_pages`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_ui_pages.md)
+      - `ui/pages/section_feature_selector.py` — 2-vertex section selector (`fid — label`, label field) → [`gui_ui_pages`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_ui_pages.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/section_feature_selector.md)
+      - `ui/pages/interpretation_page.py` — compatibility shim for `InterpretationTab` · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_tab.md)
+      - `ui/pages/drillhole_page.py` → [`drillhole_page`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_page.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_page.md)
+      - `ui/pages/drillhole/` (collar / survey / interval tabs) → [`gui_ui_pages_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_ui_pages_drillhole.md) · [`layer_gui_ui_pages_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages_drillhole.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages_drillhole.md)
+      - `ui/pages/settings_page.py` → [`settings_page`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/settings_page.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/settings_page.md)
+      - `ui/pages/settings/` (default / advanced / symbology / interpretation tabs + persistence) → [`gui_ui_pages_settings`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_ui_pages_settings.md) · [`layer_gui_ui_pages_settings`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages_settings.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_gui_ui_pages_settings.md)
+- `exporters/` 📤 — Factory `BaseExporter` → [`layer_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_exporters.md)
+  - `base_exporter.py` → [`base_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/base_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/base_exporter.md)
+  - `vector_exporter.py` → [`vector_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vector_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vector_exporter.md)
+  - `dxf_exporter.py` → [`dxf_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dxf_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dxf_exporter.md)
+  - `profile_exporters.py` / `csv_exporter.py` → [`profile_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/profile_exporters.md) · [`csv_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/csv_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/csv_exporter.md)
+  - `interpretation_3d_exporter.py` → [`interpretation_3d_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_3d_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_3d_exporter.md)
+  - `interpretation_exporters.py` → [`interpretation_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_exporters.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_exporters.md)
+  - `drillhole_3d_exporter.py` → [`drillhole_3d_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_3d_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_3d_exporter.md)
+  - `drillhole_exporters.py` → [`drillhole_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_exporters.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_exporters.md)
+  - `pdf_exporter.py` → [`pdf_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/pdf_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/pdf_exporter.md)
+  - `svg_exporter.py` → [`svg_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/svg_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/svg_exporter.md)
+  - `image_exporter.py` → [`image_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/image_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/image_exporter.md)
+- `docs/` 📚 — `ARCHITECTURE_EN.md` (this file) · `ARCHITECTURE.mmd` · `code_walkthrough_v2/` vault
+- `tests/` 🧪 — `base_test.py`, `core/`, `gui/`, `exporters/`, `integration/`, `agentic/`, `mcp/`, `mocks/`, `benchmarks/` (Mock-First, `unittest`)
+- `scripts/` 🔧 — `security_scan.py` · `build_docs.sh` · `i18n/` · `sync_vault_mirrors.sh`
+- `resources/` 🎨 — `icons/`, `styles/`, `resources.qrc` → `resources.py`
+
+> [!tip] En Obsidian este árbol es navegable: cada `[`slug`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/slug.md)` abre la nota de la bóveda y alimenta el Graph View. En GitHub/Sphinx usa el link `[doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/slug.md)` relativo. Los espejos en `docs/code_walkthrough*/ARCHITECTURE_EN.md` se re-sincronizan con `bash scripts/sync_vault_mirrors.sh`.
+
 
 ---
 
-(system-architecture)=
 ## 🏗️ System Architecture
 
-### Full Architecture Diagram
+### Complete Architecture Diagram
 
 ```mermaid
-graph TB
+graph TD
+    classDef module fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef manager fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
+    classDef service fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef interface fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef exporter fill:#fce4ec,stroke:#c2185b,stroke-width:2px;
+    classDef task fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef renderer fill:#e0f2f1,stroke:#00695c,stroke-width:2px;
+
     %% ========== ENTRY POINT ==========
     QGIS[QGIS Application]
-    INIT[__init__.py<br/>Entry Point]
     PLUGIN[sec_interp_plugin.py<br/>SecInterp Class<br/>Plugin Root]
 
     %% ========== GUI LAYER ==========
     subgraph GUI["🖥️ GUI Layer - User Interface"]
         direction TB
 
-        MAIN[main_dialog.py<br/>SecInterpDialog<br/>~190 lines]
+        MAIN[main_dialog.py<br/>SecInterpDialog]
 
-        subgraph MANAGERS["Managers"]
-            SIGNALS_MGR[dialog_signal_manager.py<br/>SignalManager]
-            DATA_MGR[dialog_input_manager.py<br/>InputManager]
-            PREVIEW_MGR[dialog_preview_manager.py<br/>PreviewManager]
-            EXPORT_MGR[dialog_export_manager.py<br/>ExportManager]
-            VALIDATION_MGR[dialog_input_manager.py + core/validation/<br/>Validation]
-            INTERP_MGR[dialog_interpretation_manager.py<br/>InterpretationManager]
-            MSG_MGR[dialog_message_mixin.py<br/>DialogMessageMixin]
-            CONFIG_MGR[main_dialog_config.py<br/>DialogConfig]
+        subgraph MANAGERS["Managers (Orchestration)"]
+            direction TB
+            SIGNALS_MGR[dialog_signal_manager.py<br/>DialogSignalManager]:::manager
+            INPUT_MGR[dialog_input_manager.py<br/>DialogInputManager]:::manager
+            PREVIEW_MGR[dialog_preview_manager.py<br/>PreviewManager]:::manager
+            EXPORT_MGR[dialog_export_manager.py<br/>ExportManager]:::manager
+            INTERP_MGR[dialog_interpretation_manager.py<br/>InterpretationManager]:::manager
+            STATE_MGR[dialog_state_manager.py<br/>DialogStateManager]:::manager
+            SETTINGS_MGR[dialog_settings_persistence.py<br/>SettingsPersistence]:::manager
+            TOOL_MGR[dialog_tool_manager.py<br/>ToolManager]:::manager
+            LAYER_NOTIF[layer_notification_manager.py<br/>LayerNotificationManager]:::manager
+            UI_STATUS[ui_status_manager.py<br/>UIStatusManager]:::manager
         end
 
-        RENDERER[preview_renderer.py<br/>PreviewRenderer<br/>~280 lines]
-        SIDE_PANEL[preview_side_panel.py<br/>Preview Side Panel]
-
-        subgraph TOOLS["🛠️ Tools"]
-            MEASURE[measure_tool.py<br/>ProfileMeasureTool]
-            INTERP_TOOL[interpretation_tool.py<br/>InterpretationTool]
+        subgraph RENDERING["Rendering Engine"]
+            direction TB
+            LAYER_FACTORY[preview_layer_factory.py<br/>PreviewLayerFactory]
+            AXES_MGR[preview_axes_manager.py<br/>PreviewAxesManager]
+            RENDERER[preview_renderer.py<br/>PreviewRenderer]
+            REPORTER[preview_reporter.py<br/>PreviewReporter]
+            PARAM_HASH[preview_param_hasher.py<br/>PreviewParamHasher]
+            PREVIEW_STATE[preview_state.py<br/>PreviewState]
         end
 
-        subgraph UI_WIDGETS["📦 UI Components"]
-            UI_MAIN[main_window.py<br/>SecInterpMainWindow]
-            UI_PAGES[Page Classes:<br/>DemPage, SectionPage,<br/>GeologyPage, StructPage,<br/>DrillholePage]
+        subgraph RENDERERS["Specialized Renderers"]
+            direction TB
+            BASE_RENDERER[renderers/base_renderer.py<br/>BaseRenderer]:::renderer
+            TOPO_RENDERER[renderers/topo_renderer.py<br/>TopoRenderer]:::renderer
+            GEOLOGY_RENDERER[renderers/geology_renderer.py<br/>GeologyRenderer]:::renderer
+            DRILLHOLE_RENDERER[renderers/drillhole_renderer.py<br/>DrillholeRenderer]:::renderer
+            STRUCT_RENDERER[renderers/structure_renderer.py<br/>StructureRenderer]:::renderer
+            INTERP_RENDERER[renderers/interpretation_renderer.py<br/>InterpretationRenderer]:::renderer
+            COLOR_MGR[renderers/color_manager.py<br/>ColorManager]:::renderer
         end
+
+        subgraph WORKERS["Async Tasks (QgsTask)"]
+            direction TB
+            TASK_ORCH[preview_task_orchestrator.py<br/>PreviewTaskOrchestrator]:::task
+            GEOLOGY_TASK[tasks/geology_task.py<br/>GeologyTask]:::task
+            DRILL_TASK[tasks/drillhole_task.py<br/>DrillholeTask]:::task
+        end
+
+        subgraph TOOLS["Map Tools"]
+            direction TB
+            MAP_TOOLS[tools/<br/>QgsMapTool Implementations]
+        end
+
+        subgraph UI_PAGES["UI Components"]
+            direction TB
+            PAGES[ui/pages/<br/>Tab-based Pages]
+            ADAPTERS[adapters/<br/>UI Adapters]
+            SIDE_PANEL[preview_side_panel.py<br/>Preview Side Panel]
+            SYMBOLOGY[symbology_tab.py<br/>Live Symbology]
+        end
+
+        MAIN --> MANAGERS
+        MAIN --> RENDERING
+        MAIN --> RENDERERS
+        MAIN --> WORKERS
+        MAIN --> TOOLS
+        MAIN --> UI_PAGES
+        MAIN --> SIDE_PANEL
+        MAIN --> SYMBOLOGY
+
+        MANAGERS --> RENDERING
+        MANAGERS --> WORKERS
+        MANAGERS --> UI_PAGES
+
+        WORKERS --> TASK_ORCH
+        RENDERING --> RENDERERS
     end
 
     %% ========== CORE LAYER ==========
     subgraph CORE["⚙️ Core Layer - Business Logic"]
         direction TB
 
-        CONTROLLER[controller.py<br/>ProfileController<br/>~280 lines]
+        CONTROLLER[controller.py<br/>ProfileController]
 
-        subgraph SERVICES["🔧 Services"]
-            PROFILE_SVC[profile_service.py<br/>ProfileService]
-            GEOLOGY_SVC[geology_service.py<br/>GeologyService]
-            STRUCTURE_SVC[structure_service.py<br/>StructureService]
-            STRUCTURE_SVC[structure_service.py<br/>StructureService]
+        subgraph INTERFACES["Abstractions (DI) - interfaces/"]
+            direction TB
+            I_GEOL[interfaces/geology_interface.py<br/>IGeologyService]:::interface
+            I_DRILL[interfaces/drillhole_interface.py<br/>IDrillholeService]:::interface
+            I_STRUCT[interfaces/structure_interface.py<br/>IStructureService]:::interface
+            I_PREVIEW[interfaces/preview_interface.py<br/>IPreviewService]:::interface
+            I_CACHE[interfaces/cache_interface.py<br/>ICacheService]:::interface
+            I_RENDER3D[interfaces/i_renderer_3d.py<br/>IRenderer3D]:::interface
+        end
+
+        subgraph SERVICES["Concrete Services - services/"]
+            direction TB
+            GEOL_SVC[services/geology_service.py<br/>GeologyService]:::service
+            STRUCT_SVC[services/structure_service.py<br/>StructureService]:::service
+            DRILL_SVC[services/drillhole_service.py<br/>DrillholeService]:::service
+            EXPORT_SVC[services/export_service.py<br/>ExportService]:::service
+            PREVIEW_SVC[services/preview_service.py<br/>PreviewService]:::service
+            VE_SVC[services/vertical_exaggeration_service.py<br/>VerticalExaggerationService]:::service
+            ACCESS_SVC[services/access_control_service.py<br/>AccessControlService]:::service
+
             subgraph DRILLHOLE_PKG["Drillhole Sub-system"]
-                DRILLHOLE_SVC[drillhole_service.py<br/>DrillholeService]
-                COLLAR_PROC[collar_processor.py]
-                SURVEY_PROC[survey_processor.py]
-                INTERVAL_PROC[interval_processor.py]
-                PROJ_ENGINE[projection_engine.py<br/>Pure Math]
+                direction TB
+                COLLAR_PROC[drillhole/collar_processor.py<br/>CollarProcessor]
+                SURVEY_PROC[drillhole/survey_processor.py<br/>SurveyProcessor]
+                INTERVAL_PROC[drillhole/interval_processor.py<br/>IntervalProcessor]
+                PROJ_ENGINE[drillhole/projection_engine.py<br/>ProjectionEngine]
+                TRAJ_ENGINE[drillhole/trajectory_engine.py<br/>TrajectoryEngine]
+
+                DRILL_SVC --> COLLAR_PROC
+                DRILL_SVC --> SURVEY_PROC
+                DRILL_SVC --> INTERVAL_PROC
+                DRILL_SVC --> TRAJ_ENGINE
+                COLLAR_PROC --> PROJ_ENGINE
+                SURVEY_PROC --> TRAJ_ENGINE
+                TRAJ_ENGINE --> PROJ_ENGINE
             end
         end
 
-        subgraph TASKS["🚀 QGS TASKS (Extract-then-Compute)"]
-            GEO_TASK[geology_task.py<br/>GeologyGenerationTask]
-            DRILL_TASK[drillhole_task.py<br/>DrillholeGenerationTask]
+        subgraph MODELS["Domain Models - models/"]
+            direction TB
+            SETTINGS_MODEL[models/settings_model.py<br/>SettingsModel]
         end
 
-        subgraph VALIDATION_PKG["🛡️ Validation Architecture"]
-            LEVEL1[validators.py<br/>Type/Range Checks]
-            LEVEL2[validation_helpers.py<br/>Business Logic]
-            LEVEL3[project_validator.py<br/>Domain Interaction]
+        subgraph DOMAIN["Domain Layer - domain/"]
+            direction TB
+            ENTITIES[Entities & DTOs<br/>ProfileData, GeologySegment,<br/>DrillholeData, etc.]
         end
 
-        METRICS[performance_metrics.py<br/>Performance Profiling]
-        DOMAIN[core/domain/<br/>Domain Layer Package]
-
-        subgraph UTILS["🔨 Utilities"]
-            GEOM_UTILS[geometry.py]
-            DRILL_UTILS[drillhole.py]
-            GEOLOGY_UTILS[geology.py]
-            SPATIAL_UTILS[spatial.py]
-            SAMPLING_UTILS[sampling.py]
+        subgraph VALIDATION["Validation Pipeline - validation/"]
+            direction TB
+            BASE_VAL[base_validator.py<br/>BaseValidator]
+            PIPELINE[pipeline.py<br/>ValidationPipeline]
+            LAYER_VAL[layer_validator.py<br/>LayerValidator]
+            FIELD_VAL[field_validator.py<br/>FieldValidator]
+            PATH_VAL[path_validator.py<br/>PathValidator]
+            PROJECT_VAL[project_validator.py<br/>ProjectValidator]
+            PROJECT_VALS[project_validators.py<br/>ProjectValidators]
+            HELPERS[validation_helpers.py<br/>ValidationHelpers]
+            VALIDATORS[validators.py<br/>Validators]
         end
+
+        subgraph UTILS["Utilities - utils/"]
+            direction TB
+            DRILL_UTIL[drillhole.py<br/>Drillhole Utils]
+            GEOL_UTIL[geology.py<br/>Geology Utils]
+            GEOM_UTIL[geometry_utils/<br/>Geometry Utilities]
+            I18N_UTIL[i18n.py<br/>i18n Utils]
+            IO_UTIL[io.py<br/>IO Utils]
+            META_UTIL[metadata_reader.py<br/>Metadata Reader]
+            PARSE_UTIL[parsing.py<br/>Parsing Utils]
+            RENDER_UTIL[rendering.py<br/>Rendering Utils]
+            SAFE_LOADER[safe_loader.py<br/>Safe Loader]
+            SAMPLE_UTIL[sampling.py<br/>Sampling Utils]
+            SPATIAL_UTIL[spatial.py<br/>Spatial Utils]
+        end
+
+        CONTROLLER --> INTERFACES
+        INTERFACES -.-> SERVICES
+        SERVICES --> MODELS
+        SERVICES --> DOMAIN
+        SERVICES --> VALIDATION
+        SERVICES --> UTILS
+        CONTROLLER --> VALIDATION
     end
 
     %% ========== EXPORTERS LAYER ==========
-    subgraph EXPORTERS["📤 Exporters Layer - Export"]
+    subgraph EXPORTERS["📤 Exporters Layer"]
         direction TB
 
-        ORCHESTRATOR[core/services/export/orchestrator.py<br/>ExportService]
-        BASE_EXP[base_exporter.py<br/>BaseExporter]
+        BASE_EXPORT[exporters/base_exporter.py<br/>BaseExporter]:::exporter
 
-        subgraph EXPORT_FORMATS["Export Formats"]
-            SHP_EXP[shp_exporter.py<br/>ShapefileExporter]
-            CSV_EXP[csv_exporter.py<br/>CSVExporter]
-            PDF_EXP[pdf_exporter.py<br/>PDFExporter]
-            SVG_EXP[svg_exporter.py<br/>SVGExporter]
-            IMG_EXP[image_exporter.py<br/>ImageExporter]
-            PROFILE_EXP[profile_exporters.py<br/>Profile/Geology/Struct]
-            DRILL_EXP[drillhole_exporters.py<br/>2D Traces/Intervals]
-            DRILL_3D[drillhole_3d_exporter.py<br/>3D Traces/Intervals]
-            INTERP_3D[interpretation_3d_exporter.py<br/>3D Polygons]
+        subgraph VECTOR["Vector Exporters"]
+            direction TB
+            VEC_EXPORT[exporters/vector_exporter.py<br/>VectorExporter<br/>GPKG/SHP/DXF]:::exporter
+            DXF_EXPORT[exporters/dxf_exporter.py<br/>DxfExporter]:::exporter
         end
+
+        subgraph PROFILE["Profile Exporters"]
+            direction TB
+            PROF_EXPORT[exporters/profile_exporters.py<br/>ProfileExporters]:::exporter
+            CSV_EXPORT[exporters/csv_exporter.py<br/>CsvExporter]:::exporter
+        end
+
+        subgraph INTERP_3D["3D Geologic Export"]
+            direction TB
+            INTERP_3D[exporters/interpretation_3d_exporter.py<br/>Interpretation3DExporter]:::exporter
+            INTERP_EXP[exporters/interpretation_exporters.py<br/>InterpretationExporters]:::exporter
+        end
+
+        subgraph DRILL_3D["3D Drillhole Export"]
+            direction TB
+            DRILL_3D[exporters/drillhole_3d_exporter.py<br/>Drillhole3DExporter]:::exporter
+            DRILL_EXP[exporters/drillhole_exporters.py<br/>DrillholeExporters]:::exporter
+        end
+
+        subgraph DOCUMENT["Document Exporters"]
+            direction TB
+            PDF_EXPORT[exporters/pdf_exporter.py<br/>PdfExporter]:::exporter
+            SVG_EXPORT[exporters/svg_exporter.py<br/>SvgExporter]:::exporter
+            IMG_EXPORT[exporters/image_exporter.py<br/>ImageExporter]:::exporter
+        end
+
+        BASE_EXPORT --> VEC_EXPORT
+        BASE_EXPORT --> PROF_EXPORT
+        BASE_EXPORT --> INTERP_3D
+        BASE_EXPORT --> DRILL_3D
+        BASE_EXPORT --> PDF_EXPORT
+        BASE_EXPORT --> SVG_EXPORT
+        BASE_EXPORT --> IMG_EXPORT
+        VEC_EXPORT --> DXF_EXPORT
+        PROF_EXPORT --> CSV_EXPORT
+        INTERP_3D --> INTERP_EXP
+        DRILL_3D --> DRILL_EXP
     end
 
     %% ========== CONNECTIONS ==========
-    QGIS -->|loads| INIT
-    INIT -->|delegates| PLUGIN
-    PLUGIN -->|initializes| MAIN
+    QGIS --> PLUGIN
+    PLUGIN --> MAIN
 
-    MAIN -->|delegates| MANAGERS
-    MAIN -->|uses| UI_MAIN
+    %% GUI -> Core
+    PREVIEW_MGR --> PREVIEW_SVC
+    EXPORT_MGR --> EXPORT_SVC
+    INTERP_MGR --> DRILL_SVC
+    INTERP_MGR --> GEOL_SVC
+    TOOL_MGR --> CONTROLLER
 
-    PREVIEW_MGR -->|renders with| RENDERER
-    PREVIEW_MGR -->|updates| SIDE_PANEL
-    PREVIEW_MGR -->|activates| TOOLS
-    PREVIEW_MGR -->|launches| TASKS
-    TASKS -->|uses| SERVICES
+    %% Workers -> Controller
+    TASK_ORCH --> CONTROLLER
+    GEOLOGY_TASK --> CONTROLLER
+    DRILL_TASK --> CONTROLLER
 
-    EXPORT_MGR -->|delegates to| ORCHESTRATOR
-    VALIDATION_MGR -->|validates with| VALIDATION_PKG
+    %% Core -> Exporters
+    EXPORT_SVC --> EXPORTERS
 
-    CONTROLLER -->|orchestrates| SERVICES
-    SERVICES -->|uses| UTILS
-    SERVICES -->|uses| ALGORITHMS
-
-    ORCHESTRATOR -->|delegates to| EXPORT_FORMATS
-
-    RENDERER -->|uses| QGIS_GUI
-    CONTROLLER -->|uses| QGIS_CORE
-    MAIN -->|uses| PYQT5
-
-    classDef entryPoint fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
-    classDef guiLayer fill:#4ecdc4,stroke:#0a9396,stroke-width:2px,color:#000
-    classDef coreLayer fill:#95e1d3,stroke:#38a169,stroke-width:2px,color:#000
-    classDef exportLayer fill:#ffd93d,stroke:#f59e0b,stroke-width:2px,color:#000
-    classDef externalLayer fill:#a8dadc,stroke:#457b9d,stroke-width:2px,color:#000
-
-    class QGIS,PLUGIN entryPoint
-    class MAIN,PREVIEW_MGR,EXPORT_MGR,VALIDATION_MGR,CONFIG_MGR,RENDERER,SIDE_PANEL,MEASURE guiLayer
-    class CONTROLLER,ALGORITHMS,PROJ_VAL,CACHE,METRICS,DOMAIN coreLayer
-    class PROFILE_SVC,GEOLOGY_SVC,STRUCTURE_SVC,DRILLHOLE_SVC,PARALLEL_GEO coreLayer
-    class ORCHESTRATOR,BASE_EXP,SHP_EXP,CSV_EXP,PDF_EXP,SVG_EXP,IMG_EXP,PROFILE_EXP,DRILL_EXP exportLayer
-    class QGIS_CORE,QGIS_GUI,PYQT5 externalLayer
+    %% Styles
+    classDef plugin fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#fff
+    class PLUGIN plugin
 ```
 
 ---
 
-## 🧩 Visualizing Mermaid Diagrams in VS Code
-
-You can preview Mermaid diagrams in VS Code with the **Mermaid Editor** extension (installed). Quick steps:
-
-1. Open this file `docs/ARCHITECTURE.md`.
-2. Place the cursor inside a ```mermaid``` block and open the command palette (Ctrl+Shift+P) → "Open Mermaid Editor" or "Preview Mermaid".
-3. Alternatively, use the Markdown preview (Ctrl+Shift+V) if you have `Markdown Preview Mermaid Support` (already installed).
-
-Quick Example (edit this block and save to see the preview):
-
-```mermaid
-graph LR
-  A[User] --> B[SecInterpPlugin]
-  B --> C[Generate Profile]
-  C --> D[Export SVG/PNG]
-```
-
----
-
-(gui-layer---user-interface)=
 ## 🖥️ GUI Layer - User Interface
 
-> **Current UI layout (2026-10-24)**: the sidebar has six entries — DEM, Section,
-> Geology, Structural, Drillholes and Settings. **Interpretation Settings** is a tab
-> inside `SettingsPage` (`ui/pages/settings/interpretation_tab.py`); the old
-> `InterpretationPage` remains only as a compatibility shim. The section page now uses
-> `ui/pages/section_feature_selector.py` to list only single-part lines with exactly
-> two vertices, as `fid — label`, with an optional attribute label field.
-
-### 1. SecInterpDialog (main_dialog.py)
+### 1. Manager-Based Orchestration (main_dialog.py)
 
 **Main Class**: `SecInterpDialog`
-**Inherits from**: `DialogLifecycleMixin, DialogMessageMixin, DialogFacadeMixin, SecInterpMainWindow`
-**Lines of code**: ~190 (logic handled by managers + mixins)
-**Responsibility**: Composition root that coordinates components via Managers and mixins
+**Responsibility**: The main dialog no longer contains business logic. It coordinates specialized **Managers** that handle specific lifecycle events and UI state.
 
-#### Key Components
+#### Key Managers (10 Specialized Managers)
 
-```python
-class SecInterpDialog(
-    DialogLifecycleMixin, DialogMessageMixin, DialogFacadeMixin, SecInterpMainWindow
-):
-    """Dialog for the SecInterp QGIS plugin."""
+| Manager | File | Responsibility |
+|---------|------|----------------|
+| `DialogSignalManager` | `dialog_signal_manager.py` → [`dialog_signal_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_signal_manager.md) | Centralizes all signal/slot connections to avoid spaghetti code. |
+| `DialogInputManager` | `dialog_input_manager.py` → [`dialog_input_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_input_manager.md) | Manages input layer selection, schema validation, and layer compatibility. |
+| `PreviewManager` | `dialog_preview_manager.py` → [`dialog_preview_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_preview_manager.md) | Coordinates the preview canvas, axes, LOD calculation, and render triggering. |
+| `ExportManager` | `dialog_export_manager.py` → [`dialog_export_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_export_manager.md) | Maps UI selections to the `ExportService` in the Core layer. |
+| `InterpretationManager` | `dialog_interpretation_manager.py` → [`dialog_interpretation_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_interpretation_manager.md) | Handles 2D/3D geological interpretation state and user interactions. |
+| `DialogStateManager` | `dialog_state_manager.py` → [`dialog_state_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_state_manager.md) | Manages session persistence and UI defaults restoration. |
+| `SettingsPersistence` | `dialog_settings_persistence.py` → [`dialog_state_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_state_manager.md) | Handles QSettings-based persistence for plugin configuration. |
+| `ToolManager` | `dialog_tool_manager.py` → [`dialog_tool_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_tool_manager.md) | Manages `QgsMapTool` lifecycle (pan, measure, interpret tools). |
+| `LayerNotificationManager` | `layer_notification_manager.py` → [`layer_notification_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_notification_manager.md) | Listens to QGIS layer tree changes and updates UI accordingly. |
+| `UIStatusManager` | `ui_status_manager.py` → [`ui_status_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/ui_status_manager.md) | Manages status bar messages, progress indicators, and user notifications. |
 
-    def __init__(self, iface=None, plugin_instance=None, parent=None):
-        super().__init__(iface, parent)
-        self.iface = iface
-        self.plugin_instance = plugin_instance
-        self.project = QgsProject.instance()
-        self._init_managers()
-        # The legend lives in PreviewPage.side_panel (PreviewSidePanel), not on the dialog.
-        self.signal_manager = SignalManager(self, self.preview_manager,
-                                            self.export_manager, self.tool_manager,
-                                            self.state_manager)
-        self.signal_manager.connect_all()
+### 2. Rendering Engine
 
-    def _init_managers(self):
-        self.input_manager = InputManager(pages, self.output_widget, self.tr)
-        self.state_manager = StateManager(self)
-        self.preview_manager = PreviewManager(self, PreviewService(controller), cache=preview_cache)
-        self.export_manager = ExportManager(self)
-        self.interpretation_manager = InterpretationManager(self, cache=preview_cache)
-        self.tool_manager = ToolManager(...)
-        self.navigation_manager = NavigationManager(self.preview_widget.canvas)
-        self.layer_factory = PreviewLayerFactory()
-```
+**Responsibility**: Handles all preview canvas rendering with adaptive LOD and specialized renderers.
 
-#### Main Methods
+#### Core Rendering Components
 
-| Method | Description | Location |
-|--------|-------------|-----------|
-| `_init_managers()` | Initializes dedicated managers | `main_dialog.py` |
-| `get_selected_values()` | Facade for the InputManager | `main_dialog.py` |
-| `get_all_values()` | Actual data aggregation from pages | `dialog_input_manager.py` |
-| `connect_all()` | Bulk signal connection | `dialog_signal_manager.py` |
-| `preview_profile_handler()` | Delegated to PreviewManager | `main_dialog.py` |
-| `export_preview()` | Delegated to ExportManager | `main_dialog.py` |
-| `update_button_state()` | Delegated to StatusManager | `main_dialog.py` |
+| Component | File | Responsibility |
+|---------|------|----------------|
+| `PreviewRenderer` | `preview_renderer.py` → [`preview_renderer`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_renderer.md) | Main canvas renderer orchestrating specialized renderers. |
+| `PreviewLayerFactory` | `preview_layer_factory.py` → [`preview_layer_factory`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_layer_factory.md) | Creates temporary memory layers for preview visualization. |
+| `PreviewAxesManager` | `preview_axes_manager.py` → [`preview_axes_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_axes_manager.md) | Manages coordinate axes, grids, and scale annotations. |
+| `PreviewReporter` | `preview_reporter.py` → [`preview_state`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md) | Generates textual/tabular reports from preview data. |
+| `PreviewParamHasher` | `preview_param_hasher.py` → [`dialog_preview_manager`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dialog_preview_manager.md) | Hashes render parameters for LOD cache invalidation. |
+| `PreviewState` | `preview_state.py` → [`preview_state`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_state.md) | Encapsulates preview viewport, scale, and visibility state. |
 
-#### Signals and Slots
+#### Specialized Renderers (Renderer Pattern)
 
-```python
-# Button connections
-self.preview_widget.btn_preview.clicked.connect(self.preview_profile_handler)
-self.preview_widget.btn_export.clicked.connect(self.export_preview)
-self.preview_widget.btn_measure.toggled.connect(self.toggle_measure_tool)
+| Renderer | File | Responsibility |
+|----------|------|----------------|
+| `BaseRenderer` | `renderers/base_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Abstract base with common rendering utilities. |
+| `TopoRenderer` | `renderers/topo_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Renders topography profiles with elevation data. |
+| `GeologyRenderer` | `renderers/geology_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Renders geological units, contacts, and structures. |
+| `DrillholeRenderer` | `renderers/drillhole_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Renders drillhole traces, intervals, and projections. |
+| `StructureRenderer` | `renderers/structure_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Renders structural measurements (strike/dip, foliations). |
+| `InterpretationRenderer` | `renderers/interpretation_renderer.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Renders user-drawn geological interpretations. |
+| `ColorManager` | `renderers/color_manager.py` → [`gui_renderers`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_renderers.md) | Centralized color palette and legend management. |
 
-# Checkbox connections
-self.preview_widget.chk_topo.stateChanged.connect(self.update_preview_from_checkboxes)
-self.preview_widget.chk_geol.stateChanged.connect(self.update_preview_from_checkboxes)
-self.preview_widget.chk_struct.stateChanged.connect(self.update_preview_from_checkboxes)
-self.preview_widget.chk_drillholes.stateChanged.connect(self.update_preview_from_checkboxes)
-
-# Layer connections
-self.page_dem.raster_combo.layerChanged.connect(self.update_button_state)
-self.page_section.line_combo.layerChanged.connect(self.update_button_state)
-```
-
----
-
-### 2. PreviewManager (dialog_preview_manager.py)
-
-**Class**: `PreviewManager`
-**Lines of code**: ~250
-**Responsibility**: Manages preview generation and updates
-
-#### Main Methods
-
-```python
-class PreviewManager:
-    def generate_preview(self) -> Tuple[bool, str]:
-        """Generates preview with validation and error handling."""
-
-    def update_from_checkboxes(self):
-        """Updates preview when visualization options change."""
-
-    def _get_validated_inputs(self) -> Optional[Dict]:
-        """Obtains and validates inputs from the dialog."""
-
-    def _process_data(self, inputs: Dict) -> Tuple:
-        """Processes data using the controller."""
-```
-
----
-
-### 3. PreviewRenderer (preview_renderer.py)
-
-**Class**: `PreviewRenderer`
-**Lines of code**: ~280
-**Methods**: 20
-**Responsibility**: Renders the preview canvas using native PyQGIS
-
-#### Renderer Architecture
-
-```mermaid
-graph LR
-    A[render] --> B[_create_topo_layer]
-    A --> C[_create_geol_layer]
-    A --> D[_create_struct_layer]
-    A --> E[_create_drillhole_layers]
-    A --> F[_create_axes_layer]
-    A --> G[_create_axes_labels_layer]
-
-    B --> H[_decimate_line_data]
-    B --> I[_adaptive_sample]
-    C --> H
-    D --> J[_interpolate_elevation]
-
-    H --> K[QgsVectorLayer]
-    I --> K
-    J --> K
-```
-
-#### LOD Optimization Methods
+**LOD Optimization Methods** (in `PreviewRenderer`):
 
 | Method | Purpose | Algorithm |
-|--------|-----------|-----------|
+|--------|---------|-----------|
 | `_decimate_line_data()` | Line simplification | Douglas-Peucker |
 | `_calculate_curvature()` | Local curvature calculation | Angle between segments |
-| `_adaptive_sample()` | Adaptive sampling | Curvature-based |
+| `_adaptive_sample()` | Adaptive sampling | Curvature-based density |
 
-#### Usage Example
+### 3. Async Task System (QgsTask)
 
-```python
-renderer = PreviewRenderer(canvas)
+**Responsibility**: Offloads heavy computation to background threads keeping UI responsive.
 
-canvas, layers = renderer.render(
-    topo_data=[(0, 100), (10, 105), ...],
-    geol_data=[GeologySegment(...), ...],
-    struct_data=[StructureMeasurement(...), ...],
-    vert_exag=2.0,
-    dip_line_length=50.0,
-    max_points=1000,
-    preserve_extent=False
-)
-```
+| Task | File | Responsibility |
+|------|------|----------------|
+| `PreviewTaskOrchestrator` | `preview_task_orchestrator.py` → [`gui_tasks`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_tasks.md) | Queues, prioritizes, and monitors background tasks. |
+| `GeologyTask` | `tasks/geology_task.py` → [`gui_tasks`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_tasks.md) | Background geological intersection calculations. |
+| `DrillholeTask` | `tasks/drillhole_task.py` → [`gui_tasks`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/gui_tasks.md) | Background drillhole trajectory processing. |
 
----
+### 4. Map Tools & UI Components
 
-### 4. ProfileMeasureTool (measure_tool.py)
+- **Map Tools** (`tools/`): `QgsMapTool` implementations for interactive editing (pan, measure, interpretation drawing).
+- **UI Pages** (`ui/pages/`): Page components for each plugin module; Interpretation Settings is hosted as a tab in `SettingsPage`, not a sidebar page.
+- **Section feature selector** (`ui/pages/section_feature_selector.py`): only single-part lines with exactly two vertices; shows `fid — label`, supports `Auto` or an attribute label field, and forwards `section_feature_id` to preview/export/LOD.
+- **Interpretation settings tab** (`ui/pages/settings/interpretation_tab.py`): storage source (project JSON vs vector layer), custom fields and attribute inheritance; `MainWindow.page_interpretation` aliases the tab for compatibility.
+- **UI Adapters** (`adapters/`): Adapters bridging QGIS widgets to internal models.
+- **PreviewSidePanel** (`preview_side_panel.py`): Collapsible legend beside the preview, synchronized with the renderers; per-unit hide/color/alias, drillhole lithologies and the interpretations list.
+- **Symbology tab** (`ui/pages/settings/symbology_tab.py`, `symbology_units.py`): Live per-layer styles (topography, structures, drillholes, interpretations), the shared per-unit editor and the legend layout (position, font size, max items).
 
-**Class**: `ProfileMeasureTool`
-**Inherits from**: `QgsMapTool`
-**Responsibility**: Measurement tool with snapping
-
-#### Features
-
-- ✅ **Snapping to vertices** of visible layers
-- ✅ **Distance calculation** (Euclidean)
-- ✅ **Slope calculation** (slope in degrees)
-- ✅ **Real-time visualization** with rubber band
-
-#### Signals
-
-```python
-measurementChanged = pyqtSignal(float, float, float, float)  # dx, dy, dist, slope
-measurementCleared = pyqtSignal()
-```
-
----
-
-(core-layer---business-logic)=
 ## ⚙️ Core Layer - Business Logic
 
-### 1. ProfileController (controller.py)
+### 1. Interface-Driven Design (interfaces/)
 
-**Class**: `ProfileController`
-**Lines of code**: ~280
-**Responsibility**: Orchestrates the data generation services
-
-#### Architecture
+**Pattern**: Dependency Injection (DI) via Abstract Base Classes (ABCs)
+**Responsibility**: All services are defined as interfaces. The `ProfileController` consumes interfaces, allowing for easy mocking during testing and replacement of logic without affecting the GUI.
 
 ```python
-class ProfileController:
-    def __init__(self):
-        self.profile_service = ProfileService()
-        self.geology_service = GeologyService()
-        self.structure_service = StructureService()
-        self.drillhole_service = DrillholeService()
-        self.data_cache = DataCache()
-```
-
-#### Main Method
-
-```python
-def generate_profile_data(self, values: Dict[str, Any]) -> Tuple[List, Any, Any, Any, List[str]]:
-    """Unified method to generate all profile components.
-
-    Returns:
-        tuple: (profile_data, geol_data, struct_data, drillhole_data, messages)
-    """
-    # 1. Topography
-    profile_data = self.profile_service.generate_topographic_profile(...)
-
-    # 2. Geology (if layer exists)
-    if outcrop_layer:
-        geol_data = self.geology_service.generate_geological_profile(...)
-
-    # 3. Structures (if layer exists)
-    if structural_layer:
-        struct_data = self.structure_service.project_structures(...)
-
-    # 4. Drillholes (if layer exists)
-    if collar_layer:
-        collars = self.drillhole_service.project_collars(...)
-        drillhole_data = self.drillhole_service.process_intervals(...)
-
-    return profile_data, geol_data, struct_data, drillhole_data, messages
-```
-
----
-
-### 2. GeologyService (geology_service.py)
-
-**Class**: `GeologyService`
-**Lines of code**: ~540
-**Methods**: 8
-**Responsibility**: Generates geological profiles by intersecting polygons
-
-#### Processing Flow
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant GeoService as GeologyService
-    participant Utils as Utils
-
-    Client->>GeoService: generate_geological_profile()
-    GeoService->>GeoService: _generate_master_profile_data()
-
-    %% Optimized PyQGIS Intersection
-    GeoService->>GeoService: QgsFeatureRequest.setFilterRect()
-
-    loop For each candidate feature
-        GeoService->>GeoService: QgsGeometry.intersection()
-        GeoService->>GeoService: _process_intersection_geometry()
-        GeoService->>Utils: interpolate_elevation()
-        Utils-->>GeoService: elevation_points
-    end
-
-    GeoService-->>Client: List[GeologySegment]
-```
-
-#### Key Methods
-
-| Method | Description |
-|--------|-------------|
-| `generate_geological_profile()` | Main method that orchestrates the process |
-| `_generate_master_profile_data()` | Generates grid of points and elevations |
-| `_perform_intersection()` | Executes QGIS intersection algorithm |
-| `_process_intersection_feature()` | Processes each intersection feature |
-| `_create_segment_from_geometry()` | Creates GeologySegment from geometry |
-
-#### Return Type
-
-```python
-@dataclass
-class GeologySegment:
-    unit_name: str
-    points: List[Tuple[float, float]]  # (distance, elevation)
-    geometry: QgsGeometry
-    attributes: Dict[str, Any]
-```
-
----
-
-### 3. StructureService (structure_service.py)
-
-**Class**: `StructureService`
-**Lines of code**: 216
-**Methods**: 7
-**Responsibility**: Projects structural measurements (dip/strike)
-
-#### Projection Algorithm
-
-```mermaid
-graph TD
-    A[Structural Measurement] --> B[Create Buffer]
-    B --> C[Filter Structures]
-    C --> D[For each structure]
-    D --> E[Project point to line]
-    E --> F[Interpolate elevation]
-    F --> G[Calculate apparent dip]
-    G --> H[StructureMeasurement]
-```
-
-#### Apparent Dip Calculation
-
-The formula used is:
-
-```
-apparent_dip = arctan(tan(true_dip) × |cos(strike - section_azimuth)|)
-```
-
-Implemented in `utils.calculate_apparent_dip()`.
-
-#### Return Type
-
-```python
-@dataclass
-class StructureMeasurement:
-    distance: float
-    elevation: float
-    apparent_dip: float
-    original_dip: float
-    original_strike: float
-    attributes: Dict[str, Any]
-```
-
----
-
-### 4. DrillholeService (drillhole_service.py)
-
-**Class**: `DrillholeService`
-**Lines of code**: 319
-**Methods**: 4
-**Responsibility**: Processes and projects drillhole data
-
-#### Processing Flow
-
-```mermaid
-graph TB
-    A[Collar Layer] --> B[project_collars]
-    C[Survey Layer] --> D[process_intervals]
-    E[Interval Layer] --> D
-
-    B --> F[Collar Points]
-    F --> D
-
-    D --> G[Desurvey Drillhole]
-    G --> H[Project to Section]
-    H --> I[Create Segments]
-    I --> J[Drillhole Data]
-```
-
----
-
-(validation-architecture)=
-## 🛡️ 3-Level Validation Architecture
-
-The project implements a robust, tiered validation system to ensure data integrity across all layers without external dependencies like Pydantic.
-
-### Level 1: Type & Range Validation (Dataclass Layer)
-- **Location**: `core/models/settings_model.py` using `core/validation/validators.py`.
-- **Purpose**: Immediate feedback during object instantiation.
-- **Mechanism**: `__post_init__` hooks use reusable validators (e.g., `validate_and_clamp`).
-- **Example**: Ensuring vertical exaggeration is within `(0.1, 10.0)`.
-
-### Level 2: Business Field Validation (Form Layer)
-- **Location**: `core/validation/field_validator.py`.
-- **Purpose**: Validates individual fields based on plugin-specific business rules.
-- **Mechanism**: Checks for required fields, valid data types in QGIS layers, and mandatory combinations.
-
-### Level 3: Domain & Cross-Layer Validation (Project Layer)
-- **Location**: `core/validation/project_validator.py`.
-- **Purpose**: Validates the relationship between different layers and the project state.
-- **Mechanism**: Checks if the section line intersects the DEM extent, or if drillholes fall within the buffer zone.
-
----
-
-(drillhole-service)=
-
-#### Main Methods
-
-**1. project_collars()**
-
-Projects collar points to the section line.
-
-```python
-def project_collars(
-    self,
-    collar_layer: QgsVectorLayer,
-    line_geom: QgsGeometry,
-    line_start: QgsPointXY,
-    distance_area: QgsDistanceArea,
-    buffer_width: float,
-    collar_id_field: str,
-    use_geometry: bool,
-    collar_x_field: str,
-    collar_y_field: str,
-    collar_z_field: str,
-    collar_depth_field: str,
-    dem_layer: Optional[QgsRasterLayer],
-) -> List[Dict]:
-    """Returns list of dictionaries with collar_id, distance, elevation, depth."""
-```
-
-**2. process_intervals()**
-
-Processes intervals and generates 2D traces.
-
-```python
-def process_intervals(
-    self,
-    collar_points: List[Dict],
-    collar_layer: QgsVectorLayer,
-    survey_layer: QgsVectorLayer,
-    interval_layer: QgsVectorLayer,
-    # ... more parameters
-) -> Tuple[List[GeologySegment], List[Dict]]:
-    """Returns (geology_segments, drillhole_traces)."""
-```
-
----
-
-### 5. Utilities (core/utils/)
-
-#### geometry.py (345 lines)
-
-**Geometric Operations with QGIS Core API**
-
-| Function | Description |
-|---------|-------------|
-| `create_memory_layer()` | Creates temporary in-memory layer |
-| `extract_all_vertices()` | Extracts geometry vertices (multipart-safe) |
-| `get_line_vertices()` | Extracts line vertices |
-| `run_processing_algorithm()` | Runs QGIS algorithm with error handling |
-| `create_buffer_geometry()` | Creates buffer using `native:buffer` |
-| `filter_features_by_buffer()` | Filters features with spatial index |
-| `densify_line_by_interval()` | Densifies line with `native:densifygeometriesgivenaninterval` |
-
-#### drillhole.py (7,297 lines)
-
-**Drillhole Processing**
-
-| Function | Description |
-|---------|-------------|
-| `desurvey_drillhole()` | Calculates 3D trajectory from survey |
-| `project_drillhole_to_section()` | Projects 3D trace to 2D plane |
-| `interpolate_intervals()` | Interpolates intervals on trace |
-
-#### sampling.py (3,783 lines)
-
-**Sampling and Interpolation**
-
-| Function | Description |
-|---------|-------------|
-| `interpolate_elevation()` | Interpolates elevation on grid |
-| `sample_raster_along_line()` | Samples raster along a line |
-
----
-
-### 6. DataCache (data_cache.py)
-
-**Class**: `DataCache`
-**Lines of code**: 7,883
-**Responsibility**: Cache of processed data
-
-#### Cache Strategy
-
-```python
-class DataCache:
-    def get_cache_key(self, inputs: Dict) -> str:
-        """Generates a unique key based on relevant inputs."""
-        # Considers: layers, bands, buffer, vertical exaggeration
-
-    def get(self, key: str) -> Optional[Dict]:
-        """Retrieves data from cache."""
-
-    def set(self, key: str, data: Dict) -> None:
-        """Stores data in cache."""
-
-    def clear(self) -> None:
-        """Clears the entire cache."""
-```
-
----
-
-(exporters-layer---data-export)=
-## 📤 Exporters Layer - Data Export
-
-### 1. ExportService (core/services/export/orchestrator.py)
-
-**Class**: `ExportService`
-**Lines of code**: ~207
-**Responsibility**: Coordinates exports to multiple formats
-
-#### Main Method
-
-```python
-def export_data(
-    self,
-    output_folder: Path,
-    values: Dict[str, Any],
-    profile_data: List[Tuple],
-    geol_data: Optional[List[Any]],
-    struct_data: Optional[List[Any]],
-    drillhole_data: Optional[List[Any]] = None
-) -> List[str]:
-    """Exports generated data to CSV and Shapefile using lazy imports."""
-
-    # Lazy import of exporters
-    from sec_interp.exporters import (
-        AxesShpExporter,
-        CSVExporter,
-        GeologyShpExporter,
-        ProfileLineShpExporter,
-        StructureShpExporter,
-        DrillholeTraceShpExporter,
-        DrillholeIntervalShpExporter,
-    )
-
-    # Export topography
-    csv_exporter.export(output_folder / "topo_profile.csv", ...)
-    ProfileLineShpExporter({}).export(output_folder / "profile_line.shp", ...)
-
-    # Export geology
-    if geol_data:
-        csv_exporter.export(output_folder / "geol_profile.csv", ...)
-        GeologyShpExporter({}).export(output_folder / "geol_profile.shp", ...)
-
-    # Export structures
-    if struct_data:
-        csv_exporter.export(output_folder / "structural_profile.csv", ...)
-        StructureShpExporter({}).export(output_folder / "structural_profile.shp", ...)
-
-    # Export drillholes
-    if drillhole_data:
-        DrillholeTraceShpExporter({}).export(output_folder / "drillhole_traces.shp", ...)
-        DrillholeIntervalShpExporter({}).export(output_folder / "drillhole_intervals.shp", ...)
-
-    return result_msg
-```
-
----
-
-### 2. Exporter Hierarchy
-
-```mermaid
-classDiagram
-    class BaseExporter {
-        <<abstract>>
-        +export(path, data)
-    }
-
-    class CSVExporter {
-        +export(path, data)
-    }
-
-    class ShapefileExporter {
-        +export(path, data)
-    }
-
-    class ImageExporter {
-        +export(path, map_settings)
-    }
-
-    class PDFExporter {
-        +export(path, map_settings)
-    }
-
-    class SVGExporter {
-        +export(path, map_settings)
-    }
-
-    BaseExporter <|-- CSVExporter
-    BaseExporter <|-- ShapefileExporter
-    BaseExporter <|-- ImageExporter
-    BaseExporter <|-- PDFExporter
-    BaseExporter <|-- SVGExporter
-
-    ShapefileExporter <|-- ProfileLineShpExporter
-    ShapefileExporter <|-- GeologyShpExporter
-    ShapefileExporter <|-- StructureShpExporter
-    ShapefileExporter <|-- AxesShpExporter
-    ShapefileExporter <|-- DrillholeTraceShpExporter
-    ShapefileExporter <|-- DrillholeIntervalShpExporter
-```
-
----
-
-(main-data-flows)=
-## 🔄 Main Data Flows
-
-### Flow 1: Preview Generation
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Dialog as SecInterpDialog
-    participant PreviewMgr as PreviewManager
-    participant Controller
-    participant Services
-    participant Renderer
-    participant Canvas
-
-    User->>Dialog: Click "Preview Profile"
-    Dialog->>PreviewMgr: generate_preview()
-
-    PreviewMgr->>PreviewMgr: _get_validated_inputs()
-    PreviewMgr->>Controller: generate_profile_data(inputs)
-
-    par Parallel Processing
-        Controller->>Services: ProfileService.generate_topographic_profile()
-        Services-->>Controller: profile_data
-
-        Controller->>Services: GeologyService.generate_geological_profile()
-        Services-->>Controller: geol_data
-
-        Controller->>Services: StructureService.project_structures()
-        Services-->>Controller: struct_data
-
-        Controller->>Services: DrillholeService.project_collars()
-        Services->>Services: DrillholeService.process_intervals()
-        Services-->>Controller: drillhole_data
-    end
-
-    Controller-->>PreviewMgr: (profile, geol, struct, drill, msgs)
-
-    PreviewMgr->>Renderer: render(profile, geol, struct, drill, vert_exag, ...)
-    Renderer->>Renderer: _create_topo_layer()
-    Renderer->>Renderer: _create_geol_layer()
-    Renderer->>Renderer: _create_struct_layer()
-    Renderer->>Renderer: _create_drillhole_layers()
-    Renderer->>Renderer: _create_axes_layer()
-
-    Renderer->>Canvas: setLayers(layers)
-    Renderer->>Canvas: zoomToFullExtent()
-    Renderer-->>PreviewMgr: (canvas, layers)
-
-    PreviewMgr-->>Dialog: success
-    Dialog-->>User: Display Preview
-```
-
----
-
-### Flow 2: Data Export
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Dialog
-    participant ExportMgr as ExportManager
-    participant Controller
-    participant Orchestrator
-    participant Exporters
-
-    User->>Dialog: Click "Save"
-    Dialog->>ExportMgr: export_data()
-
-    ExportMgr->>Controller: generate_profile_data(inputs)
-    Controller-->>ExportMgr: (profile, geol, struct, drill, msgs)
-
-    ExportMgr->>Orchestrator: export_data(folder, values, data...)
-
-    Orchestrator->>Exporters: CSVExporter.export("topo_profile.csv")
-    Exporters-->>Orchestrator: success
-
-    Orchestrator->>Exporters: ProfileLineShpExporter.export("profile_line.shp")
-    Exporters-->>Orchestrator: success
-
-    Orchestrator->>Exporters: GeologyShpExporter.export("geol_profile.shp")
-    Exporters-->>Orchestrator: success
-
-    Orchestrator->>Exporters: StructureShpExporter.export("structural_profile.shp")
-    Exporters-->>Orchestrator: success
-
-    Orchestrator->>Exporters: DrillholeTraceShpExporter.export("drillhole_traces.shp")
-    Exporters-->>Orchestrator: success
-
-    Orchestrator-->>ExportMgr: result_messages
-    ExportMgr-->>Dialog: success
-    Dialog-->>User: "All files saved to: {folder}"
-```
-
----
-
-### Flow 3: Background Geological Processing (QgsTask)
-
-```mermaid
-sequenceDiagram
-    participant Main as Main Thread
-    participant PM as PreviewManager
-    participant Orch as PreviewTaskOrchestrator
-    participant Task as GeologyGenerationTask (QgsTask)
-    participant Svc as GeologyService
-
-    Main->>PM: generate_preview()
-    PM->>Orch: start_geology_task(params, geology_service)
-    Orch->>Task: create + run
-    Note over Task: QgsTask (background thread)
-
-    Task->>Svc: build_segments(context, feedback=self)
-    Svc-->>Task: List[GeologySegment]
-    Task-->>PM: finished_with_results(results)
-    PM-->>Main: re-render preview
-```
-
----
-
-(design-patterns)=
-## 🎨 Design Patterns
-
-### 1. MVC (Model-View-Controller)
-
-```
-Model:      Services + Algorithms + Types
-View:       GUI Widgets + Renderer
-Controller: ProfileController
-```
-
-### 2. Strategy Pattern
-
-Different exporters implement the same `BaseExporter` interface:
-
-```python
-class BaseExporter(ABC):
+class IGeologyService(ABC):
     @abstractmethod
-    def export(self, path: Path, data: Dict) -> bool:
-        pass
-
-class CSVExporter(BaseExporter):
-    def export(self, path: Path, data: Dict) -> bool:
-        # CSV Specific implementation
-
-class ShapefileExporter(BaseExporter):
-    def export(self, path: Path, data: Dict) -> bool:
-        # Shapefile Specific implementation
+    def build_segments(self, context: GeologyContext, feedback: Any | None = None) -> Any:
+        """Build geological segments from a detached context."""
 ```
 
-### 3. Observer Pattern
+#### Core Interfaces (6 Interfaces)
 
-PyQt5 Signals/Slots for communication between components:
+| Interface | File | Purpose |
+|-----------|------|---------|
+| `IGeologyService` | `interfaces/geology_interface.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `build_segments()` — geological segments from a detached context. |
+| `IDrillholeService` | `interfaces/drillhole_interface.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `process_context()` — drillhole data processing, 3D→2D projection. |
+| `IStructureService` | `interfaces/structure_interface.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `project_structures()` — structural data validation and projection. |
+| `IPreviewService` | `interfaces/preview_interface.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `generate_all()` — preview orchestration and render data prep. |
+| `ICacheService` | `interfaces/cache_interface.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `get/set/invalidate/clear` — caching strategy (typing `Protocol`). |
+| `IRenderer3D` | `interfaces/i_renderer_3d.py` → [`layer_core_interfaces`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_interfaces.md) | `render_3d()`/`clear()` — 3D visualization abstraction. |
 
-```python
-# Signal
-measurementChanged = pyqtSignal(float, float, float, float)
+### 2. ProfileController (controller.py)
 
-# Slot
-def update_measurement_display(self, dx, dy, dist, slope):
-    msg = f"Distance: {dist:.2f} m..."
-    self.results_text.setHtml(msg)
+**Responsibility**: Central orchestrator coordinating all services through their interfaces.
 
-# Connection
-self.measure_tool.measurementChanged.connect(self.update_measurement_display)
+#### Concrete Services (7 Services)
+
+| Service | File | Responsibility |
+|---------|------|----------------|
+| `GeologyService` | `services/geology_service.py` → [`geology_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/geology_service.md) | Core intersection algorithms (outcrops, polygons, units). |
+| `StructureService` | `services/structure_service.py` → [`structure_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/structure_service.md) | Structural data processing, validation, stereonets. |
+| `DrillholeService` | `services/drillhole_service.py` → [`drillhole_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_service.md) | 3D trajectory calculation, 2D section projection, interval management. |
+| `ExportService` | `services/export_service.py` → [`core_services`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services.md) | Central orchestrator for Exporters layer, format registry. |
+| `PreviewService` | `services/preview_service.py` → [`preview_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/preview_service.md) | Preview data preparation, LOD computation, render DTOs. |
+| `VerticalExaggerationService` | `services/vertical_exaggeration_service.py` → [`vertical_exaggeration_service`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vertical_exaggeration_service.md) | Adaptive vertical exaggeration from profile aspect ratio and structural density. |
+| `AccessControlService` | `services/access_control_service.py` → [`core_services`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services.md) | License validation, feature gating, user permissions. |
+
+#### Drillhole Sub-system (5 Components)
+
+| Component | File | Responsibility |
+|-----------|------|----------------|
+| `CollarProcessor` | `drillhole/collar_processor.py` → [`collar_processor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/collar_processor.md) | Collar data validation, coordinate transformation. |
+| `SurveyProcessor` | `drillhole/survey_processor.py` → [`core_services_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services_drillhole.md) | Survey data (azimuth/dip) processing, interpolation. |
+| `IntervalProcessor` | `drillhole/interval_processor.py` → [`interval_processor`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interval_processor.md) | Lithology/assay interval management, merging. |
+| `TrajectoryEngine` | `drillhole/trajectory_engine.py` → [`trajectory_engine`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/trajectory_engine.md) | 3D trajectory calculation (minimum curvature, etc.). |
+| `ProjectionEngine` | `drillhole/projection_engine.py` → [`core_services_drillhole`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_services_drillhole.md) | 3D→2D projection onto section plane. |
+
+#### Geology Sub-system
+- Geology processing is consolidated in `services/geology_service.py` (the former `services/geology/` package was removed).
+
+### 3. Domain Layer
+
+- **Domain Models** (`models/settings_model.py`): `SettingsModel` for typed configuration.
+- **Entities & DTOs** (`domain/`): Immutable data transfer objects (`ProfileData`, `GeologySegment`, `DrillholeData`, etc.) for layer communication.
+
+### 4. Validation Pipeline (validation/)
+
+Modular validation framework with 11 validators coordinated by `ValidationPipeline`:
+
+| Validator | File | Scope |
+|-----------|------|-------|
+| `BaseValidator` | `base_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Abstract base with common validation utilities. |
+| `ValidationPipeline` | `pipeline.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Orchestrates validators, aggregates results. |
+| `LayerValidator` | `layer_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | QGIS layer structure, CRS, geometry type validation. |
+| `FieldValidator` | `field_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Attribute field names, types, required fields. |
+| `PathValidator` | `path_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | File/directory paths, permissions, existence. |
+| `ProjectValidator` | `project_validator.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Project-level consistency (layers, settings). |
+| `ProjectValidators` | `project_validators.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Composite project validation rules. |
+| `ValidationHelpers` | `validation_helpers.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Shared validation utilities, error formatting. |
+| `Validators` | `validators.py` → [`core_validation`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_validation.md) | Convenience functions for common validations. |
+| `LayerMetadata` | `layer_metadata.py` → [`layer_metadata`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_metadata.md) | QGIS-agnostic layer metadata DTO consumed by the pipeline. |
+| `implausible_crs_reason()` | `crs_plausibility.py` → [`crs_plausibility`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/crs_plausibility.md) | Best-effort mislabelled-CRS detection from extent plausibility. |
+
+### 5. Utilities (utils/)
+
+11 specialized utility modules:
+
+| Utility | File | Purpose |
+|---------|------|---------|
+| Drillhole Utils | `drillhole.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Drillhole-specific calculations, transformations. |
+| Geology Utils | `geology.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Geological computations, unit conversions. |
+| Geometry Utils | `geometry_utils/` → [`layer_core_utils_geometry_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils_geometry_utils.md) | Advanced geometry operations (intersections, buffers). |
+| i18n Utils | `i18n.py` → [`core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/core_utils.md) | Translation helpers, locale management. |
+| IO Utils | `io.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | File I/O, serialization, format handling. |
+| Metadata Reader | `metadata_reader.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | QGIS layer metadata extraction. |
+| Parsing Utils | `parsing.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Text/CSV/XML parsing with error recovery. |
+| Rendering Utils | `rendering.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Render-ready data preparation. |
+| Safe Loader | `safe_loader.py` → [`safe_loader`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/safe_loader.md) | Safe YAML/JSON loading with schema validation. |
+| Sampling Utils | `sampling.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Statistical sampling, profile point generation. |
+| Spatial Utils | `spatial.py` → [`layer_core_utils`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/layer_core_utils.md) | Spatial queries, indexing, CRS operations. |
+
+## 📤 Exporters Layer
+
+The Exporters layer implements the **Factory Pattern** via `BaseExporter` abstract class. All exporters consume QGIS-agnostic DTOs from `core/domain`.
+
+### Export Hierarchy
+
+```
+BaseExporter (ABC)
+├── VectorExporter → DxfExporter
+│   ├── GPKG, SHP, DXF output
+│   └── Layer-based feature export
+├── ProfileExporters → CsvExporter
+│   ├── Profile data (CSV, Excel)
+│   └── Sampling results export
+├── Interpretation3DExporter → InterpretationExporters
+│   ├── 3D geological interpretations (Z-aware)
+│   └── GeoPackage 3D, CityJSON
+├── Drillhole3DExporter → DrillholeExporters
+│   ├── 3D drillhole traces (Z-aware)
+│   └── Interval data as 3D cylinders
+├── PdfExporter
+│   ├── Professional layouts with legends
+│   └── Multi-page section reports
+├── SvgExporter
+│   ├── Vector graphics for publications
+│   └── Scalable section diagrams
+└── ImageExporter
+    ├── PNG/JPG raster output
+    └── High-DPI for presentations
 ```
 
-### 4. Facade Pattern
-
-`ProfileController` acts as a facade for the services:
-
-```python
-class ProfileController:
-    def generate_profile_data(self, values):
-        # Orchestrates multiple services
-        profile = self.profile_service.generate_topographic_profile(...)
-        geol = self.geology_service.generate_geological_profile(...)
-        struct = self.structure_service.project_structures(...)
-        drill = self.drillhole_service.process_intervals(...)
-        return profile, geol, struct, drill, msgs
-```
-
-### 5. Factory Pattern
-
-Exporter Factory:
-
-```python
-def get_exporter(ext: str, settings: Dict) -> BaseExporter:
-    exporters = {
-        '.png': ImageExporter,
-        '.jpg': ImageExporter,
-        '.pdf': PDFExporter,
-        '.svg': SVGExporter,
-    }
-    exporter_class = exporters.get(ext)
-    return exporter_class(settings)
-```
-
-### 6. Singleton Pattern (Implicit)
-
-`DataCache` is instantiated once in the controller.
-
-### 7. Template Method Pattern
-
-`BaseExporter` defines the template, subclasses implement details:
-
-```python
-class BaseExporter(ABC):
-    def export(self, path, data):
-        self._validate(data)
-        self._prepare(data)
-        self._write(path, data)
-        self._finalize()
-
-    @abstractmethod
-    def _write(self, path, data):
-        pass
-```
-
----
-
-(external-dependencies)=
-## 🌐 External Dependencies
-
-### QGIS Core API
-
-```python
-from qgis.core import (
-    QgsVectorLayer,        # Vector layers
-    QgsRasterLayer,        # Raster layers
-    QgsGeometry,           # Geometric operations
-    QgsProcessing,         # Processing algorithms
-    QgsSpatialIndex,       # Spatial indices
-    QgsCoordinateTransform,# Coordinate transformations
-    QgsDistanceArea,       # Distance calculations
-    QgsProject,            # QGIS Project
-    QgsFeature,            # Features
-    QgsField,              # Fields
-    QgsWkbTypes,           # Geometry types
-)
-```
-
-**Main use**: All geometric operations, spatial processing, and layer management.
-
-### QGIS GUI API
-
-```python
-from qgis.gui import (
-    QgsMapCanvas,          # Map canvas
-    QgsMapTool,            # Map tools
-    QgsMapLayer,           # Map layers
-    QgsMapLayerComboBox,   # Layer combo boxes
-    QgsFileWidget,         # File widget
-)
-```
-
-**Main use**: User interface, interactive tools, specialized widgets.
-
-### qgis.PyQt (Qt5/Qt6 agnostic)
-
-```python
-from qgis.PyQt.QtCore import (
-    Qt,                    # Qt constants
-    QVariant,              # Data types
-    pyqtSignal,            # Signals
-    pyqtSlot,              # Slots
-)
-
-from qgis.PyQt.QtWidgets import (
-    QDialog,               # Dialogs
-    QWidget,               # Base widgets
-    QPushButton,           # Buttons
-    QCheckBox,             # Checkboxes
-    QSpinBox,              # Spin boxes
-    QComboBox,             # Combo boxes
-    QLabel,                # Labels
-    QGroupBox,             # Group boxes
-    QVBoxLayout,           # Vertical layouts
-    QHBoxLayout,           # Horizontal layouts
-)
-
-from qgis.PyQt.QtGui import (
-    QColor,                # Colors
-    QFont,                 # Fonts
-    QPen,                  # Drawing pens
-    QBrush,                # Fill brushes
-)
-```
-
-**Main use**: Complete UI framework, signals/slots, layouts, widgets.
-
----
-
-(performance-optimizations)=
-## ⚡ Performance Optimizations
-
-### 1. Adaptive Level of Detail (LOD)
-
-**Implemented in**: `PreviewRenderer`
-
-```python
-def _decimate_line_data(self, data, tolerance=None, max_points=1000):
-    """Simplifies lines using Douglas-Peucker."""
-    if len(data) <= max_points:
-        return data
-
-    # Calculate automatic tolerance
-    if tolerance is None:
-        x_range = max(p[0] for p in data) - min(p[0] for p in data)
-        tolerance = x_range / (max_points * 2)
-
-    # Apply Douglas-Peucker
-    simplified = self._douglas_peucker(data, tolerance)
-    return simplified
-```
-
-**Benefit**: Reduces 10,000+ points to ~1,000 without significant visual loss.
-
-### 2. Curvature-based Adaptive Sampling
-
-```python
-def _adaptive_sample(self, data, min_tolerance=0.1, max_tolerance=10.0, max_points=1000):
-    """Samples more densely in high-curvature areas."""
-    curvatures = self._calculate_curvature(data)
-
-    # Normalize curvatures
-    max_curv = max(curvatures)
-    normalized = [c / max_curv for c in curvatures]
-
-    # Tolerance inversely proportional to curvature
-    tolerances = [
-        max_tolerance - (max_tolerance - min_tolerance) * n
-        for n in normalized
-    ]
-
-    # Apply Douglas-Peucker with variable tolerance
-    return self._douglas_peucker_adaptive(data, tolerances)
-```
-
-**Benefit**: Preserves important details (tight curves) while simplifying straight areas.
-
-### 3. Background Geological Processing (QgsTask)
-
-**Implemented in**: `gui/tasks/geology_task.py` (`GeologyGenerationTask`) + `gui/preview_task_orchestrator.py`
-
-```python
-class GeologyGenerationTask(QgsTask):
-    finished_with_results = pyqtSignal(object)
-    progress_changed = pyqtSignal(float)
-    error_occurred = pyqtSignal(str)
-
-    def run(self) -> bool:
-        self.result = self.service.build_segments(self.context, feedback=self)
-        return True
-```
-
-**Benefit**: UI remains responsive during heavy processing; the task receives a detached
-`GeologyContext` (no live QGIS objects cross the thread boundary).
-
-### 4. Processed Data Cache
-
-**Implemented in**: `DataCache`
-
-```python
-def get_cache_key(self, inputs: Dict) -> str:
-    """Generates a unique key based on relevant inputs."""
-    key_parts = [
-        inputs.get("raster_layer"),
-        inputs.get("selected_band"),
-        inputs.get("crossline_layer"),
-        inputs.get("buffer_distance"),
-        # DOES NOT include: vertexag, dip_scale_factor (only for display)
-    ]
-    return hashlib.md5(str(key_parts).encode()).hexdigest()
-```
-
-**Benefit**: Avoids re-processing when only display parameters change.
-
-### 5. Spatial Index for Filtering
-
-**Implemented in**: `geometry.filter_features_by_buffer()`
-
-```python
-def filter_features_by_buffer(features_layer, buffer_geometry):
-    """Filters features using a spatial index."""
-    # 1. Build spatial index
-    index = QgsSpatialIndex(features_layer.getFeatures())
-
-    # 2. Fast search by bounding box
-    candidate_ids = index.intersects(buffer_geometry.boundingBox())
-
-    # 3. Precise filtering of candidates only
-    filtered = []
-    for fid in candidate_ids:
-        feature = features_layer.getFeature(fid)
-        if feature.geometry().intersects(buffer_geometry):
-            filtered.append(feature)
-
-    return filtered
-```
-
-**Benefit**: O(log n) instead of O(n) for spatial filtering.
-
----
-
-(project-metrics)=
-## 📊 Project Metrics
-
-### Code Statistics
-
-| Metric | Value |
-|---------|-------|
-| **Python Modules** | ~60 files |
-| **Total Lines of Code** | ~15,000 LOC |
-| **Core Lines of Code** | ~8,000 LOC |
-| **GUI Lines of Code** | ~5,000 LOC |
-| **Exporters Lines of Code** | ~2,000 LOC |
-| **Main Classes** | 25+ |
-| **Functions/Methods** | 200+ |
-
-### Distribution by Layer
-
-```mermaid
-pie title Code Distribution by Layer
-    "Core (53%)" : 8000
-    "GUI (33%)" : 5000
-    "Exporters (13%)" : 2000
-```
-
-### Complexity by Module
-
-| Module | Lines | Classes | Methods | Complexity |
-|--------|--------|--------|---------|-------------|
-| `sec_interp_plugin.py`| ~130 | 1 | 4 | Low |
-| `main_dialog.py` | ~190 | 1 | 12 | Low/Medium |
-| `dialog_signal_manager.py`| ~350 | 1 | 10 | Medium |
-| `dialog_input_manager.py` | ~200 | 1 | 8 | Medium |
-| `preview_renderer.py` | 1,190 | 1 | 20 | High |
-| `controller.py` | 192 | 1 | 4 | Low |
-| `core/validation/` | ~800 | 0 | 25 | Medium |
-| `geology_service.py` | 244 | 1 | 8 | Medium |
-| `structure_service.py` | 216 | 1 | 7 | Medium |
-| `drillhole_service.py` | 319 | 1 | 4 | Medium |
-| `geometry.py` | 345 | 0 | 10 | Medium |
-| `orchestrator.py` | 148 | 1 | 1 | Low |
-
-### Dependencies
-
-```mermaid
-graph LR
-    A[SecInterp Plugin] --> B[QGIS Core API]
-    A --> C[QGIS GUI API]
-    A --> D[PyQt5]
-
-    B --> E[Python 3.x]
-    C --> E
-    D --> E
-
-    style A fill:#ff6b6b
-    style B fill:#4ecdc4
-    style C fill:#4ecdc4
-    style D fill:#95e1d3
-    style E fill:#ffd93d
-```
-
-### Feature Coverage
-
-| Feature | Status | Coverage |
-|---------------|--------|-----------|
-| Topographic Profile | ✅ Complete | 100% |
-| Geological Projection | ✅ Complete | 100% |
-| Structural Projection | ✅ Complete | 100% |
-| Drillhole Projection | ✅ Complete | 100% |
-| Interactive Preview | ✅ Complete | 100% |
-| Measurement Tools | ✅ Complete | 100% |
-| CSV Export | ✅ Complete | 100% |
-| Shapefile Export | ✅ Complete | 100% |
-| PDF Export | ✅ Complete | 100% |
-| SVG Export | ✅ Complete | 100% |
-| PNG/JPG Export | ✅ Complete | 100% |
-| Adaptive LOD | ✅ Complete | 100% |
-| Parallel Processing | ✅ Complete | 100% |
-| Data Cache | ✅ Complete | 100% |
-
----
-
-## 🔗 References
-
-- [Source Code](file:///home/jmbernales/qgispluginsdev/sec_interp)
-- [Main README](file:///home/jmbernales/qgispluginsdev/sec_interp/README.md)
-- [User Guide](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/USER_GUIDE.md)
-- [Architecture Graph](file:///home/jmbernales/qgispluginsdev/sec_interp/docs/sec_interp_architecture_graph.md)
-- [QGIS API Documentation](https://qgis.org/pyqgis/master/)
-- [PyQt5 Documentation](https://www.riverbankcomputing.com/static/Docs/PyQt5/)
-
----
+### Key Exporters
+
+| Exporter | File | Formats | Purpose |
+|----------|------|---------|---------|
+| `VectorExporter` | `vector_exporter.py` → [`vector_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/vector_exporter.md) | GPKG, SHP, DXF | Unified vector export for sections. |
+| `DxfExporter` | `dxf_exporter.py` → [`dxf_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/dxf_exporter.md) | DXF | CAD-compatible export. |
+| `ProfileExporters` | `profile_exporters.py` → [`profile_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/profile_exporters.md) | CSV, XLSX | Profile data tables, sampling results. |
+| `CsvExporter` | `csv_exporter.py` → [`csv_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/csv_exporter.md) | CSV | Raw data export. |
+| `Interpretation3DExporter` | `interpretation_3d_exporter.py` → [`interpretation_3d_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_3d_exporter.md) | GPKG 3D, CityJSON | 3D geological interpretations. |
+| `InterpretationExporters` | `interpretation_exporters.py` → [`interpretation_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/interpretation_exporters.md) | Multiple | Interpretation-specific formats. |
+| `Drillhole3DExporter` | `drillhole_3d_exporter.py` → [`drillhole_3d_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_3d_exporter.md) | GPKG 3D, WellKnown Text | 3D drillhole traces & intervals. |
+| `DrillholeExporters` | `drillhole_exporters.py` → [`drillhole_exporters`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/drillhole_exporters.md) | Multiple | Drillhole-specific formats. |
+| `PdfExporter` | `pdf_exporter.py` → [`pdf_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/pdf_exporter.md) | PDF | Professional section layouts. |
+| `SvgExporter` | `svg_exporter.py` → [`svg_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/svg_exporter.md) | SVG | Vector graphics for reports. |
+| `ImageExporter` | `image_exporter.py` → [`image_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/image_exporter.md) | PNG, JPG | Raster images for presentations. |
+
+### Format Decoupling
+
+All exporters implement:
+- `export(dto: ExportDTO, output_path: Path) -> ExportResult`
+- Consume only `core/domain` DTOs (no QGIS dependencies)
+- Return structured `ExportResult` with metadata (files created, features exported, warnings)
 
 ## 🎨 Design Principles
 
-The SecInterp plugin has been designed following robust software engineering principles to ensure quality and maintainability.
+SecInterp v3.9.1 follows industry-standard architectural patterns to ensure high quality and testability.
 
-### SOLID Principles
+### Core Architectural Patterns
+- **Manager Pattern (GUI)**: Decouples the main window from individual feature logic (Export, Preview, etc.).
+- **Dependency Injection (Core)**: Uses `core/interfaces` to decouple the `ProfileController` from concrete service implementations.
+- **Factory Pattern (Exporters)**: The `ExportService` dynamically selects the appropriate `BaseExporter` subclass.
+- **Observer Pattern (Signals)**: Extensive use of `qgis.PyQt.QtCore.pyqtSignal` for asynchronous communication between Core and GUI.
+- **DTO Pattern (Data Transfer Objects)**: All data passing between layers is encapsulated in immutable DTOs from `core/domain`.
 
-- **SRP (Single Responsibility Principle)**: Each service (Profile, Geology, Structure, Drillhole) has a single, clear responsibility.
-- **OCP (Open/Closed Principle)**: Exporters are easily extensible through the abstract base class without modifying the core logic.
-- **LSP (Liskov Substitution Principle)**: All concrete exporters can subtitute the `BaseExporter` class.
-- **ISP (Interface Segregation Principle)**: Service interfaces are focused on their specific domain.
-- **DIP (Dependency Inversion Principle)**: The controller depends on abstractions and injected services, not on heavy concrete implementations.
-
-### Other Patterns and Principles
-- **DRY (Don't Repeat Yourself)**: Intensive use of `utils` modules to centralize mathematical and spatial calculations.
-- **Separation of Concerns**: Clear distinction between the GUI Layer (Managers), Core Layer (Services), and Data Layer (DataCache).
+### SOLID & Clean Code
+- **Interface Segregation**: Clients only depend on the specific service interfaces they need.
+- **Single Responsibility**: Each Manager and Service handles a unique, atomic part of the plugin workflow.
+- **Thread Safety**: Long-running operations only use `QgsTask` to avoid blocking the QGIS main thread.
 
 ---
 
 ## 🚀 Extensibility
 
-Quick guide for developers wishing to expand the plugin.
-
 ### Adding a New Service
-1. Create the new file in `core/services/` (e.g., `preview_service.py`).
-2. Implement the service logic following the pattern of other services.
-3. Register the service in `controller.py` within the `ProfileController` constructor.
-4. Add the orchestrator method in the controller and connect it to `PreviewManager`.
+1. Define the interface in `core/interfaces/` (inheriting from `abc.ABC`).
+2. Implement the concrete service in `core/services/`.
+3. Register the service in `controller.py` and inject it into the `ProfileController`.
 
 ### Adding a New Export Format
-1. Create a class in `exporters/` that inherits from `BaseExporter`.
-2. Implement the required `export()` method.
-3. Register the new exporter in the factory in `orchestrator.py` or the specific export modules.
+1. Inherit from `BaseExporter` in `exporters/`.
+2. Implement the `export()` method using QGIS-agnostic logic.
+3. Update the `ExportService` to include the new format in its registry.
 
 ---
 
-## 📦 Deployment
+## 📊 Project Metrics
 
-The plugin uses a `Makefile`-based system to facilitate local deployment and packaging.
+| Metric | Value |
+|--------|-------|
+| **Python Modules** | 200 |
+| **Source Lines of Code (SLOC)** | ~24,400 |
+| **Core Layer** | ~34% |
+| **GUI Layer** | ~54% |
+| **Exporters Layer** | ~9% |
+| **Plugin Layer** | ~2% |
 
-- **Main command**: `make deploy` (Copies files to the QGIS plugins directory).
-- **Process**:
-  - Temporary files (`.pyc`, etc.) are cleaned.
-  - Resources and translations are copied.
-  - Synchronized with the local QGIS directory for immediate testing.
+---
+
+## 🔒 Quality Assurance & Security Scanning
+
+SecInterp implements a multi-layered quality assurance strategy that replicates and extends the QGIS Plugin Portal's automated scanning pipeline.
+
+### 1. Local Security Scanning (Portal-Compatible)
+
+The project includes a custom security scanner (`scripts/security_scan.py`) that runs the **exact same tools** used by QGIS Plugin Portal:
+
+| Tool | Severity | Purpose | Configuration |
+|------|----------|---------|---------------|
+| **Bandit** | CRITICAL (Blocking) | Static analysis for Python security vulnerabilities (shell injection, pickle, eval, hardcoded secrets, weak crypto, SQL injection) | `.bandit` (excludes tests/scripts, 72 tests enabled) |
+| **detect-secrets** | CRITICAL (Blocking) | Scans for hardcoded credentials, API keys, private keys, high-entropy strings | `.secrets.baseline` (27 detectors, heuristic filters, excludes tests/venv) |
+| **Flake8** | INFO (Non-blocking) | Code quality, PEP 8 style, syntax errors, undefined names | `.flake8` (max-line-length=100, max-complexity=15, JSON output) |
+
+**Run locally:**
+```bash
+make security-scan          # Full portal-compatible scan
+make pylint                 # Additional static analysis
+make pep8                   # Ruff-based style check (faster)
+```
+
+### 2. QGIS Plugin Analyzer (Deep Auditing)
+
+For architectural and deep code quality audits beyond Portal scanning:
+
+```bash
+# Security (Bandit + detect-secrets)
+uv run qgis-analyzer security .
+
+# Internationalization coverage
+uv run qgis-analyzer analyze i18n .
+
+# Performance (UI blocks, expensive loops, signal leaks)
+uv run qgis-analyzer analyze performance .
+
+# Architecture (Core/GUI separation, QGIS API usage, circular deps)
+uv run qgis-analyzer analyze architecture .
+
+# Full HTML report
+uv run qgis-analyzer analyze . --report
+```
+
+**Workflow**: `/audit-plugin` (agent `@auditor` with skills: project-context, coding-standards, i18n-standards)
+
+### 3. Qt6 / QGIS 4 Migration Readiness
+
+Automated compatibility checking using the **same tool** QGIS Portal runs on upload:
+
+```bash
+make qt6-check              # Dry-run check (pyqgis4-checker via Docker)
+make qt6-fix                # Auto-migrate enums to scoped Qt6 form (edits files)
+```
+
+### 4. Pre-Release Validation Pipeline
+
+Complete validation before any release candidate:
+
+```bash
+make pre-release            # Runs: qt6-check + security-scan + docker-test
+```
+
+**`docker-test`** executes the full suite (763 tests, including 76 integration tests) in a clean QGIS Docker environment.
+
+### 5. CI/CD Integration
+
+All tools are configured to run in CI pipelines with:
+- **Zero critical Bandit findings** required for merge
+- **Zero detect-secrets findings** (above baseline) required for merge
+- **Flake8 warnings** reported but non-blocking
+- **Full test suite** (unit + integration) must pass
+
+### 6. Configuration Files (Committed to Repo)
+
+| File | Purpose | Portal Compatible |
+|------|---------|-------------------|
+| `.bandit` | Bandit test selection, exclude dirs | ✅ |
+| `.secrets.baseline` | detect-secrets baseline, filters, excludes | ✅ |
+| `.flake8` | Flake8 rules, complexity, output format | ✅ |
+| `pyproject.toml` | Ruff, pytest, mypy config | ⚠️ (dev only) |
 
 ---
 
 ## 📝 Final Notes
 
-This document provides a detailed view of the SecInterp plugin architecture. For development information, see [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
+This document provides a detailed overview of the SecInterp plugin architecture. For development information, please refer to [README_DEV.md](file:///home/jmbernales/qgispluginsdev/sec_interp/README_DEV.md).
 
-**Last update**: 2026-10-24
+**Last Updated**: 2026-10-24
 **Plugin Version**: 3.11.0
 **Author**: Juan M. Bernales
