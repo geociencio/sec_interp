@@ -1,30 +1,33 @@
 """Internationalization (i18n) utilities for SecInterp.
 
-Provides standardized ways to handle translations across the project,
-especially for classes that do not inherit from QObject.
+Core classes use an injectable translator so this package stays QGIS-agnostic.
+The Qt adapter is installed by the plugin composition root at startup.
 """
 
 from __future__ import annotations
 
-from qgis.PyQt.QtCore import QCoreApplication
+from collections.abc import Callable
+
+Translator = Callable[[str, str], str]
+_translator: Translator | None = None
+
+
+def set_translator(translator: Translator | None) -> None:
+    """Install the translation backend (``None`` restores identity)."""
+    global _translator
+    _translator = translator
+
+
+def translate(context: str, message: str) -> str:
+    """Translate a message using the injected backend, or return it unchanged."""
+    if _translator is None:
+        return message
+    return _translator(context, message)
 
 
 class TranslatableMixin:
-    """Mixin to provide a standardized tr() method for translations.
-
-    Classes using this mixin can call self.tr("message") to get the translated
-    string using the class name as the translation context.
-    """
+    """Mixin providing a standardized ``tr()`` using the class name as context."""
 
     def tr(self, message: str) -> str:
-        """Translate a message using QCoreApplication.
-
-        Args:
-            message: The source string to translate.
-
-        Returns:
-            The translated string.
-
-        """
-        # use the class name as the context for translation
-        return QCoreApplication.translate(self.__class__.__name__, message)  # type: ignore[no-any-return]
+        """Translate a message with the class name as translation context."""
+        return translate(self.__class__.__name__, message)

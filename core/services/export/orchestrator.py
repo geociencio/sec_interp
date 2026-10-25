@@ -5,11 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from sec_interp.core.domain import PreviewParams
 from sec_interp.core.exceptions import DataMissingError
 from sec_interp.core.services.access_control_service import AccessControlService
+from sec_interp.core.utils.i18n import translate
 from sec_interp.logger_config import get_logger
 
 from .compat import ExportServiceCompatMixin
@@ -32,8 +31,8 @@ class ExportService(ExportServiceCompatMixin):
         self.access_control = AccessControlService()
 
     def tr(self, message: str) -> str:
-        """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("ExportService", message)  # type: ignore[no-any-return]
+        """Translate a message using the injected translator."""
+        return translate("ExportService", message)
 
     def export_data(
         self,

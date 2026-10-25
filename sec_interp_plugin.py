@@ -15,7 +15,7 @@ from qgis.PyQt.QtCore import (
     QTranslator,
 )
 
-from sec_interp.core.utils.i18n import TranslatableMixin
+from sec_interp.core.utils.i18n import TranslatableMixin, set_translator
 from sec_interp.core.utils.safe_loader import SafeLoader
 from sec_interp.logger_config import get_logger, setup_logging
 from sec_interp.plugin import (
@@ -49,6 +49,7 @@ class SecInterp(TranslatableMixin, PluginLifecycleMixin, InputValidationMixin, R
         self.iface = iface
         self.plugin_dir = Path(__file__).resolve().parent
         self._load_translator()
+        set_translator(QCoreApplication.translate)
 
         # Prepare core services BEFORE the dialog (required by PreviewManager)
         self.preview_renderer = SafeLoader.lazy_load(

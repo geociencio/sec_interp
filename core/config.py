@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Any
 
 from qgis.core import QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.models.settings_model import PluginSettings
+from sec_interp.core.utils.i18n import translate
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -47,8 +47,8 @@ class ConfigService:
         return self._current_settings
 
     def tr(self, message: str) -> str:
-        """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("ConfigService", message)  # type: ignore[no-any-return]
+        """Translate a message using the injected translator."""
+        return translate("ConfigService", message)
 
     def _load_from_qgs_settings(self) -> PluginSettings:
         """Gather all settings from QgsSettings and create a validated model."""

@@ -9,9 +9,8 @@ import hashlib
 import time
 from typing import Any
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from sec_interp.core.interfaces.cache_interface import ICacheService
+from sec_interp.core.utils.i18n import translate
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -27,8 +26,8 @@ class DataCache(ICacheService):
     DEFAULT_TTL_SECONDS = 3600
 
     def tr(self, message: str) -> str:
-        """Translate a message using QCoreApplication."""
-        return QCoreApplication.translate("DataCache", message)  # type: ignore[no-any-return]
+        """Translate a message using the injected translator."""
+        return translate("DataCache", message)
 
     def __init__(self, default_ttl: int = DEFAULT_TTL_SECONDS) -> None:
         """Initialize the data cache.
