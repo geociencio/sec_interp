@@ -11,7 +11,7 @@ re-assess the release gate for **3.12.0** without changing plugin runtime code.
 `qgis-manage` 0.12.0 is installed and pinned; the Makefile, release CI and package
 configuration use its new capabilities. All quality gates are green, but the
 **3.12.0 release artifacts are not prepared** (version, changelog, notes, README,
-queue/branch, tag, portal). The plugin ZIP builds with the stamped 3.12.0 version
+tag, portal). The plugin ZIP builds with the stamped 3.12.0 version
 and 340 files.
 
 ## Changes
@@ -93,10 +93,12 @@ and 340 files.
 
 Green: code, tests, static gates, Docker, Qt6, packaging. Missing: version bump
 (3.11.0), `[Unreleased]` → `[3.12.0]`, release notes, README badge/"What's New",
-development-log milestone, queue entry + `release/v3.12.0` branch, commit/push/tag,
-GitHub release and manual portal upload. The Gen 8 release workflow still contains
-obsolete steps (`docsec` changelog, `make package VERSION=main`, `plugin_upload.py`,
-partial `git add`).
+development-log milestone, commit/push/tag, GitHub release and manual portal
+upload. **Queue releases are over** (3.9.1–3.11.0 are the last entries and all are
+published); 3.12.0 is a manual release, with no `.release-queue.json` entry or
+`release/v3.12.0` branch. The Gen 8 release workflow still contains obsolete steps
+(`docsec` changelog, `make package VERSION=main`, `plugin_upload.py`, partial
+`git add`).
 
 ## Impact
 

@@ -42,14 +42,17 @@ Code/gates are green, but the release artifacts are missing:
 3. Create `docs/releases/notes/v3.12.0.md`.
 4. README: version badge + "What's New" (still v3.9.1).
 5. `docs/DEVELOPMENT_LOG.md` milestone.
-6. `.release-queue.json` entry + `release/v3.12.0` branch **only if** releasing via
-   CI; the Sunday 15:00 UTC cron picks due queue entries (a due entry without the
-   branch makes CI fail).
-7. Commit the pending working tree, push `main` (local is 1 commit ahead of
-   `origin/main`), tag `v3.12.0`.
-8. `make zip` + ZIP audit + `gh release create --draft`.
-9. Portal upload is manual: `plugin_upload.py` no longer exists, so `make upload`
+6. Commit the changes, push `main` (it is ahead of `origin/main`), tag `v3.12.0`.
+7. `make zip` + ZIP audit + `gh release create v3.12.0 ... --draft`.
+8. Portal upload is manual: `plugin_upload.py` no longer exists, so `make upload`
    is broken.
+
+**Queue releases are over**: `.release-queue.json` only contains 3.9.1, 3.10.0 and
+3.11.0, all already tagged/published (`next_scheduled_release.py` returns
+`nothing_due=true` with a working remote). Do **not** add a 3.12.0 queue entry or a
+`release/v3.12.0` branch; 3.12.0 is a manual release. The dormant
+`scheduled-release.yml` will keep doing nothing while the queue stays exhausted
+(consider retiring it separately).
 
 **Release-readiness caveats**: the Gen 8 release workflow still mentions the legacy
 `docs/docsec/CHANGELOG.md`, `make package VERSION=main` (the Makefile ignores
