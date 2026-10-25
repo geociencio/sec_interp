@@ -3,7 +3,7 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->876<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->878<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
 | **Last Updated** | <!-- LAST_UPDATE -->2026-10-24<!-- /LAST_UPDATE --> | 🕒 Auto |
 
@@ -15,7 +15,7 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->349<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->368<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->370<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
 | **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
@@ -108,12 +108,12 @@
 - **tests/gui/test_section_feature_selector.py**: 9 tests
 - **tests/gui/test_section_page.py**: 13 tests
 - **tests/gui/test_section_resolver.py**: 10 tests
-- **tests/gui/test_settings_page.py**: 4 tests
+- **tests/gui/test_settings_page.py**: 5 tests
 - **tests/gui/test_signal_restoration.py**: 5 tests
 - **tests/gui/test_structure_extractor.py**: 3 tests
 - **tests/gui/test_structure_page.py**: 3 tests
 - **tests/gui/test_symbology_tab.py**: 8 tests
-- **tests/gui/test_ui_gating.py**: 29 tests
+- **tests/gui/test_ui_gating.py**: 30 tests
 - **tests/gui/test_validation_extractor.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
 - **tests/gui/tasks/test_geology_task.py**: 6 tests

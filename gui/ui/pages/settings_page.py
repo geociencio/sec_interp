@@ -19,6 +19,7 @@ from sec_interp.logger_config import get_logger
 
 from .base_page import BasePage
 from .settings import AdvancedTab, DefaultTab, build_info_tab
+from .settings.interpretation_tab import InterpretationTab
 from .settings.settings_persistence import load_settings, save_settings
 from .settings.symbology_tab import SymbologyTab
 
@@ -58,6 +59,11 @@ class SettingsPage(BasePage):
 
         self.symbology_tab = SymbologyTab()
         self.tab_widget.addTab(self.symbology_tab, self.tr("Symbology"))
+
+        self.interpretation_tab = InterpretationTab()
+        self.tab_widget.addTab(
+            self.interpretation_tab, self.interpretation_tab.tr("Interpretation Settings")
+        )
 
         self.info_tab = build_info_tab(self.tr)
         self.tab_widget.addTab(self.info_tab, self.tr("Plugin Information"))
@@ -124,12 +130,14 @@ class SettingsPage(BasePage):
         self.default_tab.connect_signals()
         self.advanced_tab.connect_signals()
         self.symbology_tab.connect_signals()
+        self.interpretation_tab.connect_signals()
 
     def disconnect_signals(self) -> None:
         """Disconnect all signals to prevent memory leaks."""
         self.default_tab.disconnect_signals()
         self.advanced_tab.disconnect_signals()
         self.symbology_tab.disconnect_signals()
+        self.interpretation_tab.disconnect_signals()
         with contextlib.suppress(TypeError, RuntimeError):
             self.default_tab.changed.disconnect(self._on_settings_changed)
         with contextlib.suppress(TypeError, RuntimeError):

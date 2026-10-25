@@ -115,9 +115,7 @@ class TestButtonGating(BaseTestCase):
         """A disabled Preview button explains why via its tooltip."""
         self.dialog.input_manager.can_preview.return_value = False
         self.dialog.input_manager.get_section_error.side_effect = lambda s: (
-            "Section line must have exactly 2 vertices (start and end)"
-            if s == "section"
-            else ""
+            "Section line must have exactly 2 vertices (start and end)" if s == "section" else ""
         )
 
         self.manager.update_button_state()
@@ -133,9 +131,7 @@ class TestButtonGating(BaseTestCase):
 
         self.manager.update_button_state()
 
-        self.dialog.preview_widget.btn_preview.setToolTip.assert_called_with(
-            "Generate preview"
-        )
+        self.dialog.preview_widget.btn_preview.setToolTip.assert_called_with("Generate preview")
 
 
 class TestPageStates(BaseTestCase):
@@ -198,6 +194,15 @@ class TestMandatoryLabels(BaseTestCase):
         self.assertIn("Cross Section Line", page.title)
         self.assertIn("Mandatory", page.title)
 
+    def test_interpretation_page_is_settings_tab(self) -> None:
+        """The main window keeps page_interpretation as a Settings alias."""
+        from sec_interp.gui.ui.main_window import SecInterpMainWindow
+
+        with patch("sec_interp.gui.ui.sidebar.QListWidgetItem"):
+            window = SecInterpMainWindow(None)
+
+        self.assertIs(window.page_interpretation, window.page_settings.interpretation_tab)
+
     def test_sidebar_tags_first_two_items(self) -> None:
         """The DEM and Section sidebar entries carry the Mandatory tag."""
         from sec_interp.gui.ui.main_window import SecInterpMainWindow
@@ -224,9 +229,7 @@ class TestStatusIndicatorFallback(BaseTestCase):
         manager.update_section_status()
 
         label = dialog.page_section.lbl_section_status
-        label.setStyleSheet.assert_called_with(
-            "background-color: #c62828; border-radius: 8px;"
-        )
+        label.setStyleSheet.assert_called_with("background-color: #c62828; border-radius: 8px;")
         label.setToolTip.assert_called_with("Section line error")
 
     def test_ok_status_uses_ok_dot(self) -> None:
@@ -238,9 +241,7 @@ class TestStatusIndicatorFallback(BaseTestCase):
         manager.update_section_status()
 
         label = dialog.page_section.lbl_section_status
-        label.setStyleSheet.assert_called_with(
-            "background-color: #2e7d32; border-radius: 8px;"
-        )
+        label.setStyleSheet.assert_called_with("background-color: #2e7d32; border-radius: 8px;")
 
 
 class TestCrsMismatchWarning(BaseTestCase):
@@ -255,9 +256,7 @@ class TestCrsMismatchWarning(BaseTestCase):
         manager.update_raster_status()
 
         label = dialog.page_dem.lbl_raster_status
-        label.setStyleSheet.assert_called_with(
-            "background-color: #f9a825; border-radius: 8px;"
-        )
+        label.setStyleSheet.assert_called_with("background-color: #f9a825; border-radius: 8px;")
         label.setToolTip.assert_called_with("⚠ CRS mismatch detected!")
 
     def test_announce_crs_mismatch_only_once(self) -> None:
@@ -297,9 +296,7 @@ class TestCrsPlausibilityBlocking(BaseTestCase):
         manager.update_raster_status()
 
         label = dialog.page_dem.lbl_raster_status
-        label.setStyleSheet.assert_called_with(
-            "background-color: #c62828; border-radius: 8px;"
-        )
+        label.setStyleSheet.assert_called_with("background-color: #c62828; border-radius: 8px;")
         label.setToolTip.assert_called_with("looks like degrees")
 
     def test_announce_plausibility_is_critical_and_once(self) -> None:

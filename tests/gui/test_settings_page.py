@@ -80,6 +80,15 @@ class TestSettingsPage(BaseTestCase):
         # Verify settings were saved to global QgsSettings
         self.assertEqual(QgsSettings().value("SecInterp/enable_3d"), True)
 
+    def test_interpretation_tab_is_hosted(self):
+        """Interpretation settings are hosted as a Settings tab."""
+        from sec_interp.gui.ui.pages.settings.interpretation_tab import InterpretationTab
+
+        page = SettingsPage()
+        self.assertIsInstance(page.interpretation_tab, InterpretationTab)
+        page.interpretation_tab.fields_table.rowCount.return_value = 0
+        self.assertEqual(page.interpretation_tab.get_data()["source_type"], "json")
+
     def test_get_data(self):
         """Test get_data returns correct dictionary."""
         page = SettingsPage()

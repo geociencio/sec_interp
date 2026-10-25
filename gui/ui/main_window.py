@@ -22,7 +22,6 @@ from qgis.PyQt.QtWidgets import (
 from .pages.dem_page import DemPage
 from .pages.drillhole_page import DrillholePage
 from .pages.geology_page import GeologyPage
-from .pages.interpretation_page import InterpretationPage
 from .pages.preview_page import PreviewWidget
 from .pages.section_page import SectionPage
 from .pages.settings_page import SettingsPage
@@ -66,8 +65,9 @@ class SecInterpMainWindow(QDialog):
         self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
         self.page_drillhole = DrillholePage()
-        self.page_interpretation = InterpretationPage()
         self.page_settings = SettingsPage()
+        # Compatibility alias: interpretation settings now live in Settings.
+        self.page_interpretation = self.page_settings.interpretation_tab
 
         self._setup_ui()
         self._connect_signals()
@@ -110,7 +110,6 @@ class SecInterpMainWindow(QDialog):
         self.stacked_widget.addWidget(self.page_geology)
         self.stacked_widget.addWidget(self.page_struct)
         self.stacked_widget.addWidget(self.page_drillhole)
-        self.stacked_widget.addWidget(self.page_interpretation)
         self.stacked_widget.addWidget(self.page_settings)
 
         splitter.addWidget(self.stacked_widget)
@@ -150,7 +149,6 @@ class SecInterpMainWindow(QDialog):
         self.nav_drillhole = self.sidebar.add_item(
             self.tr("Drillholes"), "mActionDataSourceManager.svg"
         )
-        self.sidebar.add_item(self.tr("Interpretation"), "mActionEdit.svg")
         self.sidebar.add_item(self.tr("Settings"), "mActionOptions.svg")
 
         self.sidebar.setCurrentRow(0)

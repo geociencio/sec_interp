@@ -32,7 +32,7 @@ No hay `.ui` de Qt Designer. La UI se construye **en código** (skill `ui-framew
 |------------|-----|
 | `SecInterpMainWindow` | `QDialog` con `QSplitter` [Sidebar | Stack | Preview] |
 | `Sidebar` | Lista de navegación (`QListWidget` con iconos) |
-| `pages/*Page` | Cada wizard step (DEM, Section, Geology, Structure, Drillhole, Interpretation, Settings, Preview) |
+| `pages/*Page` | Cada wizard step (DEM, Section, Geology, Structure, Drillhole, Settings, Preview) |
 | `PreviewWidget` | Canvas + status + results |
 
 > [!important] La UI no tiene lógica de negocio
@@ -60,8 +60,8 @@ class SecInterpMainWindow(QDialog):
         self.page_geology = GeologyPage()
         self.page_struct = StructurePage()
         self.page_drillhole = DrillholePage()
-        self.page_interpretation = InterpretationPage()
         self.page_settings = SettingsPage()
+        self.page_interpretation = self.page_settings.interpretation_tab
 
         self._setup_ui()
         self._connect_signals()
@@ -99,7 +99,7 @@ class SecInterpMainWindow(QDialog):
 | `GeologyPage` | `geology_page.py` (120 l.) | `QgsMapLayerComboBox` outcrops + `field_combo` |
 | `StructurePage` | `structure_page.py` (166 l.) | `QgsMapLayerComboBox` + `dip/strike field`, `scale_spin` |
 | `DrillholePage` | `drillhole_page.py` (451 l.) | 3 sub-formularios: collar/survey/interval + `buffer_spin` |
-| `InterpretationPage` | `interpretation_page.py` (230 l.) | Lista de polígonos + color/type |
+| `InterpretationTab` | `settings/interpretation_tab.py` | Almacenamiento, campos personalizados y herencia |
 | `SettingsPage` | `settings_page.py` (416 l.) | Toggles de exportación, 3D, LOD, `max_points` |
 | `PreviewWidget` | `preview_page.py` (262 l.) | `QgsMapCanvas`, `results_text`, controles LOD, checkboxes de visibilidad |
 | `BasePage` | `base_page.py` (105 l.) | Contrato común (`get_values`, `set_values`, `reset_defaults`) |

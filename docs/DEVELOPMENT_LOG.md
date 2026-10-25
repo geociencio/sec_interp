@@ -1,3 +1,9 @@
+## [2026-10-24] Refactor: Interpretation Settings Tab
+- **Achievement**: moved `InterpretationPage` into `SettingsPage` as the **Interpretation Settings** tab; sidebar now has 6 entries (DEM, Section, Geology, Structural, Drillholes, Settings).
+- **Compatibility**: `MainWindow.page_interpretation` aliases `page_settings.interpretation_tab`; persisted keys (`source_type`, `custom_fields`, `interp_inherit_*`), the `dump/load` protocol, the `"InterpretationPage"` translation context and all consumers remain unchanged.
+- **Files**: new `gui/ui/pages/settings/interpretation_tab.py`; `interpretation_page.py` kept as a compatibility shim; `settings_page.py`, `main_window.py` and `dialog_signal_manager.py` updated.
+- **Tests**: **829 OK** (878 static); tab hosting/alias tests added; `ruff`, `format` and i18n PASS.
+
 ## [2026-10-24] Session Close: Section Feature Selection
 - **Closed**: selector `fid — label` (only exactly-2-vertex lines, selectable label field) and full `section_feature_id` propagation to preview/export/LOD/tasks; **Invert line** deferred.
 - **Quality**: **827 tests OK** (876 static) · CC/i18n/module-size PASS · security 100 · issues 36 · quality 56.4.
