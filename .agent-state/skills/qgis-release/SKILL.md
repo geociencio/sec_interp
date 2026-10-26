@@ -14,6 +14,7 @@ Authoritative references:
 - <https://plugins.qgis.org/docs/migrate-qgis4>
 - <https://docs.qgis.org/3.40/en/docs/pyqgis_developer_cookbook/plugins/plugins.html>
 - Project audit: `docs/research/qgis_plugin_repository_requirements.md`
+- Upstream split: `docs/research/upstream_gate_integration.md`
 
 ## Hard requirements (a violation blocks or rejects the upload)
 
