@@ -67,10 +67,9 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Prepare and upload v3.12.1** (blocking): icon is now 128×128 (SVG master in
-   `docs/source/images/`), permissions are normalized by `package --repo-check`;
-   optionally expand `about`, then run `make pre-release` + `make zip`
-   (`portal-check` included) and upload at
+0. **Prepare and upload v3.12.1** (blocking): normalize ZIP modes to 0644/0755,
+   use a ≥64×64 icon, expand `about`, run `make pre-release` + `make zip`
+   (`portal-check` included), then upload at
    <https://plugins.qgis.org/plugins/sec_interp/>. Do **not** upload 3.12.0.
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and

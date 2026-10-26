@@ -164,10 +164,6 @@ Additional validation rules (Cookbook, *Releasing*):
 | `qgis-manage validate --strict --repo` | ✅ pass |
 | `qgis-manage validate --zip` (0.14+) | ✅ pass (warnings: permissions/icon in 3.12.0; fixed in new builds) |
 
-> **Post-audit (2026-10-25)**: the icon was regenerated at **128×128** from the SVG
-> master at `docs/source/images/sec_interp_icon.svg`; `package --repo-check` now
-> normalizes permissions. A fresh package validates with **zero warnings**.
-
 ---
 
 ## 9. Gaps and recommendations
@@ -179,10 +175,13 @@ and the package size is well below the limit.
 
 ### Recommended before the next portal upload (3.12.1)
 
-1. **Normalize ZIP permissions** — ✅ resolved: `qgis-manage package --repo-check`
-   (0.14+) writes `0644`/`0755`, so new builds have no permission warnings.
-2. **Use a proper icon** — ✅ resolved: `docs/source/images/sec_interp_icon.svg`
-   is the 128×128 master; `icon.png` is now 128×128.
+1. **Normalize ZIP permissions**: the 3.12.0 ZIP contains 27 files with `0600` and 307
+   with `0640` (plus 8 with `0644`). They work for the installing user, but the
+   portal's file analysis may flag restrictive/odd modes. Run
+   `chmod -R u+rwX,go+rX` before packaging (or add a packaging step) so entries are
+   `0644`/`0755` only.
+2. **Use a proper icon**: `icon.png` is 23×24 px. QGIS recommends a clear icon; a
+   64×64 or 128×128 PNG is safer for the plugin list and Plugin Manager.
 3. **Expand `about`**: it is currently a single sentence, almost identical to
    `description`. Reviewers expect a detailed, no-HTML description of what the plugin
    does and any caveats (use the same text style as the README).

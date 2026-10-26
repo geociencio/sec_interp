@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **Branding — vector icon**: added `docs/source/images/sec_interp_icon.svg` (128×128 master, scalable) and regenerated `icon.png` at **128×128** from it. New packages pass `qgis-manage validate --zip` with **no warnings**.
 - **Tooling — qgis-manage 0.15.0 / qgis-analyzer 1.18.0**: `make portal-check` delegates to `qgis-manage validate --zip`; `make zip` uses `package --repo-check`, which audits the built ZIP and normalizes modes to 0644/0755; `make security-scan` uses `qgis-manage security --portal` (native + Bandit + detect-secrets + Flake8) with explicit excludes. Removed `scripts/check_portal_package.py` (9 tests) and `scripts/security_scan.py`. The analyzer adds `--exclude`; `make flake8` stays scoped to the packaged plugin.
 - **Research — upstream gate integration**: added `docs/research/upstream_gate_integration.md` with the qgis-manage/qgis-analyzer ownership split, artifact checks, Flake8 and Bandit/detect-secrets adapters, JSON contracts and acceptance criteria. Its P0 items are implemented in qgis-manage 0.14.0 / qgis-analyzer 1.17.0.
 - **Agentic system — `qgis-release` skill and portal gates**: new project skill with the repository's hard rules; `make portal-check` validates the ZIP via qgis-manage and is wired into `make zip`. `make qgis-validate` (`qgis-manage validate --strict --repo`) is part of `make pre-release` and CI.
