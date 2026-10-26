@@ -19,10 +19,11 @@
    ```
 3. **Build and audit the ZIP**
    ```bash
-   make zip
+   make zip            # includes make portal-check
+   make portal-check   # explicit re-run
    unzip -l dist/sec_interp.X.Y.Z.zip | grep -E "\.agent|scripts|tests|AI_CONTEXT"
    ```
-   The audit must return nothing.
+   The audit must return nothing and `portal-check` must PASS.
 4. **Commit, tag and push**
    ```bash
    git add metadata.txt pyproject.toml docs/ README.md

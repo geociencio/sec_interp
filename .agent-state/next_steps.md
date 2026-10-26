@@ -20,12 +20,15 @@
     `auto_compile = false`.
 - **Analysis published**: `docs/research/qgis_manage_0.12.0_analysis.md` (0.10.0 →
   0.12.0: fixed findings, measurements, remaining limitations).
-- **Gates green (2026-10-25)**: **839 local tests OK / 888 static**; Docker suite
+- **Gates green (2026-10-25)**: **848 local tests OK**; Docker suite
   exit 0 (agentic + core + exporters + gui + integration, last group 76 OK);
   `ruff`, `ruff format`, `mypy` (102 files; sandbox needs `MYPY_CACHE_DIR` inside
   the workspace), `check_docs` (37), `i18n-check` (6 OK), `security-scan`
   (bandit/detect-secrets PASS), Qt6 checker 0 findings, analyzer **CC PASS**,
   37 issues, docstring 99.1 % (baseline 99.0), security 100, module size PASS.
+- **Agentic system**: new `qgis-release` skill, `make flake8` (QGIS portal scope,
+  blocking) and `make portal-check` (ZIP layout/metadata/LICENSE/size/permissions),
+  wired into `make zip`, CI and pre-commit.
 - **Packaging**: `package --repo-check --stamp --release-version 3.12.0` passes;
   ZIP = 340 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
 - **USER_GUIDE v3.12.0 refreshed**: 22 figures in `docs/source/images/` (six-entry
@@ -40,14 +43,16 @@
 - Version **3.12.0** in `metadata.txt`/`pyproject.toml`; `[Unreleased]` moved to
   `[3.12.0]`; release notes in `docs/releases/notes/v3.12.0.md`; README and
   `DEVELOPMENT_LOG` updated.
-- Gates green: 839 local tests, Docker suite, ruff/format, mypy (102 files),
-  check_docs, i18n, bandit/detect-secrets, deep security 100/100, Qt6 0, CC PASS.
+- Gates green: 848 local tests, Docker suite, ruff/format, mypy (102 files),
+  check_docs, i18n, flake8, bandit/detect-secrets, deep security 100/100, Qt6 0,
+  CC PASS; `make portal-check` passes with warnings.
 - ZIP `dist/sec_interp.3.12.0.zip` (342 files, 2.4 MB) with
   SHA256 `97d1ac197c53f28e1b8bacf0bfbe9bf869b39affd4add4dc49239332d0e97c38`.
 - Commit `4f7cb048`, tag `v3.12.0`, `main` and the tag pushed to `origin`.
 - GitHub release **published** as *Latest*:
   <https://github.com/geociencio/sec_interp/releases/tag/v3.12.0> (ZIP attached).
-- **Pending (manual)**: upload the ZIP at <https://plugins.qgis.org/plugins/sec_interp/>.
+- **Do not upload the 3.12.0 ZIP**: it predates the F811/E402 fixes and has
+  0600/0640 modes plus a 23×24 icon. Prepare **3.12.1** (see pending).
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -62,8 +67,10 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Upload the v3.12.0 ZIP to the QGIS portal**: <https://plugins.qgis.org/plugins/sec_interp/>
-   (the GitHub release is already published as *Latest*).
+0. **Prepare and upload v3.12.1** (blocking): normalize ZIP modes to 0644/0755,
+   use a ≥64×64 icon, expand `about`, run `make pre-release` + `make zip`
+   (`portal-check` included), then upload at
+   <https://plugins.qgis.org/plugins/sec_interp/>. Do **not** upload 3.12.0.
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
    the `guide_dem_setup` status-bar strip before the release build.

@@ -208,7 +208,8 @@ and the package size is well below the limit.
    `changelog`, `docs/CHANGELOG.md` and release notes.
 2. `make pre-release` (includes `make flake8`, mypy, analyzer, i18n, Qt6, security,
    Docker) and `make docs-check`.
-3. `make zip`; verify:
+3. `make zip` (runs `portal-check` automatically) or `make portal-check` for an
+   existing ZIP; verify:
    - `unzip -l dist/sec_interp.X.Y.Z.zip` has a single `sec_interp/` root;
    - size ≤ 25 MB; no `.agent`, `tests`, `scripts`, `docs`, caches or binaries;
    - `metadata.txt` version and `LICENSE` are present;

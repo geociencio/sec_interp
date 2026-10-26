@@ -1,7 +1,7 @@
 ---
 description: Unified Release Workflow (QGIS Release Flow) - Generation 8 Standard
 agent: qa_engineer
-skills: [release-management, qgis-migration-4x, testing-standards, commit-standards, i18n-standards, changelog-generator]
+skills: [release-management, qgis-release, qgis-migration-4x, testing-standards, commit-standards, i18n-standards, changelog-generator]
 stop_conditions:
   - "Any function exceeds CC > 10 → Block release and refactor"
   - "Any quality gate fails (ruff, flake8, mypy, docs, i18n, security, analyzer) → Block release and fix it"
@@ -128,20 +128,39 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
 2. **Build Optimized ZIP**:
    // turbo
    ```bash
-   make package VERSION=main
+   make zip
    ```
+   `make zip` builds the docs/help, compiles resources, packages with
+   `--repo-check` and runs `make portal-check`.
 
-3. **Strict Artifact Audit**:
+3. **Portal compliance (BLOCKING)**:
+   // turbo
+   ```bash
+   make portal-check
+   ```
+   🤖 **Agent Action**: validates the built ZIP against plugins.qgis.org: one
+   `sec_interp/` root, required metadata, `LICENSE`, ≤25 MB, no binaries/dev files,
+   numeric version and file modes. Fix every error before uploading; see the
+   `qgis-release` skill and `docs/research/qgis_plugin_repository_requirements.md`.
+
+4. **Strict Artifact Audit**:
    // turbo
    ```bash
    unzip -l dist/*.zip | grep -E "\.agent|scripts|tests|docs|AI_CONTEXT|antigravity"
    ```
    🤖 **Agent Action**: **STOP** if the output is not empty. The agentic system MUST NOT be in the ZIP.
 
-4. **GitHub Release**:
+5. **GitHub Release**:
    ```bash
    gh release create vX.Y.Z --title "vX.Y.Z" --notes-file docs/releases/notes/vX.Y.Z.md dist/*.zip --draft
    ```
+
+6. **QGIS Plugin Repository (manual, blocking)**:
+   Upload `dist/sec_interp.X.Y.Z.zip` at <https://plugins.qgis.org/plugins/sec_interp/>
+   and wait for the validation email (`Validating` → `Validated`/`Blocked`). A
+   CRITICAL Bandit/detect-secrets finding blocks the version: fix it and upload a
+   **new** version. After portal approval, publish the GitHub release if it is still
+   a draft.
 
 ## Expected Result
 - Official version published (Plugin-only ZIP).

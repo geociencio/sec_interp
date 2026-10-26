@@ -141,8 +141,16 @@ deploy: docs compile
 
 zip: docs compile
 	uv run qgis-manage package --repo-check
+	@$(MAKE) --no-print-directory portal-check
 
 package: zip
+
+# QGIS portal hard requirements for the newest ZIP in dist/ (see qgis-release skill).
+PORTAL_ZIP ?= $(shell ls -t dist/sec_interp.*.zip 2>/dev/null | head -1)
+.PHONY: portal-check
+portal-check:
+	@test -n "$(PORTAL_ZIP)" || (echo "❌ No dist/sec_interp.*.zip found; run 'make zip' first."; exit 1)
+	uv run --frozen python scripts/check_portal_package.py "$(PORTAL_ZIP)"
 
 upload: zip
 	@echo

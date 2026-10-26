@@ -3,7 +3,7 @@
     "meta": {
         "description": "Agentic system operational metrics for SecInterp",
         "policy_ref": ".agent-state/memory/memory_policy.md",
-        "last_updated": "2026-10-25",
+        "last_updated": "2026-10-26",
         "last_updated_by": "sync_metrics.py (metrics truth reconciliation)",
         "tools": {
             "qgis-plugin-analyzer": "1.16.0",
@@ -19,7 +19,7 @@
         "tests_ok": 792,
         "tests_ok_note": "tests_ok/test_count are the legacy static baseline kept for cross-file consistency; tests_static is the current static 'def test_' count and tests_executed is the runtime suite (local or Docker).",
         "quality_score_latest": 56.6,
-        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-25).",
+        "quality_score_latest_note": "Module Stability Score from qgis-analyzer (synced 2026-10-26).",
         "maintainability_score": 99.9,
         "security_score": 100.0,
         "type_hint_coverage_params": 96.4,
@@ -42,12 +42,12 @@
         "module_size_gate": "PASS",
         "large_modules": [],
         "test_count": 792,
-        "tests_static": 888,
+        "tests_static": 897,
         "tests_executed": 839
     },
     "ground_truth_sources": {
         "qgis_analyzer": {
-            "date": "2026-10-25",
+            "date": "2026-10-26",
             "command": "uv run qgis-analyzer analyze . --max-cc 10",
             "output": "analysis_results/",
             "scores": {
@@ -65,10 +65,10 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-25T23:29:04.995961+00:00"
+            "analyzed_at": "2026-10-26T00:07:39.296306+00:00"
         },
         "tests_local": {
-            "date": "2026-10-25",
+            "date": "2026-10-26",
             "command": "PYTHONPATH=.. .venv/bin/python -m unittest discover tests",
             "result": "839 ran OK",
             "note": "Local mock-first suite; tests_static is the static 'def test_' count and Docker runs the grouped CI categories."
@@ -87,7 +87,7 @@
             "note": "ai-ctx 5.1.0 is context-only: it no longer computes QGIS/i18n/security scores. Quality metrics are single-sourced from qgis-analyzer."
         },
         "sync_metrics": {
-            "date": "2026-10-25",
+            "date": "2026-10-26",
             "command": "uv run python scripts/sync_metrics.py",
             "cc_gate": "PASS",
             "i18n_gate": "PASS"

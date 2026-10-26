@@ -357,8 +357,16 @@ tests/                   # 🧪 Comprehensive test suite
 
 ### 1. Code Quality Gates
 - All code must pass `ruff check` and `ruff format`
+- All plugin code must pass `make flake8` (QGIS portal scope); it is blocking
 - Pylint score > 8.0 required
 - Test coverage > 80% for new features
+
+### 1b. QGIS Portal Gates
+- Bandit and detect-secrets must report **no CRITICAL** findings (blocking)
+- Release ZIP must pass `make portal-check` (metadata, LICENSE, size ≤25 MB,
+  single root folder, no binaries/dev files, permissions)
+- `qgisMaximumVersion` must be ≥ 4.0 for the QGIS 4 Ready listing
+- See `qgis-release` skill and `docs/research/qgis_plugin_repository_requirements.md`
 
 ### 2. Testing Requirements
 - Unit tests for all new functions/classes
@@ -407,6 +415,7 @@ Skills live in `.agent/skills/*/SKILL.md` (framework) and `.agent-state/skills/*
 | [project-context](.agent-state/skills/project-context/SKILL.md) | Purpose, architecture, and structure of SecInterp. | Starting tasks, requesting summaries, explaining architecture. |
 | [qgis-core](.agent-state/skills/qgis-core/SKILL.md) | QGIS API, plugin structure, asynchronous `QgsTask`. | PyQGIS, layers, CRS, QgsTask. |
 | [qgis-migration-4x](.agent-state/skills/qgis-migration-4x/SKILL.md) | QGIS 4.x migration and agnostic API usage. | qgis.PyQt imports, Qt deprecation warnings, 4.x readiness. |
+| [qgis-release](.agent-state/skills/qgis-release/SKILL.md) | QGIS repository validation, security blocking rules and portal submission. | Preparing/uploading a release, `make portal-check`. |
 | [release-management](.agent/skills/release-management/SKILL.md) | QGIS plugin release process with quality validation. | Releases, versioning, `/release-plugin`. |
 | [testing-standards](.agent/skills/testing-standards/SKILL.md) | Automated testing, CI/CD, and Mock usage standards. | Writing/running tests, CI pipelines, `/run-tests`. |
 | [ui-framework](.agent-state/skills/ui-framework/SKILL.md) | Custom SecInterp UI (programmatic creation, premium aesthetics). | GUI widgets, layouts, CSS styles. |
