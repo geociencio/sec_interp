@@ -27,8 +27,8 @@
   (bandit/detect-secrets PASS), Qt6 checker 0 findings, analyzer **CC PASS**,
   37 issues, docstring 99.1 % (baseline 99.0), security 100, module size PASS.
 - **Agentic system**: `qgis-release` skill, blocking `make flake8` (QGIS portal
-  scope) and `make portal-check` (`qgis-manage validate --zip`, 0.14+), wired into
-  `make zip`, CI and pre-commit.
+  scope), `make portal-check` (`qgis-manage validate --zip`, 0.15+) and
+  `make security-scan` (`qgis-manage security --portal`), wired into `make zip`/CI.
 - **Packaging**: `package --repo-check --stamp --release-version 3.12.0` passes;
   ZIP = 340 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
 - **USER_GUIDE v3.12.0 refreshed**: 22 figures in `docs/source/images/` (six-entry

@@ -294,13 +294,18 @@ pep8: flake8
 
 # Security scanning (QGIS Portal compatible)
 .PHONY: security-scan
+PORTAL_SECURITY_EXCLUDES = --exclude ".agent" --exclude ".agent-state" \
+	--exclude ".github" --exclude "analysis_results" --exclude "docs" \
+	--exclude "examples" --exclude "help" --exclude "scripts" --exclude "tests" \
+	--exclude "tools" --exclude "dist"
+
 security-scan:
 	@echo
 	@echo "-------------------------------------------------------"
 	@echo "Running QGIS Portal-compatible security scan..."
-	@echo "Tools: Bandit, detect-secrets, Flake8"
+	@echo "Tools: native, Bandit, detect-secrets, Flake8"
 	@echo "-------------------------------------------------------"
-	@uv run python scripts/security_scan.py
+	uv run --frozen qgis-manage security --portal --fail-on critical $(PORTAL_SECURITY_EXCLUDES)
 
 # Qt6 / QGIS 4 enum check (same tool plugins.qgis.org runs on upload)
 .PHONY: qt6-check

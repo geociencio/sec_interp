@@ -8,7 +8,6 @@ Wired into workflows (`.agent/workflows/`), the Makefile, or the pre-push hook.
 
 | Script | Purpose | Wired via |
 | :--- | :--- | :--- |
-| `security_scan.py` | Security scan (Bandit + detect-secrets + Flake8) | `make release` |
 | `sync_metrics.py` | Unified metrics CLI: sync, `--report`, `--validate`, `--testing-status` | `/start-session`, `/close-session`, `/release-plugin` |
 | `memory_prune.py` | Prune consolidated lessons + next_steps snapshots (90 days) | `/close-session` |
 | `run_in_qgis.py` | In-process test runner for `integration` / `benchmarks` suites | `/run-tests-in-qgis` |

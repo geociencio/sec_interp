@@ -231,8 +231,10 @@ and the package size is well below the limit.
   `package --repo-check` after building) covers the artifact: root, size, modes,
   icon, README, embedded metadata. It still does **not** run Bandit/detect-secrets;
   use `make pre-release` (flake8 + `make security-scan`) for that.
-- `scripts/security_scan.py` runs Bandit/detect-secrets (critical) and Flake8
-  (informational) with the project configs; the portal ignores those configs unless
-  they are packaged. Our default-config scans on the extracted ZIP were clean.
+- `make security-scan` uses `qgis-manage security --portal` (0.15+), which runs
+  native + Bandit + detect-secrets + Flake8 with `--fail-on critical`; it excludes
+  non-packaged dirs (`tests`, `docs`, `scripts`, `tools`, agent state). The portal
+  ignores project configs unless they are packaged; our default-config scans were
+  clean.
 - `make flake8` is intentionally stricter than the portal (blocking) to keep the
   portal's INFO report empty and prevent regressions.

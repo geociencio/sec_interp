@@ -1,7 +1,7 @@
 ## [2026-10-25] Release: v3.12.0
 - **Achievement**: v3.12.0 prepared for release — section-line `fid — label` selector, Interpretation Settings tab, QGIS-agnostic core and module-size refactors; README and User Guide refreshed.
 - **Verification**: **839 tests OK / 888 static**; CC PASS; i18n, flake8 and security gates PASS; Qt6 checker 0 findings; package `3.12.0` (342 files, 2.4 MB).
-- **Tooling**: qgis-manage 0.14.0 and qgis-analyzer 1.17.0; `make portal-check` now uses `qgis-manage validate --zip`, `package --repo-check` audits the built ZIP and normalizes modes.
+- **Tooling**: qgis-manage 0.15.0 and qgis-analyzer 1.18.0; `make portal-check` uses `qgis-manage validate --zip`, `package --repo-check` audits the built ZIP and normalizes modes, and `make security-scan` uses `qgis-manage security --portal`.
 - **Docs**: README at 3.12.0, release notes [v3.12.0.md](releases/notes/v3.12.0.md), 22 User Guide screenshots, Spanish guide catalog at 100 %.
 - **Maintenance**: [session_2026-10-25_qgis_manage_0120.md](maintenance/session_2026-10-25_qgis_manage_0120.md).
 

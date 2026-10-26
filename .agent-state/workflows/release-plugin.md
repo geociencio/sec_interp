@@ -94,7 +94,7 @@ Follow this 5-phase workflow to perform an official release of the SecInterp plu
    uv run qgis-analyzer security --deep .
    ```
 
-   🤖 **Agent Action**: `make security-scan` runs **Bandit** (`B110 try_except_pass`, hardcoded passwords, unsafe functions, etc.), **detect-secrets**, and **Flake8** via `scripts/security_scan.py`. It exits non-zero on any CRITICAL finding. Do NOT proceed to packaging if it fails. This is the full scan that catches code smells the `qgis-analyzer security` secrets-only check does not.
+   🤖 **Agent Action**: `make security-scan` runs `qgis-manage security --portal` (0.15+) with **native** PyQGIS rules plus **Bandit** (`B110 try_except_pass`, hardcoded passwords, unsafe functions, etc.), **detect-secrets** and **Flake8** on the packaged plugin scope. It exits non-zero on any CRITICAL finding. Do NOT proceed to packaging if it fails. This is the full scan that catches code smells the `qgis-analyzer security` secrets-only check does not.
 
 3. **Tests (Full Suite)**:
    // turbo

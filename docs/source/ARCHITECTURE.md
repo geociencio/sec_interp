@@ -157,7 +157,7 @@ The project organization follows a highly modular architecture based on the **Se
   - `image_exporter.py` → [`image_exporter`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/image_exporter.md) · [doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/image_exporter.md)
 - `docs/` 📚 — `ARCHITECTURE_EN.md` (this file) · `ARCHITECTURE.mmd` · `code_walkthrough_v2/` vault
 - `tests/` 🧪 — `base_test.py`, `core/`, `gui/`, `exporters/`, `integration/`, `agentic/`, `mcp/`, `mocks/`, `benchmarks/` (Mock-First, `unittest`)
-- `scripts/` 🔧 — `security_scan.py` · `build_docs.sh` · `i18n/` · `sync_vault_mirrors.sh`
+- `scripts/` 🔧 — `build_docs.sh` · `i18n/` · `sync_vault_mirrors.sh`
 - `resources/` 🎨 — `icons/`, `styles/`, `resources.qrc` → `resources.py`
 
 > [!tip] En Obsidian este árbol es navegable: cada `[`slug`](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/slug.md)` abre la nota de la bóveda y alimenta el Graph View. En GitHub/Sphinx usa el link `[doc](https://github.com/geociencio/sec_interp/blob/main/docs/code_walkthrough_v2/slug.md)` relativo. Los espejos en `docs/code_walkthrough*/ARCHITECTURE_EN.md` se re-sincronizan con `bash scripts/sync_vault_mirrors.sh`.
@@ -705,13 +705,18 @@ SecInterp implements a multi-layered quality assurance strategy that replicates 
 
 ### 1. Local Security Scanning (Portal-Compatible)
 
-The project includes a custom security scanner (`scripts/security_scan.py`) that runs the **exact same tools** used by QGIS Plugin Portal:
+The project delegates to `qgis-manage security --portal` (0.15+), which runs the
+**same tools** used by the QGIS Plugin Portal on the packaged plugin scope:
 
-| Tool | Severity | Purpose | Configuration |
-|------|----------|---------|---------------|
-| **Bandit** | CRITICAL (Blocking) | Static analysis for Python security vulnerabilities (shell injection, pickle, eval, hardcoded secrets, weak crypto, SQL injection) | `.bandit` (excludes tests/scripts, 72 tests enabled) |
-| **detect-secrets** | CRITICAL (Blocking) | Scans for hardcoded credentials, API keys, private keys, high-entropy strings | `.secrets.baseline` (27 detectors, heuristic filters, excludes tests/venv) |
-| **Flake8** | INFO (Non-blocking) | Code quality, PEP 8 style, syntax errors, undefined names | `.flake8` (max-line-length=100, max-complexity=15, JSON output) |
+| Tool | Severity | Purpose |
+|------|----------|---------|
+| **Bandit** | CRITICAL (Blocking) | Static analysis for Python security vulnerabilities (shell injection, pickle, eval, hardcoded secrets, weak crypto, SQL injection) |
+| **detect-secrets** | CRITICAL (Blocking) | Scans for hardcoded credentials, API keys, private keys, high-entropy strings |
+| **Flake8** | INFO (Non-blocking) | Code quality, PEP 8 style, syntax errors, undefined names |
+
+The analyzer adds its **native** PyQGIS rules; the command uses `--fail-on critical`
+so only portal-blocking findings fail. `make flake8` keeps the project's `.flake8`
+(max-line-length=100, max-complexity=15) as the blocking style gate.
 
 **Run locally:**
 ```bash

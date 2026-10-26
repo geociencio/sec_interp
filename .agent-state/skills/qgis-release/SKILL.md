@@ -50,15 +50,14 @@ they do not lower the bar. Do not bundle them unless a real false positive requi
 | Metadata/structure | `make qgis-validate` (`qgis-manage validate --strict --repo`) | required metadata, slug, structure, LICENSE, binaries, `about`/`repository` |
 | Source packaging | `qgis-manage package --repo-check` (inside `make zip`) | metadata/compliance, built-ZIP audit and permission normalization (0.14+) |
 | Style | `make flake8` | portal-compatible flake8 on the packaged plugin scope |
-| Security (portal) | `make security-scan` (`scripts/security_scan.py`) | Bandit + detect-secrets (CRITICAL), flake8 (INFO) |
+| Security (portal) | `make security-scan` (`qgis-manage security --portal`, 0.15+) | native + Bandit + detect-secrets (CRITICAL), flake8 (INFO) |
 | Artifact | `make portal-check` (`qgis-manage validate --zip`, 0.14+) | ZIP root, embedded metadata, LICENSE, ≤25 MB, binaries/dev files, version, permissions, icon |
 | QGIS 4 | `qgisMaximumVersion` ≥ 4.0 + Qt6 checker | QGIS 4 Ready listing and Qt 6 enum/import issues |
 
-`qgis-manage` 0.14+ owns the artifact gate (`validate --zip` and the post-build
-`package --repo-check`). `qgis-analyzer` owns code analysis: 1.17 adds `--flake8` and
-`security --tools`, but `--flake8` scans the whole project, so the project keeps
-`make flake8` scoped to the packaged plugin. `qgis-manage security` still wraps the
-analyzer's own rules, so `make security-scan` remains the portal-tool gate.
+`qgis-manage` 0.15+ owns the artifact and portal-security gates (`validate --zip`,
+`package --repo-check`, `security --portal`). `qgis-analyzer` 1.18 owns code analysis
+and adds `--exclude`; the project still keeps `make flake8` scoped to the packaged
+plugin because the analyzer's Flake8 adapter scans the whole project.
 
 ## Pre-upload workflow
 
