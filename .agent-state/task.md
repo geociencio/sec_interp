@@ -9,6 +9,7 @@
 - [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
 - [x] **Gates 2026-10-25** — 839 tests locales OK; Docker OK; ruff/format/mypy/check_docs/i18n/security PASS; Qt6 0; CC PASS; 37 issues; docstring 99.1 %.
+- [x] **Icono actualizado** — `icon.png` 128×128 desde `docs/source/images/sec_interp_icon.svg`; paquete nuevo valida sin warnings.
 - [x] **Sistema agéntico** — skill `qgis-release`, `make flake8` bloqueante (perímetro del portal), `make portal-check` delegado en `qgis-manage validate --zip` (0.15) e integrado en `make zip`; `make security-scan` usa `qgis-manage security --portal`; `qgis-analyzer` 1.18 con `--exclude`/`--flake8`/`security --tools`.
 - [x] **Automatización de cola retirada** — eliminados `.release-queue.json`, `scripts/next_scheduled_release.py` y `.github/workflows/scheduled-release.yml`; 3.12.0 en adelante se publican a mano desde `main`.
 - [x] **Release 3.12.0 publicado en GitHub** — bump/changelog/notas/README, gates verdes, ZIP 3.12.0, commit `4f7cb048`, tag `v3.12.0`, push y GitHub Release publicado como *Latest*. **No subir este ZIP al portal** (F811/E402 y permisos 0600/0640); preparar **3.12.1**.

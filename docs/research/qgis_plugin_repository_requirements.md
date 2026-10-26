@@ -61,7 +61,7 @@ From the PyQGIS Cookbook metadata table:
 | `deprecated` | — | `True`/`False`, whole plugin | `False` |
 | `tags` | — | Comma-separated, English | ✅ |
 | `category` | — | Raster, Vector, Database, Mesh, Web | `Vector` |
-| `icon` | — | PNG/JPEG relative to package root | `icon.png` (⚠️ 23×24) |
+| `icon` | — | PNG/JPEG relative to package root | `icon.png` (✅ 128×128) |
 | `server` | — | `True`/`False` | `False` |
 | `hasProcessingProvider` | — | `True`/`False` | `False` |
 | `plugin_dependencies` | — | Names from other plugins' `name` | not needed |
@@ -164,6 +164,10 @@ Additional validation rules (Cookbook, *Releasing*):
 | `qgis-manage validate --strict --repo` | ✅ pass |
 | `qgis-manage validate --zip` (0.14+) | ✅ pass (warnings: permissions/icon in 3.12.0; fixed in new builds) |
 
+> **Post-audit**: `icon.png` is now a 128×128 PNG exported from
+> `docs/source/images/sec_interp_icon.svg`; `package --repo-check` also normalizes
+> permissions. A fresh package validates with **zero warnings**.
+
 ---
 
 ## 9. Gaps and recommendations
@@ -180,8 +184,8 @@ and the package size is well below the limit.
    portal's file analysis may flag restrictive/odd modes. Run
    `chmod -R u+rwX,go+rX` before packaging (or add a packaging step) so entries are
    `0644`/`0755` only.
-2. **Use a proper icon**: `icon.png` is 23×24 px. QGIS recommends a clear icon; a
-   64×64 or 128×128 PNG is safer for the plugin list and Plugin Manager.
+2. **Use a proper icon** — ✅ resolved: `icon.png` is now 128×128, exported from
+   the SVG master at `docs/source/images/sec_interp_icon.svg`.
 3. **Expand `about`**: it is currently a single sentence, almost identical to
    `description`. Reviewers expect a detailed, no-HTML description of what the plugin
    does and any caveats (use the same text style as the README).

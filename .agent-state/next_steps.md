@@ -52,7 +52,7 @@
 - GitHub release **published** as *Latest*:
   <https://github.com/geociencio/sec_interp/releases/tag/v3.12.0> (ZIP attached).
 - **Do not upload the 3.12.0 ZIP**: it predates the F811/E402 fixes and has
-  0600/0640 modes plus a 23×24 icon. Prepare **3.12.1** (see pending).
+  0600/0640 modes plus the old 23×24 icon. Prepare **3.12.1** (see pending).
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -67,9 +67,9 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Prepare and upload v3.12.1** (blocking): normalize ZIP modes to 0644/0755,
-   use a ≥64×64 icon, expand `about`, run `make pre-release` + `make zip`
-   (`portal-check` included), then upload at
+0. **Prepare and upload v3.12.1** (blocking): icon is now 128×128 and
+   `package --repo-check` normalizes permissions; optionally expand `about`, then
+   run `make pre-release` + `make zip` (`portal-check` included) and upload at
    <https://plugins.qgis.org/plugins/sec_interp/>. Do **not** upload 3.12.0.
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
