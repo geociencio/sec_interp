@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-26T02:05:39.656945+00:00"
+            "analyzed_at": "2026-10-26T03:57:10.121199+00:00"
         },
         "tests_local": {
             "date": "2026-10-26",
@@ -101,8 +101,8 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-10-25",
-        "topic": "qgis_manage_0120",
+        "date": "2026-10-26",
+        "topic": "qgis_portal_gates",
         "tests_ok": 792,
         "quality_score": 56.6,
         "task_completion_rate": null,
@@ -112,6 +112,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-10-25",
+            "tests_ok": 792,
+            "quality_score": 56.6,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "qgis_manage_0120"
+        },
         {
             "date": "2026-10-24",
             "tests_ok": 839,

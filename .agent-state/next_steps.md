@@ -2,10 +2,11 @@
 
 ## ✅ Current state
 
-- **`qgis-manage` 0.12.0 adopted** (was 0.10.0): `pyproject.toml` requires `>=0.12.0`,
-  `uv.lock` is at 0.12.0. The 0.10.0 analysis findings were fixed upstream in
-  0.10.1/0.11.0/0.12.0 (backup collisions, repeatable `--type`, release-version
-  guard, `deploy --yes`, pruned `--repo-check`, compile freshness, deploy manifest).
+- **Tooling 0.15.0 / 1.18.0 adopted**: `qgis-manage>=0.15.0` and
+  `qgis-plugin-analyzer>=1.18.0` in `pyproject.toml`/`uv.lock`. `qgis-manage`
+  provides `validate --zip` (artifact gate), `security --portal` (native + Bandit +
+  detect-secrets + Flake8) and mode normalization; the analyzer provides `--exclude`,
+  `--flake8` and `security --tools`.
 - **Makefile/CI hardened**:
   - `make compile` uses `--type resources --type translations` in one invocation
     when resources change (and translations only otherwise), with `--jobs`;
@@ -30,7 +31,7 @@
   scope), `make portal-check` (`qgis-manage validate --zip`, 0.15+) and
   `make security-scan` (`qgis-manage security --portal`), wired into `make zip`/CI.
 - **Packaging**: `package --repo-check --stamp --release-version 3.12.0` passes;
-  ZIP = 340 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
+  ZIP = 342 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
 - **USER_GUIDE v3.12.0 refreshed**: 22 figures in `docs/source/images/` (six-entry
   sidebar, new Symbology/Interpretation tabs), stale `ui_main_dialog_v26` and
   `workflow_*` assets removed, `es` guide catalog at 100 %.
@@ -43,16 +44,17 @@
 - Version **3.12.0** in `metadata.txt`/`pyproject.toml`; `[Unreleased]` moved to
   `[3.12.0]`; release notes in `docs/releases/notes/v3.12.0.md`; README and
   `DEVELOPMENT_LOG` updated.
-- Gates green: 848 local tests, Docker suite, ruff/format, mypy (102 files),
+- Gates green: 839 local tests, Docker suite, ruff/format, mypy (102 files),
   check_docs, i18n, flake8, bandit/detect-secrets, deep security 100/100, Qt6 0,
-  CC PASS; `make portal-check` passes with warnings.
+  CC PASS; `make portal-check` passes (the old 3.12.0 ZIP still warns about
+  permissions/icon; a fresh build has zero warnings).
 - ZIP `dist/sec_interp.3.12.0.zip` (342 files, 2.4 MB) with
   SHA256 `97d1ac197c53f28e1b8bacf0bfbe9bf869b39affd4add4dc49239332d0e97c38`.
 - Commit `4f7cb048`, tag `v3.12.0`, `main` and the tag pushed to `origin`.
 - GitHub release **published** as *Latest*:
   <https://github.com/geociencio/sec_interp/releases/tag/v3.12.0> (ZIP attached).
-- **Do not upload the 3.12.0 ZIP**: it predates the F811/E402 fixes and has
-  0600/0640 modes plus the old 23×24 icon. Prepare **3.12.1** (see pending).
+- **Do not upload the 3.12.0 ZIP**: it predates the F811/E402 fixes and the
+  128×128 icon. Prepare **3.12.1** (see pending); `icon.png` is now 128×128.
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -87,10 +89,8 @@ obsolete.
   1 `UNPRECISE_LAYER`).
 - **`ProfileController` GOD_OBJECT** (21 attributes) — deferred.
 - **Docs i18n (optional)**: `USER_GUIDE` fr (28 %) / de (18 %).
-- **Upstream `qgis-manage`**: `--require-docs` assumes `help/html/index.html`
-  (false negative for per-language help); `clean` deletes tracked `*.cpg`;
-  `profiles list` only enumerates QGIS 3; deploy manifest is neutral/slower on
-  small plugins.
+- **Upstream `qgis-manage`**: `clean` deletes tracked `*.cpg`; `profiles list`
+  only enumerates QGIS 3; deploy manifest is neutral/slower on small plugins.
 - **Framework pytest**: `.agent/tests` cannot run (pytest not installed); the
   workflow step is skipped, `conftest.py` remains.
 
@@ -98,7 +98,7 @@ obsolete.
 
 1. Run `/start-session` to refresh `AI_CONTEXT.md` and read this file.
 2. Choose one:
-   - prepare release **3.12.0** (recommended), or
+   - prepare release **3.12.1** (recommended), or
    - capture/replace the USER_GUIDE screenshots, or
    - interop §9 **B1**.
 3. For local gates: `export MYPY_CACHE_DIR=$PWD/.mypy_cache` before `make mypy`

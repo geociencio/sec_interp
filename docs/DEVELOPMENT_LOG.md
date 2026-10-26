@@ -1,3 +1,10 @@
+## [2026-10-25] Session: QGIS portal gates, icon & repository sanitation
+- **Achievement**: adopted qgis-manage 0.15.0 / qgis-plugin-analyzer 1.18.0; `make portal-check` now uses `qgis-manage validate --zip`, `make security-scan` uses `qgis-manage security --portal`, and the custom portal/security checkers were removed.
+- **Icon**: 128×128 PNG (`icon.png`, `docs/source/images/sec_interp_icon.png`) exported from `docs/source/images/sec_interp_icon.svg`; SVG is source-only because `metadata.txt` requires PNG/JPEG.
+- **Sanitation**: removed generated docs/build, logs, graphify, caches, old dist artifacts and root-owned `__pycache__`; removed tracked `MURALLA.qgs~`; `.git` 37 MB → 21 MB.
+- **Verification**: **839 tests OK / 888 static**; flake8, qgis-validate, portal-check, security (0 findings), Qt6 (0), analyzer CC PASS; fresh package 0 warnings.
+- **Maintenance**: [session_2026-10-25_qgis_portal_gates.md](maintenance/session_2026-10-25_qgis_portal_gates.md).
+
 ## [2026-10-25] Release: v3.12.0
 - **Achievement**: v3.12.0 prepared for release — section-line `fid — label` selector, Interpretation Settings tab, QGIS-agnostic core and module-size refactors; README and User Guide refreshed.
 - **Verification**: **839 tests OK / 888 static**; CC PASS; i18n, flake8 and security gates PASS; Qt6 checker 0 findings; package `3.12.0` (342 files, 2.4 MB).
