@@ -29,6 +29,9 @@ jobs:
       - name: Run Flake8 (QGIS portal scope)
         run: make flake8
 
+      - name: Validate metadata and repository compliance
+        run: make qgis-validate
+
   typecheck:
     name: Type Check (mypy)
     runs-on: ubuntu-latest

@@ -351,5 +351,13 @@ analyzer:
 
 # Pre-release validation (type check + analyzer + i18n + security + Qt6 + tests)
 .PHONY: pre-release
-pre-release: mypy analyzer i18n-check qt6-check flake8 security-scan docker-test
+.PHONY: qgis-validate
+qgis-validate:
+	@echo
+	@echo "-----------"
+	@echo "qgis-manage validate --strict --repo (metadata/structure/LICENSE)"
+	@echo "-----------"
+	uv run --frozen qgis-manage validate --strict --repo
+
+pre-release: qgis-validate mypy analyzer i18n-check qt6-check flake8 security-scan docker-test
 	@echo "✅ Pre-release validation complete"

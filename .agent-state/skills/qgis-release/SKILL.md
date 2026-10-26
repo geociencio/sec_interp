@@ -41,6 +41,23 @@ Config files are recognized only at the ZIP root: `.bandit`, `.secrets.baseline`
 `.flake8`. Their presence yields `Validated (configured)`; they suppress findings,
 they do not lower the bar. Do not bundle them unless a real false positive requires it.
 
+## How the project gates map to the tools
+
+| Layer | Tool / command | Covers |
+| :--- | :--- | :--- |
+| Static quality | `qgis-analyzer analyze . --max-cc 10` | CC, docstrings, i18n, architecture, module size, analyzer security rules |
+| Metadata/structure | `make qgis-validate` (`qgis-manage validate --strict --repo`) | required metadata, slug, structure, LICENSE, binaries, `about`/`repository` |
+| Source packaging | `qgis-manage package --repo-check` (inside `make zip`) | same metadata/compliance checks before building the ZIP |
+| Style | `make flake8` | portal-compatible flake8 on the packaged plugin scope |
+| Security (portal) | `make security-scan` (`scripts/security_scan.py`) | Bandit + detect-secrets (CRITICAL), flake8 (INFO) |
+| Artifact | `make portal-check` | ZIP root, embedded metadata, LICENSE, ≤25 MB, binaries/dev files, version, permissions, icon |
+| QGIS 4 | `qgisMaximumVersion` ≥ 4.0 + Qt6 checker | QGIS 4 Ready listing and Qt 6 enum/import issues |
+
+`qgis-manage` and `qgis-analyzer` **do not** check the final ZIP permissions, size,
+icon, README or flake8, and `qgis-manage security` wraps the analyzer's own security
+rules rather than the portal's Bandit/detect-secrets pair. That is why the project
+keeps `make flake8` and `make portal-check` as separate gates.
+
 ## Pre-upload workflow
 
 ```bash

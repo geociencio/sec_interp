@@ -362,6 +362,8 @@ tests/                   # 🧪 Comprehensive test suite
 - Test coverage > 80% for new features
 
 ### 1b. QGIS Portal Gates
+- `make qgis-validate` (`qgis-manage validate --strict --repo`) checks metadata,
+  structure, LICENSE and repository compliance; it is part of `pre-release` and CI
 - Bandit and detect-secrets must report **no CRITICAL** findings (blocking)
 - Release ZIP must pass `make portal-check` (metadata, LICENSE, size ≤25 MB,
   single root folder, no binaries/dev files, permissions)
