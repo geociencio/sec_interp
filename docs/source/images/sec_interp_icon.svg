@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SecInterp master icon (vector).
+
+  Design: geological cross-section with folded strata (red/green/blue) and a
+  section line, keeping the original "SEC / INTERP" wordmark and palette.
+
+  Export (128 px master, 64 px optional):
+    rsvg-convert -w 128 -h 128 docs/source/images/sec_interp_icon.svg -o icon.png
+    rsvg-convert -w 64  -h 64  docs/source/images/sec_interp_icon.svg -o icon_64.png
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"
+     viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">SecInterp</title>
+  <desc id="desc">Geological cross-section icon with folded strata and a section line.</desc>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBF0B8"/>
+      <stop offset="1" stop-color="#C9E3A1"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F87171"/>
+      <stop offset="1" stop-color="#DC2626"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4ADE80"/>
+      <stop offset="1" stop-color="#16A34A"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <clipPath id="frame">
+      <rect x="2" y="2" width="124" height="124" rx="18"/>
+    </clipPath>
+  </defs>
+
+  <!-- Frame -->
+  <rect x="2" y="2" width="124" height="124" rx="18"
+        fill="url(#sky)" stroke="#111827" stroke-width="4"/>
+
+  <g clip-path="url(#frame)">
+    <!-- Strata: red (left), blue (right), green (center) -->
+    <path d="M2 78 L30 46 L58 76 L46 126 L2 126 Z" fill="url(#red)"/>
+    <path d="M78 84 L106 58 L126 78 L126 126 L90 126 Z" fill="url(#blue)"/>
+    <path d="M20 92 L64 34 L104 98 L90 126 L28 126 Z" fill="url(#green)"/>
+
+    <!-- Fold outlines -->
+    <g fill="none" stroke="#111827" stroke-width="5"
+       stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 78 L30 46 L58 76"/>
+      <path d="M78 84 L106 58 L126 78"/>
+      <path d="M20 92 L64 34 L104 98"/>
+    </g>
+
+    <!-- Section line with endpoints -->
+    <path d="M10 72 H118" fill="none" stroke="#FFFFFF" stroke-width="9"
+          stroke-linecap="round"/>
+    <path d="M10 72 H118" fill="none" stroke="#111827" stroke-width="4"
+          stroke-linecap="round"/>
+    <circle cx="10" cy="72" r="5" fill="#FFFFFF" stroke="#111827" stroke-width="3"/>
+    <circle cx="118" cy="72" r="5" fill="#FFFFFF" stroke="#111827" stroke-width="3"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g font-family="DejaVu Sans, Arial, Helvetica, sans-serif" font-weight="700"
+     fill="#111827" stroke="#FFFFFF" paint-order="stroke">
+    <text x="10" y="41" font-size="28" stroke-width="4" letter-spacing="1">SEC</text>
+    <text x="10" y="121" font-size="17" stroke-width="3"
+          letter-spacing="0.5">INTERP</text>
+  </g>
+</svg>
