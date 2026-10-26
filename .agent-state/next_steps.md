@@ -20,15 +20,15 @@
     `auto_compile = false`.
 - **Analysis published**: `docs/research/qgis_manage_0.12.0_analysis.md` (0.10.0 →
   0.12.0: fixed findings, measurements, remaining limitations).
-- **Gates green (2026-10-25)**: **848 local tests OK**; Docker suite
+- **Gates green (2026-10-25)**: **839 local tests OK**; Docker suite
   exit 0 (agentic + core + exporters + gui + integration, last group 76 OK);
   `ruff`, `ruff format`, `mypy` (102 files; sandbox needs `MYPY_CACHE_DIR` inside
   the workspace), `check_docs` (37), `i18n-check` (6 OK), `security-scan`
   (bandit/detect-secrets PASS), Qt6 checker 0 findings, analyzer **CC PASS**,
   37 issues, docstring 99.1 % (baseline 99.0), security 100, module size PASS.
-- **Agentic system**: new `qgis-release` skill, `make flake8` (QGIS portal scope,
-  blocking) and `make portal-check` (ZIP layout/metadata/LICENSE/size/permissions),
-  wired into `make zip`, CI and pre-commit.
+- **Agentic system**: `qgis-release` skill, blocking `make flake8` (QGIS portal
+  scope) and `make portal-check` (`qgis-manage validate --zip`, 0.14+), wired into
+  `make zip`, CI and pre-commit.
 - **Packaging**: `package --repo-check --stamp --release-version 3.12.0` passes;
   ZIP = 340 files, 2.4 MB, no `.agent/tests/docs/tools`, no `.qgis-manage`.
 - **USER_GUIDE v3.12.0 refreshed**: 22 figures in `docs/source/images/` (six-entry

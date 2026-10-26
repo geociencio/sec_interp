@@ -1,10 +1,27 @@
 # Upstream Gate Integration — qgis-manage & qgis-analyzer
 
 > **Date**: 2026-10-25
-> **Status**: design proposal (upstream, not implemented here)
+> **Status**: implemented in `qgis-manage 0.14.0` and `qgis-plugin-analyzer 1.17.0`
+> (2026-10-25); SecInterp now consumes the upstream gates.
 > **Scope**: move SecInterp's portal gates into the two reusable tools, without
 > duplicating responsibilities.
-> **Baseline**: `qgis-manage 0.12.0`, `qgis-plugin-analyzer 1.16.0`.
+> **Baseline**: `qgis-manage 0.14.0`, `qgis-plugin-analyzer 1.17.0`.
+
+## 0. Implementation status
+
+- **qgis-manage 0.14.0**: `validate --zip` and artifact checks are implemented
+  (`ARTIFACT_ROOT/METADATA/LICENSE/SIZE/BINARY/DEV_FILE/PERMISSIONS/ICON/README/QGIS4/CONFIG`),
+  `package --repo-check` audits the built ZIP and normalizes modes to 0644/0755, and
+  `docs_entry` is configurable.
+- **qgis-analyzer 1.17.0**: `--flake8` / `--linters`, `security --tools
+  native,bandit,detect-secrets,flake8`, `security --json` and `--fail-on` are
+  implemented; the package-size rule is 25 MB and informational.
+- **Still project-specific**: `make flake8` stays scoped to the packaged plugin
+  because the analyzer's Flake8 adapter scans the whole repository; `make
+  security-scan` stays as the portal-tool gate because `qgis-manage security` does not
+  expose a `--portal` mode yet.
+- **Removed from SecInterp**: `scripts/check_portal_package.py` and its 9 tests;
+  `make portal-check` now calls `qgis-manage validate --zip`.
 
 ---
 

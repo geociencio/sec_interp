@@ -42,7 +42,7 @@
         "module_size_gate": "PASS",
         "large_modules": [],
         "test_count": 792,
-        "tests_static": 897,
+        "tests_static": 888,
         "tests_executed": 839
     },
     "ground_truth_sources": {
@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-10-26T00:07:39.296306+00:00"
+            "analyzed_at": "2026-10-26T01:22:38.976407+00:00"
         },
         "tests_local": {
             "date": "2026-10-26",

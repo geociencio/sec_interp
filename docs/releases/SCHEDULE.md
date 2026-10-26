@@ -20,7 +20,7 @@
 3. **Build and audit the ZIP**
    ```bash
    make zip            # includes make portal-check
-   make portal-check   # explicit re-run
+   make portal-check   # qgis-manage validate --zip (0.14+)
    unzip -l dist/sec_interp.X.Y.Z.zip | grep -E "\.agent|scripts|tests|AI_CONTEXT"
    ```
    The audit must return nothing and `portal-check` must PASS.
@@ -49,7 +49,7 @@
 - `qgisMaximumVersion=4.99` for the **QGIS 4 Ready** listing.
 - Bandit and detect-secrets clean (blocking); Flake8 informational (`make flake8`
   keeps it clean).
-- File modes `0644`/`0755` (normalize before packaging).
+- File modes `0644`/`0755` (`package --repo-check` normalizes them in 0.14+).
 - Full rules and the SecInterp audit:
   [docs/research/qgis_plugin_repository_requirements.md](../research/qgis_plugin_repository_requirements.md).
 

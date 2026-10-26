@@ -162,6 +162,7 @@ Additional validation rules (Cookbook, *Releasing*):
 | QGIS 4 Ready | ✅ `qgisMaximumVersion=4.99` |
 | Direct PyQt5/PySide imports | ✅ none |
 | `qgis-manage validate --strict --repo` | ✅ pass |
+| `qgis-manage validate --zip` (0.14+) | ✅ pass (warnings: permissions/icon in 3.12.0; fixed in new builds) |
 
 ---
 
@@ -208,8 +209,8 @@ and the package size is well below the limit.
    `changelog`, `docs/CHANGELOG.md` and release notes.
 2. `make pre-release` (includes `make flake8`, mypy, analyzer, i18n, Qt6, security,
    Docker) and `make docs-check`.
-3. `make zip` (runs `portal-check` automatically) or `make portal-check` for an
-   existing ZIP; verify:
+3. `make zip` (runs `qgis-manage package --repo-check` and `portal-check`
+   automatically) or `make portal-check` for an existing ZIP; verify:
    - `unzip -l dist/sec_interp.X.Y.Z.zip` has a single `sec_interp/` root;
    - size ≤ 25 MB; no `.agent`, `tests`, `scripts`, `docs`, caches or binaries;
    - `metadata.txt` version and `LICENSE` are present;
@@ -226,8 +227,10 @@ and the package size is well below the limit.
 ## 11. Notes on local tooling
 
 - `qgis-manage validate --strict --repo` checks metadata, structure, LICENSE and
-  prohibited binaries; it does **not** run Bandit/detect-secrets or the portal's
-  file-permission analysis. Use `make pre-release` plus the manual ZIP checks above.
+  prohibited binaries. Since 0.14, `qgis-manage validate --zip` (and
+  `package --repo-check` after building) covers the artifact: root, size, modes,
+  icon, README, embedded metadata. It still does **not** run Bandit/detect-secrets;
+  use `make pre-release` (flake8 + `make security-scan`) for that.
 - `scripts/security_scan.py` runs Bandit/detect-secrets (critical) and Flake8
   (informational) with the project configs; the portal ignores those configs unless
   they are packaged. Our default-config scans on the extracted ZIP were clean.

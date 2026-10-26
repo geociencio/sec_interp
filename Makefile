@@ -150,7 +150,7 @@ PORTAL_ZIP ?= $(shell ls -t dist/sec_interp.*.zip 2>/dev/null | head -1)
 .PHONY: portal-check
 portal-check:
 	@test -n "$(PORTAL_ZIP)" || (echo "❌ No dist/sec_interp.*.zip found; run 'make zip' first."; exit 1)
-	uv run --frozen python scripts/check_portal_package.py "$(PORTAL_ZIP)"
+	uv run --frozen qgis-manage validate --zip "$(PORTAL_ZIP)"
 
 upload: zip
 	@echo

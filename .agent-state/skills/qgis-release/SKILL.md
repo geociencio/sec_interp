@@ -48,29 +48,31 @@ they do not lower the bar. Do not bundle them unless a real false positive requi
 | :--- | :--- | :--- |
 | Static quality | `qgis-analyzer analyze . --max-cc 10` | CC, docstrings, i18n, architecture, module size, analyzer security rules |
 | Metadata/structure | `make qgis-validate` (`qgis-manage validate --strict --repo`) | required metadata, slug, structure, LICENSE, binaries, `about`/`repository` |
-| Source packaging | `qgis-manage package --repo-check` (inside `make zip`) | same metadata/compliance checks before building the ZIP |
+| Source packaging | `qgis-manage package --repo-check` (inside `make zip`) | metadata/compliance, built-ZIP audit and permission normalization (0.14+) |
 | Style | `make flake8` | portal-compatible flake8 on the packaged plugin scope |
 | Security (portal) | `make security-scan` (`scripts/security_scan.py`) | Bandit + detect-secrets (CRITICAL), flake8 (INFO) |
-| Artifact | `make portal-check` | ZIP root, embedded metadata, LICENSE, ≤25 MB, binaries/dev files, version, permissions, icon |
+| Artifact | `make portal-check` (`qgis-manage validate --zip`, 0.14+) | ZIP root, embedded metadata, LICENSE, ≤25 MB, binaries/dev files, version, permissions, icon |
 | QGIS 4 | `qgisMaximumVersion` ≥ 4.0 + Qt6 checker | QGIS 4 Ready listing and Qt 6 enum/import issues |
 
-`qgis-manage` and `qgis-analyzer` **do not** check the final ZIP permissions, size,
-icon, README or flake8, and `qgis-manage security` wraps the analyzer's own security
-rules rather than the portal's Bandit/detect-secrets pair. That is why the project
-keeps `make flake8` and `make portal-check` as separate gates.
+`qgis-manage` 0.14+ owns the artifact gate (`validate --zip` and the post-build
+`package --repo-check`). `qgis-analyzer` owns code analysis: 1.17 adds `--flake8` and
+`security --tools`, but `--flake8` scans the whole project, so the project keeps
+`make flake8` scoped to the packaged plugin. `qgis-manage security` still wraps the
+analyzer's own rules, so `make security-scan` remains the portal-tool gate.
 
 ## Pre-upload workflow
 
 ```bash
 make pre-release      # ruff, flake8, mypy, analyzer, i18n, Qt6, security, Docker
 make zip              # docs + compile + package --repo-check + portal-check
-make portal-check     # explicit re-run; validates the built ZIP
+make portal-check     # qgis-manage validate --zip (0.14+)
 ```
 
-`make portal-check` must pass before uploading. It checks the ZIP root folder,
-required metadata, LICENSE, size, prohibited binaries/dev files, version and file
-permissions; warnings (e.g. restrictive modes, small icon) are reported but do not
-block, matching the portal.
+`make portal-check` must pass before uploading. It delegates to
+`qgis-manage validate --zip`, which checks the ZIP root folder, required metadata,
+LICENSE, size, prohibited binaries/dev files, version, permissions and icon; warnings
+(e.g. small icon) are reported but do not block, matching the portal. `make zip` uses
+`package --repo-check`, which normalizes modes to 0644/0755 before auditing.
 
 ## Upload flow
 

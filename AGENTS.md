@@ -365,8 +365,9 @@ tests/                   # 🧪 Comprehensive test suite
 - `make qgis-validate` (`qgis-manage validate --strict --repo`) checks metadata,
   structure, LICENSE and repository compliance; it is part of `pre-release` and CI
 - Bandit and detect-secrets must report **no CRITICAL** findings (blocking)
-- Release ZIP must pass `make portal-check` (metadata, LICENSE, size ≤25 MB,
-  single root folder, no binaries/dev files, permissions)
+- Release ZIP must pass `make portal-check` (`qgis-manage validate --zip`, 0.14+):
+  metadata, LICENSE, size ≤25 MB, single root folder, no binaries/dev files,
+  permissions and icon
 - `qgisMaximumVersion` must be ≥ 4.0 for the QGIS 4 Ready listing
 - See `qgis-release` skill and `docs/research/qgis_plugin_repository_requirements.md`
 
