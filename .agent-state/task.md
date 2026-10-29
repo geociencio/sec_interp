@@ -13,6 +13,7 @@
 - [x] **Sistema agéntico** — skill `qgis-release`, `make flake8` bloqueante (perímetro del portal), `make portal-check` delegado en `qgis-manage validate --zip` (0.15) e integrado en `make zip`; `make security-scan` usa `qgis-manage security --portal`; `qgis-analyzer` 1.18 con `--exclude`/`--flake8`/`security --tools`.
 - [x] **Automatización de cola retirada** — eliminados `.release-queue.json`, `scripts/next_scheduled_release.py` y `.github/workflows/scheduled-release.yml`; 3.12.0 en adelante se publican a mano desde `main`.
 - [x] **Release 3.12.0 publicado en GitHub** — bump/changelog/notas/README, gates verdes, ZIP 3.12.0, commit `4f7cb048`, tag `v3.12.0`, GitHub Release *Latest*.
+- [x] **`about` ampliado** — descripción detallada para revisores (entradas, salidas, QGIS/Qt, sin dependencias, licencia y enlaces); validada con qgis-manage.
 - [x] **v3.12.0 activo en el portal QGIS (2026-10-28)** — <https://plugins.qgis.org/plugins/sec_interp/>, marcado **QGIS 4 Ready**. El artefacto publicado aún tiene F811/E402 y el icono 23×24; Flake8 es informativo, así que fue aceptado. 3.12.1 queda como polish (lint limpio + icono 128×128).
 - [x] **Capturas USER_GUIDE 3.12.0** — 22 figuras integradas (sidebar de 6 entradas, Symbology/Interpretation), `ui_main_dialog_v26` y los `workflow_*` retirados, catálogo es al 100 %; staging en `docs/source/images_v3.12.0/` (ignorado).
 

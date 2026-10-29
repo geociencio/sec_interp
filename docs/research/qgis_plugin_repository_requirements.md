@@ -186,9 +186,8 @@ and the package size is well below the limit.
    `0644`/`0755` only.
 2. **Use a proper icon** — ✅ resolved: `icon.png` is now 128×128, exported from
    the SVG master at `docs/source/images/sec_interp_icon.svg`.
-3. **Expand `about`**: it is currently a single sentence, almost identical to
-   `description`. Reviewers expect a detailed, no-HTML description of what the plugin
-   does and any caveats (use the same text style as the README).
+3. **Expand `about`** — ✅ resolved: the metadata now describes inputs, outputs,
+   QGIS/Qt support, dependencies, license and source/documentation links.
 4. **Keep the README license consistent**: it now says GPL-2.0-or-later, matching
    `LICENSE` and `pyproject.toml` (it previously said GPLv3).
 

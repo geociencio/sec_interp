@@ -74,8 +74,8 @@ obsolete.
 ## 📌 Pending
 
 0. **Prepare v3.12.1 (recommended, no longer blocking)**: 3.12.0 is already
-   live; ship the clean lint and the 128×128 icon, optionally expand `about`, then
-   run `make pre-release` + `make zip` (`portal-check` included) and upload it as an
+   live; ship the clean lint, the 128×128 icon and the expanded `about`, then run
+   `make pre-release` + `make zip` (`portal-check` included) and upload it as an
    update at <https://plugins.qgis.org/plugins/sec_interp/>.
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
