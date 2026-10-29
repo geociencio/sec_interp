@@ -1,3 +1,8 @@
+## [2026-10-28] Release: v3.12.0 live on the QGIS repository
+- **Achievement**: v3.12.0 is active at <https://plugins.qgis.org/plugins/sec_interp/> and marked **QGIS 4 Ready**.
+- **Note**: the uploaded 3.12.0 artifact predates the F811/E402 fixes and the 128×128 icon; the portal treats Flake8 as informational, so it was accepted.
+- **Next**: 3.12.1 is a polish release (clean lint + icon), no longer a publication blocker.
+
 ## [2026-10-25] Session: QGIS portal gates, icon & repository sanitation
 - **Achievement**: adopted qgis-manage 0.15.0 / qgis-plugin-analyzer 1.18.0; `make portal-check` now uses `qgis-manage validate --zip`, `make security-scan` uses `qgis-manage security --portal`, and the custom portal/security checkers were removed.
 - **Icon**: 128×128 PNG (`icon.png`, `docs/source/images/sec_interp_icon.png`) exported from `docs/source/images/sec_interp_icon.svg`; SVG is source-only because `metadata.txt` requires PNG/JPEG.

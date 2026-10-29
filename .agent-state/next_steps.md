@@ -1,4 +1,4 @@
-# Next Steps (Updated 2026-10-25)
+# Next Steps (Updated 2026-10-28)
 
 ## ✅ Current state
 
@@ -39,7 +39,7 @@
   `QT_QPA_PLATFORMTHEME=generic` forces the light palette (empty does not).
   Current profile uses `UITheme=Blend of Gray`; set `default` for the basic theme.
 
-## 🚀 Release 3.12.0 published on GitHub (2026-10-25)
+## 🚀 Release 3.12.0 published on GitHub and the QGIS repository (2026-10-25 / 2026-10-28)
 
 - Version **3.12.0** in `metadata.txt`/`pyproject.toml`; `[Unreleased]` moved to
   `[3.12.0]`; release notes in `docs/releases/notes/v3.12.0.md`; README and
@@ -53,8 +53,12 @@
 - Commit `4f7cb048`, tag `v3.12.0`, `main` and the tag pushed to `origin`.
 - GitHub release **published** as *Latest*:
   <https://github.com/geociencio/sec_interp/releases/tag/v3.12.0> (ZIP attached).
-- **Do not upload the 3.12.0 ZIP**: it predates the F811/E402 fixes and the
-  128×128 icon. Prepare **3.12.1** (see pending); `icon.png` is now 128×128.
+- **QGIS repository active (2026-10-28)**: 3.12.0 is listed at
+  <https://plugins.qgis.org/plugins/sec_interp/> and marked **QGIS 4 Ready**.
+  The uploaded artifact predates the F811/E402 fixes and the 128×128 icon, but
+  Flake8 is informational on the portal; it was accepted.
+- **3.12.1 is now a polish release, not a blocker**: ship the clean lint and the
+  128×128 icon when convenient.
 
 **Queue releases are retired (2026-10-25)**: `.release-queue.json`,
 `scripts/next_scheduled_release.py` and `.github/workflows/scheduled-release.yml` were
@@ -69,10 +73,10 @@ obsolete.
 
 ## 📌 Pending
 
-0. **Prepare and upload v3.12.1** (blocking): icon is now 128×128 and
-   `package --repo-check` normalizes permissions; optionally expand `about`, then
-   run `make pre-release` + `make zip` (`portal-check` included) and upload at
-   <https://plugins.qgis.org/plugins/sec_interp/>. Do **not** upload 3.12.0.
+0. **Prepare v3.12.1 (recommended, no longer blocking)**: 3.12.0 is already
+   live; ship the clean lint and the 128×128 icon, optionally expand `about`, then
+   run `make pre-release` + `make zip` (`portal-check` included) and upload it as an
+   update at <https://plugins.qgis.org/plugins/sec_interp/>.
 1. **Review the refreshed USER_GUIDE** — 22 figures integrated (six-entry sidebar,
    Symbology/Interpretation tabs), `es` catalog at 100 %; check the new captions and
    the `guide_dem_setup` status-bar strip before the release build.
