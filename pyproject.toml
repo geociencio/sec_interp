@@ -14,7 +14,6 @@ authors = [
 ]
 dependencies = [
     "ai-context-core>=5.1.0",
-    "qgis-plugin-analyzer>=1.18.0",
     "sphinx-intl>=2.3.2",
 ]
 
