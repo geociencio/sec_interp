@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **Developer tooling — qgis-manage 0.15.1**: patch release that narrows the source distribution to `src/qgis_manager`, README, CHANGELOG, LICENSE and packaging metadata (no functional CLI change). Dependency floor updated to `>=0.15.1`.
+- **Developer tooling — qgis-manage 0.16.0**: the CLI now uses an internal standard-library console adapter instead of `click`, so the manager has **zero runtime dependencies**; commands and JSON output remain stable. Includes 0.15.1's tightened sdist contents. Dependency floor updated to `>=0.16.0`.
 - **Developer tooling — qgis-plugin-analyzer 1.19.2**: fixes the R4–R6 `SIGNAL_LEAK` cases (translated-text parents, tuple-loop pairing and `list(...)` wrappers). SecInterp now reports 12 unmatched paths, down from 16; the remaining six `PreviewSidePanel` and six task connections are P1 lifetime candidates.
 
 ## [3.12.1] - 2026-11-01

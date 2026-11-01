@@ -896,14 +896,11 @@ wheels = [
 
 [[package]]
 name = "qgis-manage"
-version = "0.15.1"
+version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f9/dd/7fe0aca200e5c5bd4049b7917cef028254031a252517d4bae884820f25b6/qgis_manage-0.15.1.tar.gz", hash = "sha256:3f17528a6121bf2026d03cb4a4e95166d9115366d3c43689df39758c03b1a992", size = 69666, upload-time = "2026-11-01T06:58:16.697Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/66/df5c2bd43b9d3c7494c810eca3768fba49d4dac3c6fe3975a6130818705c/qgis_manage-0.16.0.tar.gz", hash = "sha256:90f4efb413fc255e5cc4095dc70e4a96402e60d46795b0f0ebc81415942497e9", size = 71007, upload-time = "2026-11-01T21:48:43.929Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/00/5a1b198ef86db82e90ac309221c61a6677f2313862ef2fae2ce728cee9ba/qgis_manage-0.15.1-py3-none-any.whl", hash = "sha256:c6289b30f84f0d203d6f95ff04b0ab594929de6cd740837e32510bdee855a82f", size = 89388, upload-time = "2026-11-01T06:58:15.355Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/39/2a8ca5cc40c1c81ec4dcdaa4b2e2dfca3052baaf78f234a8dea6c1ff437c/qgis_manage-0.16.0-py3-none-any.whl", hash = "sha256:1fcb19493d3c5d4eebb7b932911cb71fbf25ddb8bf0cea3f753396e7d6a6ff0e", size = 91186, upload-time = "2026-11-01T21:48:42.818Z" },
 ]
 
 [[package]]
@@ -1033,7 +1030,7 @@ dev = [
     { name = "myst-parser", specifier = ">=2.0.0" },
     { name = "networkx", specifier = ">=3.0" },
     { name = "pre-commit", specifier = ">=4.7.0" },
-    { name = "qgis-manage", specifier = ">=0.15.1" },
+    { name = "qgis-manage", specifier = ">=0.16.0" },
     { name = "qgis-plugin-analyzer", specifier = ">=1.19.2" },
     { name = "qgis-stubs", specifier = ">=0.2.0.post1" },
     { name = "ruff", specifier = ">=0.17.1" },

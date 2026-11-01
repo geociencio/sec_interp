@@ -54,7 +54,7 @@ they do not lower the bar. Do not bundle them unless a real false positive requi
 | Artifact | `make portal-check` (`qgis-manage validate --zip`, 0.14+) | ZIP root, embedded metadata, LICENSE, ≤25 MB, binaries/dev files, version, permissions, icon |
 | QGIS 4 | `qgisMaximumVersion` ≥ 4.0 + Qt6 checker | QGIS 4 Ready listing and Qt 6 enum/import issues |
 
-`qgis-manage` 0.15+ owns the artifact and portal-security gates (`validate --zip`,
+`qgis-manage` 0.16+ owns the artifact and portal-security gates (`validate --zip`,
 `package --repo-check`, `security --portal`). `qgis-analyzer` 1.18 owns code analysis
 and adds `--exclude`; the project still keeps `make flake8` scoped to the packaged
 plugin because the analyzer's Flake8 adapter scans the whole project.
