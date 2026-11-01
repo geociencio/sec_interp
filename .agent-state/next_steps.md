@@ -5,10 +5,11 @@
 
 ## ✅ Current state
 
-- **v3.12.1 prepared (2026-11-01)**: 844 tests OK (2 skipped), Docker exit 0,
-  `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
+- **v3.12.1 published on GitHub (2026-11-01)**: 844 tests OK (2 skipped), Docker
+  exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
-  portal warnings; tag and GitHub release prepared.
+  portal warnings; tag `v3.12.1`; GitHub release *Latest*:
+  <https://github.com/geociencio/sec_interp/releases/tag/v3.12.1>. Portal upload pending.
 - **P0 signal idempotency implemented**: `SymbologyTab.connect_signals()` now
   disconnects its 15 internal `changed.emit` links and the unit-reset button
   before reconnecting, without dropping external `changed` receivers.
@@ -30,8 +31,8 @@
 - **Gates**: ruff check/format, direct flake8, mypy (102 files),
   `qgis-validate`, i18n (6), security (0 findings), Qt6 (0), CC PASS,
   `check_docs` (37), `forge metrics validate`, `git diff --check`.
-- **3.12.0 remains live** on GitHub and the QGIS repository (marked QGIS 4
-  Ready); 3.12.1 is a polish release, not a blocker.
+- **3.12.0 remains live on the QGIS repository** (marked QGIS 4 Ready); 3.12.1 is
+  published on GitHub and awaits the manual portal upload.
 
 ## 📌 Pending
 

@@ -2,6 +2,7 @@
 - **Achievement**: patch release with idempotent symbology signals, a 128×128 portal icon, expanded `about`, empty runtime dependencies and the qgis-manage 0.15 / qgis-analyzer 1.19.1 gates.
 - **Verification**: **844 tests OK / 893 static** (2 real-Qt skipped); Docker suite exit 0; flake8, mypy, check_docs, i18n, security and Qt6 clean; fresh ZIP validates with zero warnings.
 - **Docs**: README, CHANGELOG, release notes `docs/releases/notes/v3.12.1.md` and this milestone updated.
+- **Published**: tag `v3.12.1` and GitHub release *Latest* at <https://github.com/geociencio/sec_interp/releases/tag/v3.12.1>; QGIS portal upload pending.
 - **Maintenance**: [session_2026-11-01_signal_idempotency_p0.md](maintenance/session_2026-11-01_signal_idempotency_p0.md).
 
 ## [2026-11-01] Session: Signal idempotency P0 + QGIS 4 smoke test

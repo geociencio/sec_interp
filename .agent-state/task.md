@@ -5,7 +5,7 @@
 
 ## 🎯 Foco actual: post-release 3.12.0 / polish 3.12.1
 
-- [x] **Release 3.12.1 preparado (2026-11-01)** — bump, changelog, notas, README, icono 128×128 y `about`; 844 tests, Docker OK, ZIP 342 files validado sin warnings, tag/release.
+- [x] **Release 3.12.1 publicado en GitHub (2026-11-01)** — bump, changelog, notas, README, icono 128×128 y `about`; 844 tests, Docker OK, ZIP 342 files validado sin warnings, tag `v3.12.1`, release *Latest*.
 - [x] **`qgis-manage` 0.10.0 → 0.15.0** — lock/sync; el análisis histórico está en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.15 añade `validate --zip`, auditoría del ZIP, normalización de permisos y `security --portal` (native + Bandit + detect-secrets + Flake8).
 - [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
