@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **Developer tooling — qgis-plugin-analyzer 1.19.1**: per-connection `SIGNAL_LEAK` analysis with `--signals`, loop/alias resolution and lifetime hints. SecInterp now reports 16 informational unmatched paths after the fix, all upstream R3/R5/R6 false positives; R4–R6 are tracked in issue [#1](https://github.com/geociencio/qgis-plugin-analyzer/issues/1). Dev-only; no plugin-runtime impact.
 - **Packaging — runtime dependencies**: `[project].dependencies` is now empty; `qgis-plugin-analyzer`, `ai-context-core` and `sphinx-intl` live in `[dependency-groups].dev` only. The plugin runtime no longer pulls development tooling.
 - **Metadata — about**: expanded the plugin description for portal reviewers with inputs, outputs, QGIS/Qt support, dependency and license notes, and source/documentation links.
 - **Branding — icon**: `icon.png` is now **128×128** (RGBA, transparent corners), exported from `docs/source/images/sec_interp_icon.svg`; new packages validate with **zero warnings**.
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tooling/CI — flake8 is now a blocking gate**: `make flake8` (alias `make pep8`, the QGIS convention) runs flake8 7.4.1 with `.flake8` on the packaged plugin scope (`core gui exporters plugin` + root modules). It is part of `make pre-release`, the CI `quality` job and the pre-commit hooks, matching the checker used by the QGIS plugin repository. `.flake8` no longer redirects output to JSON by default; `scripts/security_scan.py` requests the JSON report explicitly.
 
 ### Fixed
+- **Symbology settings — duplicate signal connections**: `connect_signals()` no longer stacks the 15 `changed` connections and the unit-reset button on every dialog open; a symbology change triggers one preview refresh and one reset after repeated open/close cycles. Added real-Qt regression coverage (one emission/one reset after two connect cycles). Plugin-runtime fix.
 - **Lint (portal checker)**: removed the F811 redefinitions in `gui/preview_layer_factory.py` (renderer imports hoisted to module level) and the E402 late imports in `gui/ui/pages/settings/symbology_tab.py`; both plugin modules now pass flake8 clean.
 
 ## [3.12.0] - 2026-10-25

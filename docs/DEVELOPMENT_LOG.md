@@ -1,3 +1,10 @@
+## [2026-11-01] Session: Signal idempotency P0 + QGIS 4 smoke test
+- **Achievement**: fixed the duplicate signal connections in `SymbologyTab`/`UnitsEditorMixin`; `connect_signals()` is now idempotent, the reset button is disconnected, and external `changed` receivers survive. Analyzer: 27 unmatched / 22 benign → **16 / 17** (the 15 real `changed.emit` + reset are gone).
+- **Tests**: **844 local OK** (2 real-Qt skipped) and full `make docker-test` **exit 0** (43 + 295 + 40 + 373 + 78); real-Qt idempotency tests 2/2 OK.
+- **Smoke test**: QGIS 4.2.2 offscreen, `MURALLA.qgs`, MCP fork 0.15.1 — status → open → preview → ready → results → export **PASS**. Preview: 430 topo points, 9 geology segments, 9 structures, 10 drillholes, 92 ms. Export: `/tmp/secinterp_preview.png` (1872×900 RGBA, 130,248 B).
+- **Environment**: fork `qgis_mcp_plugin` 0.15.1 symlinked into the QGIS 4 profile (upstream 0.15.2 backed up as `qgis_mcp_plugin.upstream-0.15.2-20261101121222`); autostart disabled after the test.
+- **Plan**: [implementation_plan_v3.12.1_signal_idempotency.md](plans/implementation_plan_v3.12.1_signal_idempotency.md).
+
 ## [2026-10-28] Release: v3.12.0 live on the QGIS repository
 - **Achievement**: v3.12.0 is active at <https://plugins.qgis.org/plugins/sec_interp/> and marked **QGIS 4 Ready**.
 - **Note**: the uploaded 3.12.0 artifact predates the F811/E402 fixes and the 128×128 icon; the portal treats Flake8 as informational, so it was accepted.
