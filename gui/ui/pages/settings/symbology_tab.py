@@ -318,12 +318,9 @@ class SymbologyTab(UnitsEditorMixin, QWidget):
         self.spin_legend_max.setValue(0)
         self._on_topo_mode_changed()
 
-    def connect_signals(self) -> None:
-        """Connect internal signals."""
-        self.radio_gradient.toggled.connect(self._on_topo_mode_changed)
-        self.radio_single.toggled.connect(self._on_topo_mode_changed)
-        self.connect_unit_signals()
-        for signal in (
+    def _changed_sources(self) -> tuple[Any, ...]:
+        """Return every control whose change must emit ``changed``."""
+        return (
             self.radio_gradient.toggled,
             self.radio_single.toggled,
             self.ramp_button.colorRampChanged,
@@ -339,16 +336,36 @@ class SymbologyTab(UnitsEditorMixin, QWidget):
             self.combo_legend_pos.currentIndexChanged,
             self.spin_legend_font.valueChanged,
             self.spin_legend_max.valueChanged,
-        ):
-            signal.connect(self.changed.emit)
+        )
 
-    def disconnect_signals(self) -> None:
-        """Disconnect internal signals."""
+    def _on_source_changed(self, *_args: Any) -> None:
+        """Forward any control change to the tab's public signal."""
+        self.changed.emit()
+
+    def _disconnect_internal_signals(self) -> None:
+        """Remove this tab's internal connections, never external receivers."""
         for signal, slot in (
             (self.radio_gradient.toggled, self._on_topo_mode_changed),
             (self.radio_single.toggled, self._on_topo_mode_changed),
         ):
             with contextlib.suppress(TypeError, RuntimeError):
                 signal.disconnect(slot)
+        for signal in self._changed_sources():
+            with contextlib.suppress(TypeError, RuntimeError):
+                signal.disconnect(self._on_source_changed)
+        self.disconnect_unit_signals()
+
+    def connect_signals(self) -> None:
+        """Connect internal signals idempotently."""
+        self._disconnect_internal_signals()
+        self.radio_gradient.toggled.connect(self._on_topo_mode_changed)
+        self.radio_single.toggled.connect(self._on_topo_mode_changed)
+        for signal in self._changed_sources():
+            signal.connect(self._on_source_changed)
+        self.connect_unit_signals()
+
+    def disconnect_signals(self) -> None:
+        """Disconnect internal and external receivers."""
+        self._disconnect_internal_signals()
         with contextlib.suppress(TypeError, RuntimeError):
             self.changed.disconnect()

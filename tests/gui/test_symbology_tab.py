@@ -99,6 +99,29 @@ class TestSymbologyTab(BaseTestCase):
         self.tab.connect_signals()
         self.tab.disconnect_signals()
 
+    def test_connect_signals_disconnects_internal_sources_first(self) -> None:
+        """Reconnecting must not stack duplicate internal connections."""
+        self.tab.connect_signals()
+
+        for signal in self.tab._changed_sources():
+            signal.disconnect.assert_called_with(self.tab._on_source_changed)
+        self.tab.btn_reset_units.clicked.disconnect.assert_called_with(self.tab.reset_units)
+
+    def test_connect_signals_preserves_external_changed_receivers(self) -> None:
+        """The private helper must not drop external receivers of changed."""
+        with patch.object(self.tab.changed, "disconnect") as changed_disconnect:
+            self.tab.connect_signals()
+
+        changed_disconnect.assert_not_called()
+
+    def test_disconnect_signals_removes_every_internal_source(self) -> None:
+        """disconnect_signals must remove all internal connections."""
+        self.tab.disconnect_signals()
+
+        for signal in self.tab._changed_sources():
+            signal.disconnect.assert_called_with(self.tab._on_source_changed)
+        self.tab.btn_reset_units.clicked.disconnect.assert_called_with(self.tab.reset_units)
+
     def test_units_refresh_and_actions(self) -> None:
         """The per-unit editor reflects and mutates the ColorManager."""
         from sec_interp.gui.renderers.color_manager import ColorManager

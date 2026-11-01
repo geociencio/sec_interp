@@ -3,9 +3,9 @@
 ## 📊 Overview
 | Metric | Value | Status |
 | :--- | :--- | :--- |
-| **Total Tests** | <!-- TOTAL_TESTS -->888<!-- /TOTAL_TESTS --> | ✅ Stable |
+| **Total Tests** | <!-- TOTAL_TESTS -->893<!-- /TOTAL_TESTS --> | ✅ Stable |
 | **Platform** | Docker (QGIS 3.x) | 🐳 Active |
-| **Last Updated** | <!-- LAST_UPDATE -->2026-10-25<!-- /LAST_UPDATE --> | 🕒 Auto |
+| **Last Updated** | <!-- LAST_UPDATE -->2026-11-01<!-- /LAST_UPDATE --> | 🕒 Auto |
 
 ---
 
@@ -15,9 +15,9 @@
 | :--- | :---: | :--- | :--- |
 | **Agentic Tooling** | <!-- AGENT_COUNT -->43<!-- /AGENT_COUNT --> | ██████████ 100% | ✅ |
 | **Core Services** | <!-- CORE_COUNT -->359<!-- /CORE_COUNT --> | ██████████ 100% | ✅ |
-| **GUI Components** | <!-- GUI_COUNT -->370<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
+| **GUI Components** | <!-- GUI_COUNT -->373<!-- /GUI_COUNT --> | ██████░░░░ 60% | 🏗️ |
 | **Exporters** | <!-- EXP_COUNT -->40<!-- /EXP_COUNT --> | ██████████ 100% | ✅ |
-| **Integration** | <!-- INT_COUNT -->76<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
+| **Integration** | <!-- INT_COUNT -->78<!-- /INT_COUNT --> | █████████░ 86% | ✅ |
 
 ---
 
@@ -115,7 +115,7 @@
 - **tests/gui/test_signal_restoration.py**: 5 tests
 - **tests/gui/test_structure_extractor.py**: 3 tests
 - **tests/gui/test_structure_page.py**: 3 tests
-- **tests/gui/test_symbology_tab.py**: 8 tests
+- **tests/gui/test_symbology_tab.py**: 11 tests
 - **tests/gui/test_ui_gating.py**: 30 tests
 - **tests/gui/test_validation_extractor.py**: 2 tests
 - **tests/gui/tasks/test_drillhole_task.py**: 6 tests
@@ -142,6 +142,7 @@
 - **tests/integration/test_measurement_workflow.py**: 2 tests
 - **tests/integration/test_preview_pipeline.py**: 24 tests
 - **tests/integration/test_qgis_smoke.py**: 3 tests
+- **tests/integration/test_signal_idempotency.py**: 2 tests
 - **tests/integration/test_vector_drivers_integration.py**: 3 tests
 - **tests/benchmarks/test_export_benchmarks.py**: 2 tests
 - **tests/benchmarks/test_geometry_benchmarks.py**: 4 tests

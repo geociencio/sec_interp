@@ -7,6 +7,7 @@ gate. The mixin relies on the host widget providing ``tr``, ``changed`` and
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 from qgis.gui import QgsCollapsibleGroupBox
@@ -125,6 +126,11 @@ class UnitsEditorMixin:
     def connect_unit_signals(self) -> None:
         """Connect the per-unit reset button."""
         self.btn_reset_units.clicked.connect(self.reset_units)
+
+    def disconnect_unit_signals(self) -> None:
+        """Disconnect the per-unit reset button."""
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.btn_reset_units.clicked.disconnect(self.reset_units)
 
     def reset_units(self) -> None:
         """Clear all per-unit customization."""
