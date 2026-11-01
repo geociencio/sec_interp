@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Developer tooling — qgis-plugin-analyzer 1.19.2**: fixes the R4–R6 `SIGNAL_LEAK` cases (translated-text parents, tuple-loop pairing and `list(...)` wrappers). SecInterp now reports 12 unmatched paths, down from 16; the remaining six `PreviewSidePanel` and six task connections are P1 lifetime candidates.
+
 ## [3.12.1] - 2026-11-01
 
 ### Changed

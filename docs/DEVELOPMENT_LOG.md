@@ -1,3 +1,7 @@
+## [2026-11-01] Tooling: qgis-plugin-analyzer 1.19.2
+- **Achievement**: adopted 1.19.2; R4 (translated-text parents), R5 (`list(...)` wrappers) and R6 (tuple-loop pairing) are fixed. SecInterp's unmatched signal paths dropped 16 → **12** (six `PreviewSidePanel` + six `task.*`), now P1 lifetime candidates.
+- **Verification**: 844 tests OK, Docker exit 0, analyzer CC PASS, security 100; `docs/plans/upstream_signal_leak_rule.md` updated. Issue #1 is verifiable/closable.
+
 ## [2026-11-01] Release: v3.12.1
 - **Achievement**: patch release with idempotent symbology signals, a 128×128 portal icon, expanded `about`, empty runtime dependencies and the qgis-manage 0.15 / qgis-analyzer 1.19.1 gates.
 - **Verification**: **844 tests OK / 893 static** (2 real-Qt skipped); Docker suite exit 0; flake8, mypy, check_docs, i18n, security and Qt6 clean; fresh ZIP validates with zero warnings.

@@ -5,7 +5,7 @@
 
 ## ✅ Current state
 
-- **v3.12.1 published on GitHub (2026-11-01)**: 844 tests OK (2 skipped), Docker
+- **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
   portal warnings; tag `v3.12.1`; GitHub release *Latest*:
@@ -18,13 +18,13 @@
 - **Tests**: **844 local OK** (2 real-Qt skipped); full `make docker-test`
   **exit 0** (43 + 295 + 40 + 373 + 78); real-Qt idempotency tests **2/2 OK**
   (one `changed` emission and one reset after two `connect_signals` calls).
-- **Analyzer**: `qgis-plugin-analyzer>=1.19.1` adopted. On this repo:
-  **162 connect sites, 129 matched, 16 unmatched, 17 benign** (was 27/22
-  before P0). The 15 real `SymbologyTab` links and the reset button are gone;
-  the 16 remaining are upstream R3/R5/R6 false positives (6 panel + 6 `task.*`
-  + 4 tuple loops).
+- **Analyzer**: `qgis-plugin-analyzer>=1.19.2` adopted. On this repo:
+  **12 unmatched signal paths** (down from 16): six `PreviewSidePanel`
+  connections in `main_dialog.py` and six `task.*` connections in
+  `preview_task_orchestrator.py`. R4–R6 are fixed in 1.19.2; these remaining
+  paths are lifetime/P1 candidates, not the P0 duplicate-connection bug.
 - **Upstream issue**: <https://github.com/geociencio/qgis-plugin-analyzer/issues/1>
-  (R1 fixed in 1.19.1; R4–R6 still open; 1.19.1 verification comment posted).
+  (R1 fixed in 1.19.1; R4–R6 fixed in 1.19.2; verify/close the issue).
 - **Smoke test**: QGIS 4.2.2 offscreen, `MURALLA.qgs`, MCP fork 0.15.1:
   status → open → preview → ready → results → export **PASS**; PNG 1872×900,
   130,248 B. Preview: 430 topo points, 9 geology segments, 9 structures,
@@ -40,15 +40,10 @@
 0. **Await QGIS portal validation/approval for v3.12.1**: the ZIP was uploaded on
    2026-11-01 after passing `validate --zip` with zero warnings. Confirm the email
    status and that the plugin page switches from 3.12.0 to 3.12.1.
-1. **Upstream `qgis-plugin-analyzer` 1.19.2**:
-   - R4: reject `self.tr(...)` as a parent in `_record_parented_assignment`
-     (`signal_analysis.py:155-164`); 4 real `changed.emit` + reset are currently
-     `benign`.
-   - R5: unresolved `for task in list(self._active_tasks)` should be
-     `confidence="low"` or resolved (`signal_scope.py:131-144`).
-   - R6: zip the tuple-loop `sender`/`slot` bindings (`signal_analysis.py:259-320`).
-   - After 1.19.2, the SecInterp count should be 16 real sites before P0 and 0
-     after.
+1. **Review the 12 remaining signal paths (P1)**: six `PreviewSidePanel`
+   connections in `main_dialog.py` and six `task.*` connections in
+   `preview_task_orchestrator.py`; move the panel wiring to `SignalManager` and
+   the task wiring into the orchestrator lifecycle, with matching reconnects.
 2. **P1 optional**: move the six `PreviewSidePanel` connections into
    `SignalManager` and `SectionFeatureSelector` wiring into
    `SectionPage.connect_signals()`; never add a disconnect without a matching
@@ -92,7 +87,7 @@
 1. Run `/start-session` to refresh `AI_CONTEXT.md` and read this file.
 2. Choose one:
    - prepare release **3.12.1** (recommended), or
-   - fix upstream **1.19.2** (R4–R6), or
+   - review the 12 remaining signal paths (P1), or
    - interop §9 **B1**.
 3. For local gates: `export MYPY_CACHE_DIR=$PWD/.mypy_cache` before `make mypy`
    (sandbox only), and `UV_CACHE_DIR=/tmp/uv-cache-secinterp` for `uv`.

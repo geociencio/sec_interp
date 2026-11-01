@@ -19,13 +19,13 @@
 - [x] **v3.12.0 activo en el portal QGIS (2026-10-28)** — <https://plugins.qgis.org/plugins/sec_interp/>, marcado **QGIS 4 Ready**. El artefacto publicado aún tiene F811/E402 y el icono 23×24; Flake8 es informativo, así que fue aceptado. 3.12.1 queda como polish (lint limpio + icono 128×128).
 - [x] **Capturas USER_GUIDE 3.12.0** — 22 figuras integradas (sidebar de 6 entradas, Symbology/Interpretation), `ui_main_dialog_v26` y los `workflow_*` retirados, catálogo es al 100 %; staging en `docs/source/images_v3.12.0/` (ignorado).
 - [x] **P0 idempotencia de señales (2026-11-01)** — `SymbologyTab`/`UnitsEditorMixin` corregidos; 15 `changed.emit` + botón reset ya no se acumulan; 844 tests locales, Docker exit 0, integración Qt 2/2; analyzer 27→16 unmatched (los 16 restantes son R3/R5/R6 upstream).
-- [x] **`qgis-plugin-analyzer` 1.19.1** — dependencia/lock actualizados; verificación R1–R6 en `docs/plans/upstream_signal_leak_rule.md`; issue <https://github.com/geociencio/qgis-plugin-analyzer/issues/1> con comentario de 1.19.1.
+- [x] **`qgis-plugin-analyzer` 1.19.2** — dependencia/lock actualizados; R4–R6 corregidos; quedan 12 rutas unmatched (seis panel + seis task) para el P1; issue #1 verificable/cerrable.
 - [x] **Smoke test QGIS 4.2.2 (2026-11-01)** — `MURALLA.qgs`, MCP fork 0.15.1: status/open/preview/ready/results/export **PASS**; PNG 1872×900, 130 248 B.
 
 ## 📌 Pendientes del proyecto
 
 - [ ] **Validación del portal para 3.12.1** — subido el 2026-11-01; confirmar el email y el cambio de 3.12.0 → 3.12.1 en la ficha.
-- [ ] **Upstream `qgis-plugin-analyzer` 1.19.2** — R4 (`self.tr` como parent), R5 (loops no resueltos en `high`) y R6 (slot pairing); issue #1.
+- [ ] **Revisar las 12 rutas de señal restantes (P1)** — seis `PreviewSidePanel` + seis `task.*`; mover a `SignalManager`/ciclo de vida del orquestador.
 - [ ] **P1 opcional** — mover las conexiones de `PreviewSidePanel` y `SectionFeatureSelector` a `SignalManager`/`SectionPage` para cerrar el ciclo de vida.
 - [ ] **Prueba manual UI** — abrir/cerrar/reabrir y pulsar reset; la emisión única ya está cubierta por la integración Qt real.
 - [ ] **`uv` 0.12.10 → 0.13.0** — bloqueado por pacman (Manjaro stable sirve 0.12.10).

@@ -3,11 +3,11 @@
 > **Audience**: `qgis-plugin-analyzer` maintainer or an AI coding agent working on
 > that repository.
 > **Baseline analysed**: `qgis-plugin-analyzer` **1.18.0** (original proposal),
-> **1.19.0**, and **1.19.1** (2026-11-01, published on PyPI and adopted by
-> SecInterp).
-> **Status**: ✅ **R1 fixed in 1.19.1**; ⚠️ **R2/R3 partially fixed and new
-> residuals R4–R6 found** — a follow-up 1.19.2 is required before the rule is
-> trustworthy for duplicate connections and unresolved loop aliases.
+> **1.19.0**, **1.19.1** and **1.19.2** (2026-11-01, published on PyPI and adopted
+> by SecInterp).
+> **Status**: ✅ **R1 fixed in 1.19.1**; ✅ **R4–R6 fixed in 1.19.2**. SecInterp now
+> reports **12 unmatched paths** (six `PreviewSidePanel` + six `task.*`); they are
+> P1 lifetime candidates, not the P0 duplicate-connection bug.
 > **Tracking issue**: <https://github.com/geociencio/qgis-plugin-analyzer/issues/1>
 > (published 2026-11-01; [1.19.1 verification comment](https://github.com/geociencio/qgis-plugin-analyzer/issues/1#issuecomment-6561009945)).
 > **Companion**: SecInterp's implementation plan
@@ -967,3 +967,17 @@ Expected after 1.19.2: `Tab` 3 `unmatched` (not benign), `Dem` 0 `unmatched`,
 `Tasks` 0 `unmatched` (matched or low confidence). The 3 `Tab` entries must not
 be benign until the duplicate connection is actually removed.
 ```
+
+
+## 1.7 Verification with 1.19.2
+
+`qgis-plugin-analyzer 1.19.2` fixes the R4 parent heuristic, R5 list-wrapper
+resolution and R6 tuple-loop pairing. SecInterp's measurement dropped from 16 to
+**12 unmatched paths**:
+
+- six `PreviewSidePanel` connections in `gui/main_dialog.py` (lines 142–147);
+- six task-lifecycle connections in `gui/preview_task_orchestrator.py`
+  (lines 95–97 and 156–158).
+
+These are lifetime/P1 candidates (panel wiring in `SignalManager`, task wiring in
+the orchestrator lifecycle), not duplicate connections from `SymbologyTab`.
