@@ -6,6 +6,7 @@
 ## 🎯 Foco actual: post-release 3.12.0 / polish 3.12.1
 
 - [x] **Release 3.12.1 publicado en GitHub (2026-11-01)** — bump, changelog, notas, README, icono 128×128 y `about`; 844 tests, Docker OK, ZIP 342 files validado sin warnings, tag `v3.12.1`, release *Latest*.
+- [x] **3.12.1 subido al portal QGIS (2026-11-01)** — pendiente de validación/aprobación; el feed aún sirve 3.12.0.
 - [x] **`qgis-manage` 0.10.0 → 0.15.0** — lock/sync; el análisis histórico está en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.15 añade `validate --zip`, auditoría del ZIP, normalización de permisos y `security --portal` (native + Bandit + detect-secrets + Flake8).
 - [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
@@ -23,7 +24,7 @@
 
 ## 📌 Pendientes del proyecto
 
-- [ ] **Subir 3.12.1 al portal QGIS** — ZIP validado en `dist/sec_interp.3.12.1.zip`; 3.12.0 sigue live hasta la aprobación.
+- [ ] **Validación del portal para 3.12.1** — subido el 2026-11-01; confirmar el email y el cambio de 3.12.0 → 3.12.1 en la ficha.
 - [ ] **Upstream `qgis-plugin-analyzer` 1.19.2** — R4 (`self.tr` como parent), R5 (loops no resueltos en `high`) y R6 (slot pairing); issue #1.
 - [ ] **P1 opcional** — mover las conexiones de `PreviewSidePanel` y `SectionFeatureSelector` a `SignalManager`/`SectionPage` para cerrar el ciclo de vida.
 - [ ] **Prueba manual UI** — abrir/cerrar/reabrir y pulsar reset; la emisión única ya está cubierta por la integración Qt real.
