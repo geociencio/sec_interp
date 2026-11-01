@@ -1,7 +1,7 @@
 # Next Steps (Updated 2026-11-01)
 
 **Session closed**: `signal_idempotency_p0` — see
-[`docs/maintenance/session_2026-11-01_signal_idempotency_p0.md`](../docs/maintenance/session_2026-11-01_signal_idempotency_p0.md).
+[`docs/maintenance/session_2026-11-01_signal_idempotency_p0.md`](../../../docs/maintenance/session_2026-11-01_signal_idempotency_p0.md).
 
 ## ✅ Current state
 

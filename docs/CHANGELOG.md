@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.1] - 2026-11-01
+
 ### Changed
 - **Developer tooling — qgis-plugin-analyzer 1.19.1**: per-connection `SIGNAL_LEAK` analysis with `--signals`, loop/alias resolution and lifetime hints. SecInterp now reports 16 informational unmatched paths after the fix, all upstream R3/R5/R6 false positives; R4–R6 are tracked in issue [#1](https://github.com/geociencio/qgis-plugin-analyzer/issues/1). Dev-only; no plugin-runtime impact.
 - **Packaging — runtime dependencies**: `[project].dependencies` is now empty; `qgis-plugin-analyzer`, `ai-context-core` and `sphinx-intl` live in `[dependency-groups].dev` only. The plugin runtime no longer pulls development tooling.

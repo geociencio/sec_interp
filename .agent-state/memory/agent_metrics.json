@@ -11,7 +11,7 @@
         }
     },
     "summary": {
-        "total_sessions": 56,
+        "total_sessions": 57,
         "tasks_completed": 27,
         "overall_effectiveness_score": 0.97,
         "task_completion_rate": 1.0,
@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-11-01T17:17:23.911863+00:00"
+            "analyzed_at": "2026-11-01T19:16:28.108640+00:00"
         },
         "tests_local": {
             "date": "2026-11-01",

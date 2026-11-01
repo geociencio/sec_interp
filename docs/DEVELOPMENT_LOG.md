@@ -1,3 +1,9 @@
+## [2026-11-01] Release: v3.12.1
+- **Achievement**: patch release with idempotent symbology signals, a 128×128 portal icon, expanded `about`, empty runtime dependencies and the qgis-manage 0.15 / qgis-analyzer 1.19.1 gates.
+- **Verification**: **844 tests OK / 893 static** (2 real-Qt skipped); Docker suite exit 0; flake8, mypy, check_docs, i18n, security and Qt6 clean; fresh ZIP validates with zero warnings.
+- **Docs**: README, CHANGELOG, release notes `docs/releases/notes/v3.12.1.md` and this milestone updated.
+- **Maintenance**: [session_2026-11-01_signal_idempotency_p0.md](maintenance/session_2026-11-01_signal_idempotency_p0.md).
+
 ## [2026-11-01] Session: Signal idempotency P0 + QGIS 4 smoke test
 - **Achievement**: fixed the duplicate signal connections in `SymbologyTab`/`UnitsEditorMixin`; `connect_signals()` is now idempotent, the reset button is disconnected, and external `changed` receivers survive. Analyzer: 27 unmatched / 22 benign → **16 / 17** (the 15 real `changed.emit` + reset are gone).
 - **Tests**: **844 local OK** (2 real-Qt skipped) and full `make docker-test` **exit 0** (43 + 295 + 40 + 373 + 78); real-Qt idempotency tests 2/2 OK.

@@ -5,6 +5,10 @@
 
 ## ✅ Current state
 
+- **v3.12.1 prepared (2026-11-01)**: 844 tests OK (2 skipped), Docker exit 0,
+  `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
+  `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
+  portal warnings; tag and GitHub release prepared.
 - **P0 signal idempotency implemented**: `SymbologyTab.connect_signals()` now
   disconnects its 15 internal `changed.emit` links and the unit-reset button
   before reconnecting, without dropping external `changed` receivers.
@@ -31,11 +35,10 @@
 
 ## 📌 Pending
 
-0. **Release 3.12.1 (recommended)**: bump `metadata.txt`/`pyproject.toml`,
-   move `[Unreleased]` in `docs/CHANGELOG.md`, write the release notes, then
-   `make pre-release` + `make zip` (`portal-check` included) and upload at
-   <https://plugins.qgis.org/plugins/sec_interp/>. Ship P0 + the 128×128 icon +
-   the clean lint.
+0. **Upload v3.12.1 to the QGIS repository**: the ZIP is built and validated
+   (zero warnings); upload `dist/sec_interp.3.12.1.zip` at
+   <https://plugins.qgis.org/plugins/sec_interp/> and wait for validation/approval.
+   3.12.0 remains live until then.
 1. **Upstream `qgis-plugin-analyzer` 1.19.2**:
    - R4: reject `self.tr(...)` as a parent in `_record_parented_assignment`
      (`signal_analysis.py:155-164`); 4 real `changed.emit` + reset are currently

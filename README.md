@@ -3,7 +3,7 @@
 ![QGIS](https://img.shields.io/badge/QGIS-3.28%2B%20%7C%204.x-green.svg)
 ![Qt](https://img.shields.io/badge/Qt-5%20%7C%206-blue.svg)
 ![License](https://img.shields.io/badge/License-GPL--2.0--or--later-blue.svg)
-[![Version](https://img.shields.io/badge/Version-3.12.0-green.svg)](https://plugins.qgis.org/plugins/sec_interp/)
+[![Version](https://img.shields.io/badge/Version-3.12.1-green.svg)](https://plugins.qgis.org/plugins/sec_interp/)
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
 ![Maintainability](https://img.shields.io/badge/Maintainability-99.9%2F100-brightgreen)
@@ -18,47 +18,35 @@ profiles, projects outcrops and structural measurements with CRS-aware sampling,
 places 3D drillhole traces and intervals on a unified 2D section — with live symbology,
 configurable legends and 2D/3D interpretation export.
 
-![SecInterp v3.12.0 main window](docs/source/images/ui_main_dialog.png)
+![SecInterp v3.12.1 main window](docs/source/images/ui_main_dialog.png)
 *The SecInterp workspace: six sections, an interactive preview and a project-aware legend.*
 
-**Latest release:** v3.12.0 · [QGIS plugin repository](https://plugins.qgis.org/plugins/sec_interp/) ·
+**Latest release:** v3.12.1 · [QGIS plugin repository](https://plugins.qgis.org/plugins/sec_interp/) ·
 [User Guide](https://geociencio.github.io/sec_interp_docs/USER_GUIDE.html)
 
 ---
 
-## 🆕 What's New in v3.12.0
+## 🆕 What's New in v3.12.1
 
-### 🎯 Choose the exact section line
-The Section page now lists only **single-part lines with exactly two vertices** in an
-`fid — label` selector, and lets you pick the **label field** (`Auto` or any attribute).
-The chosen `section_feature_id` is forwarded to topography, geology, structures,
-drillholes, level-of-detail and the async tasks, so changing the feature changes the
-sampled section.
+### 🔁 Symbology settings are now idempotent
+Opening and closing the dialog repeatedly no longer stacks internal signal connections.
+A symbology change now produces **one** preview refresh, and the reset button performs
+**one** reset, even after several open/close cycles.
 
-### ⚙️ Interpretation settings, now part of Settings
-`InterpretationPage` is now the **Interpretation Settings** tab inside **Settings**
-(Default, Advanced, Symbology, Interpretation, Plugin Information). It exposes the
-interpretation storage source (project JSON or an external vector layer), custom
-attributes and geology/drillhole attribute inheritance. Existing projects, persisted
-keys and consumers keep working — no migration required.
+### 🎨 Portal polish
+The plugin ships a **128×128** icon exported from the SVG master, and the `about` field
+now describes inputs, outputs, QGIS/Qt support, dependencies and license for reviewers.
+Fresh packages pass the portal artifact check with zero warnings.
 
-### 🧠 A QGIS-agnostic core
-`core/` no longer imports `qgis.*` or `qgis.PyQt`: translations, settings and map-settings
-factories are injected through ports/adapters. The architecture allowlist is **empty**,
-and the core imports in a plain Python environment without QGIS.
+### 🧰 Leaner packaging
+The plugin runtime has **no external Python dependencies**: the analyzer, context and
+documentation tools are development-only. `qgis-manage` 0.15 and `qgis-analyzer` 1.19.1
+drive the release gates.
 
-### 🧩 Smaller, safer modules
-The controller (465 → 295 lines), geometry adapter (598 → 69), preview layer factory
-(535 → 202), 3D exporter (472 → 155) and preview renderer (438 → 335) are now thin
-facades over focused helpers. **No module exceeds 400 lines**, and the CC ≤ 10 gate stays
-green.
-
-### 📚 Documentation and tooling
-The User Guide ships with **22 refreshed screenshots** (six-section sidebar, Symbology and
-Interpretation tabs) and the Spanish catalog is complete. Development uses
-`qgis-manage` 0.12.0 with `--repo-check` packaging and manual releases.
-
-See [CHANGELOG.md](docs/CHANGELOG.md) for the full list.
+This patch builds on the v3.12.0 features: exact section-line selection, Interpretation
+Settings, the QGIS-agnostic core and the module-size refactor. See
+[v3.12.1 release notes](docs/releases/notes/v3.12.1.md) and
+[CHANGELOG.md](docs/CHANGELOG.md) for details.
 
 ---
 
