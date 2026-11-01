@@ -1,3 +1,7 @@
+## [2026-11-01] Tooling: qgis-manage 0.15.1
+- **Achievement**: adopted 0.15.1; the source distribution now ships only the package, README, CHANGELOG, LICENSE and packaging metadata. No CLI behavior change.
+- **Verification**: `qgis-manage --version` 0.15.1, `validate --strict --repo` PASS, portal ZIP unchanged.
+
 ## [2026-11-01] Tooling: qgis-plugin-analyzer 1.19.2
 - **Achievement**: adopted 1.19.2; R4 (translated-text parents), R5 (`list(...)` wrappers) and R6 (tuple-loop pairing) are fixed. SecInterp's unmatched signal paths dropped 16 → **12** (six `PreviewSidePanel` + six `task.*`), now P1 lifetime candidates.
 - **Verification**: 844 tests OK, Docker exit 0, analyzer CC PASS, security 100; `docs/plans/upstream_signal_leak_rule.md` updated. Issue #1 is verifiable/closable.

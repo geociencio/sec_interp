@@ -107,7 +107,7 @@ Do not start by deleting `requirements.txt`.
 5. **Add tools**:
    ```bash
    uv add --group dev "ruff>=0.17" "mypy>=2.4" "pre-commit>=4.7"
-   uv add --group dev "qgis-manage>=0.15.0"
+   uv add --group dev "qgis-manage>=0.15.1"
    uv add --group dev "qgis-plugin-analyzer>=1.19.2"
    ```
 6. **Generate and lock**:
@@ -144,7 +144,7 @@ required-version = ">=0.12"    # fail early on an outdated uv
 
 [dependency-groups]
 dev = [
-    "qgis-manage>=0.15.0",
+    "qgis-manage>=0.15.1",
     "qgis-plugin-analyzer>=1.19.2",
     "ruff>=0.17",
     "mypy>=2.4",
