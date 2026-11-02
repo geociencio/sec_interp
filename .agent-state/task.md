@@ -7,6 +7,7 @@
 
 - [x] **Release 3.12.1 publicado en GitHub (2026-11-01)** — bump, changelog, notas, README, icono 128×128 y `about`; 844 tests, Docker OK, ZIP 342 files validado sin warnings, tag `v3.12.1`, release *Latest*.
 - [x] **3.12.1 subido al portal QGIS (2026-11-01)** — pendiente de validación/aprobación; el feed aún sirve 3.12.0.
+- [x] **Documentación y diseño (2026-11-01)** — `uv_modernization_guide.md` reescrita; `docs/research/blendergis_export_design.md` con `SectionFrame`, bundle SHP, manifiesto y criterios de aceptación.
 - [x] **`qgis-manage` 0.10.0 → 0.16.1** — lock/sync; el análisis histórico está en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.15 añadió `validate --zip`, auditoría del ZIP, normalización de permisos y `security --portal`; 0.16 elimina `click` y deja cero dependencias de runtime; 0.16.1 corrige manifiesto de deploy, `clean`, `bump` SemVer, README de artefacto y detección multilínea de `classFactory`.
 - [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
@@ -24,6 +25,8 @@
 
 ## 📌 Pendientes del proyecto
 
+- [ ] **BlenderGIS export P0** — `SectionFrame`, capas 3D de topografía/geología/estructuras, bundle SHP + manifiesto, CRS métrico y smoke test Blender 4.x.
+- [ ] **Cerrar issue #1 de qgis-plugin-analyzer** — R4–R6 corregidos en 1.19.2; verificar y cerrar.
 - [ ] **Validación del portal para 3.12.1** — subido el 2026-11-01; confirmar el email y el cambio de 3.12.0 → 3.12.1 en la ficha.
 - [ ] **Revisar las 12 rutas de señal restantes (P1)** — seis `PreviewSidePanel` + seis `task.*`; mover a `SignalManager`/ciclo de vida del orquestador.
 - [ ] **P1 opcional** — mover las conexiones de `PreviewSidePanel` y `SectionFeatureSelector` a `SignalManager`/`SectionPage` para cerrar el ciclo de vida.

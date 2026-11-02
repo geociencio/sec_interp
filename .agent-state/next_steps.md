@@ -1,13 +1,16 @@
 # Next Steps (Updated 2026-11-01)
 
-**Session closed**: `signal_idempotency_p0` — see
-[`docs/maintenance/session_2026-11-01_signal_idempotency_p0.md`](../docs/maintenance/session_2026-11-01_signal_idempotency_p0.md).
+**Session closed**: `release_tooling_blendergis` — see
+[`docs/maintenance/session_2026-11-01_release_tooling_blendergis.md`](../docs/maintenance/session_2026-11-01_release_tooling_blendergis.md).
 
 ## ✅ Current state
 
 - **Tooling (2026-11-01)**: `qgis-manage 0.16.1` (zero runtime dependencies;
   internal console replaces `click`, plus manifest/clean/bump/artifact fixes) and
   `qgis-plugin-analyzer 1.19.2` adopted; no plugin-runtime change.
+- **Docs/design (2026-11-01)**: `uv_modernization_guide.md` rewritten against the
+  real QGIS/uv constraints; `docs/research/blendergis_export_design.md` defines the
+  `SectionFrame`, 3D layer contract and BlenderGIS bundle.
 - **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
@@ -60,6 +63,12 @@
 6. **Optional docs i18n** — native review of the machine-assisted translations;
    refresh `help/html` with `make docs` (`USER_GUIDE` fr 28 % / de 18 %).
 
+7. **BlenderGIS export P0** — add `SectionFrame`, 3D topography/geology/structures,
+   SHP bundle + manifest, metric CRS, per-unit geology, and a Blender 4.x smoke test
+   (`docs/research/blendergis_export_design.md`).
+8. **Close qgis-plugin-analyzer issue #1** — R4–R6 are fixed in 1.19.2; verify the
+   remaining 12 paths and close/update the issue.
+
 ## 🧾 Remaining debt (documented, non-blocking)
 
 - **Analyzer**: 37 issues (20 `GOD_OBJECT`, 9 `MISSING_DOCSTRING`,
@@ -91,6 +100,7 @@
 2. Choose one:
    - prepare release **3.12.1** (recommended), or
    - review the 12 remaining signal paths (P1), or
+   - implement the BlenderGIS P0 export, or
    - interop §9 **B1**.
 3. For local gates: `export MYPY_CACHE_DIR=$PWD/.mypy_cache` before `make mypy`
    (sandbox only), and `UV_CACHE_DIR=/tmp/uv-cache-secinterp` for `uv`.

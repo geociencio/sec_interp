@@ -1,3 +1,9 @@
+## [2026-11-01] Session: v3.12.1, tooling refresh & BlenderGIS design
+- **Achievement**: 3.12.1 published on GitHub and uploaded to the QGIS portal (validation pending); qgis-manage 0.16.1 and qgis-plugin-analyzer 1.19.2 adopted.
+- **Docs**: `uv_modernization_guide.md` rewritten; `docs/research/blendergis_export_design.md` defines the SectionFrame, Shapefile bundle, manifest and BlenderGIS constraints.
+- **Verification**: 844 tests OK, Docker exit 0, all gates green, ZIP 3.12.1 zero portal warnings.
+- **Maintenance**: [session_2026-11-01_release_tooling_blendergis.md](maintenance/session_2026-11-01_release_tooling_blendergis.md).
+
 ## [2026-11-01] Tooling: qgis-manage 0.16.1
 - **Achievement**: adopted 0.16.1; zero runtime dependencies (internal console instead of `click`) plus fixes for deploy-manifest preservation, clean pruning, SemVer bump suffixes, README/no-extension artifact validation and multiline `classFactory` detection.
 - **Verification**: `qgis-manage --version` 0.16.1, `validate --strict --repo`, `validate --zip`, `package --repo-check` and `make compile` PASS; ZIP SHA unchanged (`9b835bc7…`); 844 tests OK.
