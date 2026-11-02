@@ -63,25 +63,46 @@ layer at the wrong location. This is a correctness issue independent of Blender.
 
 ## 3. BlenderGIS constraints
 
-From the BlenderGIS README and shapefile importer:
+From the BlenderGIS README, wiki and shapefile importer:
 
 - vector import is documented for **Shapefile** (`PolygonZ`, `PolyLineZ`, etc. are
   recognized), plus raster/GeoTIFF and OSM;
+- the importer supports **Z geometry**, but not MultiPatch; elevation can come from
+  geometry, a field, a ground object or be flat;
+- by default all features are merged into **one mesh**, and merged imports do **not**
+  carry attribute data; importing separate objects preserves attributes and allows
+  naming by field, but is slow for thousands of features;
 - there is **no documented vector GeoPackage importer**; `core/basemaps/gpkg.py`
   is for basemap caching, not vector layers;
 - DXF is not a GIS import path in BlenderGIS; it belongs to Blender’s separate DXF
   importer;
-- the shapefile importer can take elevation from the geometry (`GEOM`) or from a
-  field;
-- georeferencing comes from the `.prj`/CRS chosen on import.
+- CRS must be specified on import; BlenderGIS stores a scene origin to keep
+  projected coordinates near the Blender origin, and reprojects subsequent imports to
+  the scene CRS;
+- the wiki explicitly warns that longitude/latitude Shapefiles lose precision because
+  Blender uses float32; use a suitable projected CRS.
 
 References:
 
 - <https://github.com/domlysz/blendergis>
+- <https://github.com/domlysz/blendergis/wiki/Shapefile-import>
+- <https://github.com/domlysz/blendergis/wiki/Georeferencing-management>
 - <https://github.com/domlysz/blendergis/blob/master/operators/io_import_shp.py>
 
-**Consequence**: the BlenderGIS preset must force `.shp` and write the `.prj`. The
-existing `.gpkg`/`.dxf` options remain useful for QGIS/CAD, not for BlenderGIS.
+> The wiki itself notes that it is still being updated for Blender 2.8; verify the
+> current Blender 4.x behavior empirically before freezing the import workflow.
+
+**Consequences**:
+
+1. The BlenderGIS preset must force `.shp` and write the `.prj`.
+2. Do not ship a single geology mesh if unit colors are required; either split by
+   unit into one Shapefile per unit, or document “import as separate objects” and its
+   performance cost.
+3. A geographic CRS is not acceptable for a BlenderGIS preset; reproject to a metric
+   CRS before export.
+4. Set the Blender scene CRS **before** the first import; all layers should use that
+   CRS.
+5. Configure camera clipping for the scene extent, as the wiki recommends.
 
 ---
 
@@ -127,7 +148,7 @@ Add a high-level export mode that writes:
 ```text
 blendergis/
   section_<id>_topography.shp
-  section_<id>_geology.shp
+  section_<id>_geology_<unit>.shp   # optional split by unit
   section_<id>_structures.shp
   section_<id>_interpretations.shp
   drillholes_<id>_traces.shp
@@ -143,11 +164,11 @@ Each Shapefile must ship its `.shp`, `.shx`, `.dbf`, `.prj` and `.cpg` sidecars.
 | Layer | Geometry | Required attributes | Notes |
 | :--- | :--- | :--- | :--- |
 | Topography | `LineStringZ` | `section_id`, `dist`, `elev` | One feature per profile |
-| Geology | `PolygonZ` or `LineStringZ` | `unit`, `unit_id`, `color`, `section_id` | Polygon strips need a documented baseline Z; line contacts are simpler |
+| Geology | `PolygonZ` or `LineStringZ` | `unit`, `unit_id`, `color`, `section_id` | Polygon strips need a documented baseline Z; one file per unit is preferred because merged imports lose attributes |
 | Structures | `PointZ` or `LineStringZ` | `dip`, `strike`, `type`, `section_id` | Add short plane traces if a line representation is preferred |
 | Interpretations | `PolygonZ` | `id`, `name`, `type`, `color`, `created_at` | Existing fields |
-| Drillhole traces | `LineStringZ` | `hole_id` | Use “Real 3D” for BlenderGIS |
-| Drillhole intervals | `LineStringZ` | `hole_id`, `from_depth`, `to_depth`, `unit` | Existing fields |
+| Drillhole traces | `LineStringZ` | `hole_id` | Use “Real 3D” for BlenderGIS; split by hole only if per-hole attributes are needed |
+| Drillhole intervals | `LineStringZ` | `hole_id`, `from_depth`, `to_depth`, `unit` | Existing fields; same merge/attribute caveat |
 
 Optional fields: `source_layer`, `crs_epsg`, `elevation_datum`, `vertical_exaggeration`.
 
@@ -219,10 +240,11 @@ double-apply it:
 
 ### 5.4 Large coordinates
 
-Projected coordinates can be large (UTM northings around 8,000,000). Test BlenderGIS
-precision and, if necessary, offer a local-origin variant where X/Y are relative to
-`origin`; keep the georeferenced variant as the authoritative export. Document the
-offset in the manifest.
+Projected coordinates can be large (UTM northings around 8,000,000). BlenderGIS
+already stores a scene origin to keep coordinates near the Blender origin; set the
+scene CRS/origin before importing and validate precision. Keep the georeferenced
+Shapefile as the authoritative export; only add a local-origin variant if a specific
+Blender/BlenderGIS workflow cannot preserve the scene origin.
 
 ---
 
@@ -274,8 +296,12 @@ This is an aid, not a substitute for the georeferenced export contract.
 1. Add `SectionFrame` and tests for start/end/azimuth/Z.
 2. Add 3D exporters for topography, geology and structures; reuse the frame.
 3. Add `BlenderGIS` preset (SHP + real 3D) and manifest/README.
-4. Stop writing the map CRS on 2D profile vectors; document local coordinates.
-5. Validate with BlenderGIS in Blender 4.x on a metric CRS section.
+4. Reproject to a metric CRS in the preset; reject/warn on geographic input.
+5. Split geology by unit (or document separate-object import) so `unit`/`color`
+   survive BlenderGIS’s merged-mesh mode.
+6. Stop writing the map CRS on 2D profile vectors; document local coordinates.
+7. Validate with BlenderGIS in Blender 4.x: set scene CRS first, import all layers,
+   check attributes, Z and camera clipping.
 
 ### P1 — usability and fidelity
 
@@ -302,7 +328,13 @@ This is an aid, not a substitute for the georeferenced export contract.
 - [ ] Drillhole “real” traces intersect the section at the expected positions;
       “projected” traces lie on the section plane.
 - [ ] A section in EPSG:32617 (UTM) imports correctly in BlenderGIS with the DEM.
-- [ ] A geographic source either reprojects cleanly or produces an explicit warning.
+- [ ] The Blender scene CRS is set before the first import; subsequent layers reproject
+      consistently.
+- [ ] Unit/color attributes survive (split files or separate-object import).
+- [ ] A geographic source either reprojects cleanly or produces an explicit warning;
+      no degrees are shipped in a BlenderGIS bundle.
+- [ ] No MultiPatch geometry is required; `PolygonZ`/`LineStringZ` import correctly.
+- [ ] Camera clipping is configured for the scene extent.
 - [ ] Vertical exaggeration is recorded and not double-applied.
 - [ ] The 2D profile drawings are clearly marked as local and are not advertised as
       georeferenced GIS layers.
