@@ -5,9 +5,9 @@
 
 ## ✅ Current state
 
-- **Tooling (2026-11-01)**: `qgis-manage 0.16.0` (zero runtime dependencies;
-  internal console replaces `click`) and `qgis-plugin-analyzer 1.19.2` adopted;
-  no plugin-runtime change.
+- **Tooling (2026-11-01)**: `qgis-manage 0.16.1` (zero runtime dependencies;
+  internal console replaces `click`, plus manifest/clean/bump/artifact fixes) and
+  `qgis-plugin-analyzer 1.19.2` adopted; no plugin-runtime change.
 - **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero

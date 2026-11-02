@@ -7,7 +7,7 @@
 
 - [x] **Release 3.12.1 publicado en GitHub (2026-11-01)** — bump, changelog, notas, README, icono 128×128 y `about`; 844 tests, Docker OK, ZIP 342 files validado sin warnings, tag `v3.12.1`, release *Latest*.
 - [x] **3.12.1 subido al portal QGIS (2026-11-01)** — pendiente de validación/aprobación; el feed aún sirve 3.12.0.
-- [x] **`qgis-manage` 0.10.0 → 0.16.0** — lock/sync; el análisis histórico está en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.15 añadió `validate --zip`, auditoría del ZIP, normalización de permisos y `security --portal`; 0.16 elimina `click` y deja cero dependencias de runtime.
+- [x] **`qgis-manage` 0.10.0 → 0.16.1** — lock/sync; el análisis histórico está en `docs/research/qgis_manage_0.12.0_analysis.md`. 0.15 añadió `validate --zip`, auditoría del ZIP, normalización de permisos y `security --portal`; 0.16 elimina `click` y deja cero dependencias de runtime; 0.16.1 corrige manifiesto de deploy, `clean`, `bump` SemVer, README de artefacto y detección multilínea de `classFactory`.
 - [x] **Makefile/CI** — `compile` con `--type` repetible y `--jobs` (recursos solo si cambian); `clean` propio que preserva `resources.py` y `examples/sample_data/*.cpg`; `zip --repo-check`; `docker-test` usa `uv run python` en el post-paso. La automatización de release por cola fue retirada.
 - [x] **Config** — `[tool.qgis-manager]` (`qgis_version=4`, `max_backups=1`, `auto_compile=false`); `.qgis-manage/` ignorado en Git y `.qgisignore`.
 - [x] **Gates 2026-10-25** — 839 tests locales OK; Docker OK; ruff/format/mypy/check_docs/i18n/security PASS; Qt6 0; CC PASS; 37 issues; docstring 99.1 %.
