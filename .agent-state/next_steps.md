@@ -1,4 +1,4 @@
-# Next Steps (Updated 2026-11-01)
+# Next Steps (Updated 2026-11-06)
 
 **Session closed**: `release_tooling_blendergis` — see
 [`docs/maintenance/session_2026-11-01_release_tooling_blendergis.md`](../docs/maintenance/session_2026-11-01_release_tooling_blendergis.md).
@@ -15,8 +15,8 @@
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
   portal warnings; tag `v3.12.1`; GitHub release *Latest*:
-  <https://github.com/geociencio/sec_interp/releases/tag/v3.12.1>. **Uploaded to the
-  QGIS repository on 2026-11-01; validation pending** (the feed still serves 3.12.0).
+  <https://github.com/geociencio/sec_interp/releases/tag/v3.12.1>. **Validated and
+  approved on the QGIS repository; the feed now serves 3.12.1**.
 - **P0 signal idempotency implemented**: `SymbologyTab.connect_signals()` now
   disconnects its 15 internal `changed.emit` links and the unit-reset button
   before reconnecting, without dropping external `changed` receivers.
@@ -38,14 +38,13 @@
 - **Gates**: ruff check/format, direct flake8, mypy (102 files),
   `qgis-validate`, i18n (6), security (0 findings), Qt6 (0), CC PASS,
   `check_docs` (37), `forge metrics validate`, `git diff --check`.
-- **3.12.0 remains live on the QGIS repository** (marked QGIS 4 Ready); 3.12.1 is
-  published on GitHub and uploaded to the portal, awaiting validation/approval.
+- **3.12.1 is live on the QGIS repository** (marked QGIS 4 Ready); 3.12.0 remains
+  available as the previous version.
 
 ## 📌 Pending
 
-0. **Await QGIS portal validation/approval for v3.12.1**: the ZIP was uploaded on
-   2026-11-01 after passing `validate --zip` with zero warnings. Confirm the email
-   status and that the plugin page switches from 3.12.0 to 3.12.1.
+0. **v3.12.1 portal approval** — ✅ validated/approved; the plugin feed serves
+   3.12.1. No action required.
 1. **Review the 12 remaining signal paths (P1)**: six `PreviewSidePanel`
    connections in `main_dialog.py` and six `task.*` connections in
    `preview_task_orchestrator.py`; move the panel wiring to `SignalManager` and

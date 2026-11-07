@@ -17,7 +17,7 @@
 - **Verification**: **844 tests OK / 893 static** (2 real-Qt skipped); Docker suite exit 0; flake8, mypy, check_docs, i18n, security and Qt6 clean; fresh ZIP validates with zero warnings.
 - **Docs**: README, CHANGELOG, release notes `docs/releases/notes/v3.12.1.md` and this milestone updated.
 - **Published**: tag `v3.12.1` and GitHub release *Latest* at <https://github.com/geociencio/sec_interp/releases/tag/v3.12.1>.
-- **Portal**: 3.12.1 uploaded on 2026-11-01; validation/approval pending (the feed still serves 3.12.0).
+- **Portal**: 3.12.1 was validated and approved; the official feed now serves 3.12.1 (3.12.0 remains the previous version).
 - **Maintenance**: [session_2026-11-01_signal_idempotency_p0.md](maintenance/session_2026-11-01_signal_idempotency_p0.md).
 
 ## [2026-11-01] Session: Signal idempotency P0 + QGIS 4 smoke test

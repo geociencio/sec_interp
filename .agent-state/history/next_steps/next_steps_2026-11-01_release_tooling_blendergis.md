@@ -1,7 +1,7 @@
 # Next Steps (Updated 2026-11-01)
 
 **Session closed**: `release_tooling_blendergis` — see
-[`docs/maintenance/session_2026-11-01_release_tooling_blendergis.md`](../docs/maintenance/session_2026-11-01_release_tooling_blendergis.md).
+[`docs/maintenance/session_2026-11-01_release_tooling_blendergis.md`](../../../docs/maintenance/session_2026-11-01_release_tooling_blendergis.md).
 
 ## ✅ Current state
 
