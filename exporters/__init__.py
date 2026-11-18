@@ -26,6 +26,11 @@ from .profile_exporters import (
     ProfileLineVectorExporter,
     StructureVectorExporter,
 )
+from .section_3d import (
+    Geology3DExporter,
+    Structure3DExporter,
+    Topography3DExporter,
+)
 from .svg_exporter import SVGExporter
 from .vector_exporter import VectorExporter
 
@@ -38,6 +43,7 @@ __all__ = [
     "DrillholeIntervalVectorExporter",
     "DrillholeTrace3DExporter",
     "DrillholeTraceVectorExporter",
+    "Geology3DExporter",
     "GeologyVectorExporter",
     "ImageExporter",
     "Interpretation2DExporter",
@@ -45,7 +51,9 @@ __all__ = [
     "PDFExporter",
     "ProfileLineVectorExporter",
     "SVGExporter",
+    "Structure3DExporter",
     "StructureVectorExporter",
+    "Topography3DExporter",
     "VectorExporter",
     "get_exporter",
 ]

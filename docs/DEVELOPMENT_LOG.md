@@ -1,3 +1,7 @@
+## [2026-11-18] QGIS 3D WP1: 3D section layers
+- **Achievement**: added `Topography3DExporter` (`LineStringZ`), `Geology3DExporter` (`PolygonZ` bands) and `Structure3DExporter` (`PointZ`), plus a handler that writes a shared multi-layer GeoPackage or separate Shapefiles. The export is opt-in via `exp_section_3d` until the UI lands in WP3/WP4.
+- **Verification**: 857 tests OK (2 skipped); mypy 105 files, ruff/flake8/docs green.
+
 ## [2026-11-18] QGIS 3D WP0: SectionFrame
 - **Achievement**: added the QGIS-free `SectionFrame` (origin, azimuth, CRS, length, VE metadata) with endpoint factory and validation; the interpretation 3D exporter now consumes it instead of duplicating the projection formula.
 - **Verification**: 851 tests OK (2 skipped); mypy 103 files, flake8 and docs green.

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **QGIS 3D — WP1 3D section layers**: added `Topography3DExporter` (`LineStringZ`), `Geology3DExporter` (`PolygonZ` bands with unit/color fields) and `Structure3DExporter` (`PointZ` with dip/strike). The new handler writes a multi-layer GeoPackage or separate Shapefiles behind the opt-in `exp_section_3d` flag.
 - **QGIS 3D — WP0 `SectionFrame`**: added a QGIS-free section frame (`origin`, `azimuth`, `CRS`, `length`, vertical-exaggeration metadata) and refactored the 3D interpretation exporter to use it. Added unit tests for east/north headings, length, Z passthrough and validation.
 - **Research — BlenderGIS export design**: added `docs/research/blendergis_export_design.md` with the `SectionFrame` model, 3D layer contract, Shapefile-only BlenderGIS bundle, manifest schema, CRS/vertical-exaggeration policy and acceptance criteria. It also flags that the current 2D profile vectors are mislabeled with the map CRS.
 - **Developer tooling — qgis-manage 0.17.0**: internal refactor around a deterministic `PathPolicy`/`ProjectWalker`, explicit Deploy/Package workflows, atomic TOML edits and hardened external inputs. No CLI syntax or exit-code changes, zero runtime dependencies, reproducible ZIP; dependency floor updated to `>=0.17.0`.
