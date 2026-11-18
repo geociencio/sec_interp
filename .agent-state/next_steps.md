@@ -5,9 +5,9 @@
 
 ## ✅ Current state
 
-- **Tooling (2026-11-18)**: `qgis-manage 0.16.2` (zero runtime dependencies;
-  reproducible ZIP ordering, AST hook inspection, atomic docs, deploy/compile fixes)
-  and `qgis-plugin-analyzer 1.19.2` adopted; no plugin-runtime change.
+- **Tooling (2026-11-18)**: `qgis-manage 0.17.0` (deterministic PathPolicy,
+  Deploy/Package workflows, atomic TOML, hardened inputs; no CLI changes) and
+  `qgis-plugin-analyzer 1.19.2` adopted; no plugin-runtime change.
 - **Docs/design (2026-11-01)**: `uv_modernization_guide.md` rewritten against the
   real QGIS/uv constraints; `docs/research/blendergis_export_design.md` defines the
   `SectionFrame`, 3D layer contract and BlenderGIS bundle.
