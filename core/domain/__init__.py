@@ -32,6 +32,7 @@ from .entities import (
     ValidationResult,
 )
 from .enums import FieldType
+from .section_frame import SectionFrame
 from .spatial_meta import SpatialMeta
 from .task_inputs import (
     DrillholeContext,
@@ -59,6 +60,7 @@ __all__ = [
     "PreviewResult",
     "ProfileData",
     "ProfilePoints",
+    "SectionFrame",
     "SettingsDict",
     "SpatialMeta",
     "StructureData",

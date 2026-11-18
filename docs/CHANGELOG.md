@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **QGIS 3D — WP0 `SectionFrame`**: added a QGIS-free section frame (`origin`, `azimuth`, `CRS`, `length`, vertical-exaggeration metadata) and refactored the 3D interpretation exporter to use it. Added unit tests for east/north headings, length, Z passthrough and validation.
 - **Research — BlenderGIS export design**: added `docs/research/blendergis_export_design.md` with the `SectionFrame` model, 3D layer contract, Shapefile-only BlenderGIS bundle, manifest schema, CRS/vertical-exaggeration policy and acceptance criteria. It also flags that the current 2D profile vectors are mislabeled with the map CRS.
 - **Developer tooling — qgis-manage 0.17.0**: internal refactor around a deterministic `PathPolicy`/`ProjectWalker`, explicit Deploy/Package workflows, atomic TOML edits and hardened external inputs. No CLI syntax or exit-code changes, zero runtime dependencies, reproducible ZIP; dependency floor updated to `>=0.17.0`.
 - **Developer tooling — qgis-plugin-analyzer 1.19.2**: fixes the R4–R6 `SIGNAL_LEAK` cases (translated-text parents, tuple-loop pairing and `list(...)` wrappers). SecInterp now reports 12 unmatched paths, down from 16; the remaining six `PreviewSidePanel` and six task connections are P1 lifetime candidates.

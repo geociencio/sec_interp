@@ -1,7 +1,7 @@
 # QGIS 3D Section Export — Implementation Plan
 
 > **Date**: 2026-11-18
-> **Status**: plan only — no code changes yet
+> **Status**: WP0 implemented (2026-11-18); WP1+ pending
 > **Scope**: make SecInterp's 3D exports usable in QGIS's native 3D Map View.
 > **Related**: [interop/stereonet plan](implementation_plan_interop_stereonet_3d.md) ·
 > [BlenderGIS design](../research/blendergis_export_design.md)
@@ -438,7 +438,17 @@ should follow once the data contract is stable.
 
 ---
 
-## 10. Open questions
+## 10. Progress
+
+- [x] **WP0 — `SectionFrame`**: pure domain frame, validation, endpoint
+  factory and tests; interpretation 3D now consumes the shared frame.
+- [ ] WP1 — 3D topography/geology/structures.
+- [ ] WP2 — 3D styles and extrusion.
+- [ ] WP3 — GeoPackage bundle + manifest.
+- [ ] WP4 — 3D scene action/camera.
+- [ ] WP5 — vertical-exaggeration consistency.
+
+## 11. Open questions
 
 1. Geology: one layer per unit vs a single categorized layer? (Recommendation: one
    layer per unit for reliable 3D material assignment.)
