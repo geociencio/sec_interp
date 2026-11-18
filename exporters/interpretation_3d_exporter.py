@@ -17,6 +17,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from sec_interp.core.domain import InterpretationPolygon
+from sec_interp.core.domain.section_frame import SectionFrame
 from sec_interp.core.exceptions import ExportError
 from sec_interp.exporters.base_exporter import BaseExporter
 from sec_interp.exporters.interpretation_3d.fields import (
@@ -24,6 +25,7 @@ from sec_interp.exporters.interpretation_3d.fields import (
     write_shapefile,
 )
 from sec_interp.exporters.interpretation_3d.geometry import (
+    build_section_frame,
     calculate_section_geometry,
     collect_projected_features,
 )
@@ -56,15 +58,11 @@ class Interpretation3DExporter(BaseExporter):
 
         fields, sorted_keys = self._prepare_fields(interpretations)
         try:
-            origin_x, origin_y, azimuth = self._calculate_section_geometry(
-                cast(QgsGeometry, section_line)
-            )
+            frame = self._build_section_frame(cast(QgsGeometry, section_line), src_crs.authid())
         except Exception as exc:
             raise ExportError(f"Failed to calculate section geometry: {exc}") from exc  # no-i18n
 
-        features = self._collect_projected_features(
-            interpretations, fields, sorted_keys, origin_x, origin_y, azimuth
-        )
+        features = self._collect_projected_features(interpretations, fields, sorted_keys, frame)
         success = self._write_shapefile(
             output_path,
             features,
@@ -119,6 +117,10 @@ class Interpretation3DExporter(BaseExporter):
         """Prepare fixed and custom attribute fields."""
         return prepare_fields(interpretations)
 
+    def _build_section_frame(self, section_line: QgsGeometry, crs_authid: str = "") -> SectionFrame:
+        """Build the shared section frame for this export."""
+        return build_section_frame(section_line, crs_authid)
+
     def _calculate_section_geometry(self, section_line: QgsGeometry) -> tuple[float, float, float]:
         """Calculate origin and azimuth from the section line."""
         return calculate_section_geometry(section_line)
@@ -128,18 +130,14 @@ class Interpretation3DExporter(BaseExporter):
         interpretations: list[Any],
         fields: list[QgsField],
         sorted_keys: list[str],
-        origin_x: float,
-        origin_y: float,
-        azimuth: float,
+        frame: SectionFrame,
     ) -> list[Any]:
         """Project every valid interpretation polygon to 3D features."""
         return collect_projected_features(
             interpretations,
             fields,
             sorted_keys,
-            origin_x,
-            origin_y,
-            azimuth,
+            frame,
         )
 
     def _write_shapefile(

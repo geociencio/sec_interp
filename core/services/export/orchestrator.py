@@ -213,6 +213,50 @@ class ExportService(ExportServiceCompatMixin):
             if options.get(opt, True):
                 handler()
 
+        self._run_section_3d_export(
+            folder,
+            profile_data,
+            geol_data,
+            struct_data,
+            line_layer,
+            line_crs,
+            msg,
+            export_settings,
+            format_ext,
+            options,
+        )
+
+    def _run_section_3d_export(
+        self,
+        folder: Path,
+        profile_data: list[tuple],
+        geol_data: list[Any] | None,
+        struct_data: list[Any] | None,
+        line_layer: Any,
+        line_crs: Any,
+        msg: list[str],
+        export_settings: Any,
+        format_ext: str,
+        options: dict[str, Any],
+    ) -> None:
+        """Run the optional complete 3D section export."""
+        if not options.get("exp_section_3d", False):
+            return
+        from .handlers import section_3d as s3_h
+
+        s3_h.export_section_3d(
+            folder,
+            profile_data,
+            geol_data,
+            struct_data,
+            line_layer,
+            line_crs,
+            msg,
+            self.controller,
+            export_settings,
+            format_ext,
+        )
+
     def get_map_settings(
         self,
         layers: list[Any],

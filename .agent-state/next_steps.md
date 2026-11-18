@@ -11,6 +11,11 @@
 - **Docs/design (2026-11-01)**: `uv_modernization_guide.md` rewritten against the
   real QGIS/uv constraints; `docs/research/blendergis_export_design.md` defines the
   `SectionFrame`, 3D layer contract and BlenderGIS bundle.
+- **QGIS 3D WP0–WP1 (2026-11-18)**: `SectionFrame` is implemented and tested;
+  interpretation 3D consumes it. WP1 adds 3D topography (`LineStringZ`), geology
+  (`PolygonZ` bands) and structures (`PointZ`), with a multi-layer GPKG bundle
+  and Shapefile fallback behind `exp_section_3d`. Branch
+  `feature/qgis3d-section-frame`; WP2+ pending.
 - **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
