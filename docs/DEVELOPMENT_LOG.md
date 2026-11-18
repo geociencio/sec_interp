@@ -4,9 +4,9 @@
 - **Verification**: 844 tests OK, Docker exit 0, all gates green, ZIP 3.12.1 zero portal warnings.
 - **Maintenance**: [session_2026-11-01_release_tooling_blendergis.md](maintenance/session_2026-11-01_release_tooling_blendergis.md).
 
-## [2026-11-01] Tooling: qgis-manage 0.16.1
-- **Achievement**: adopted 0.16.1; zero runtime dependencies (internal console instead of `click`) plus fixes for deploy-manifest preservation, clean pruning, SemVer bump suffixes, README/no-extension artifact validation and multiline `classFactory` detection.
-- **Verification**: `qgis-manage --version` 0.16.1, `validate --strict --repo`, `validate --zip`, `package --repo-check` and `make compile` PASS; ZIP SHA unchanged (`9b835bc7…`); 844 tests OK.
+## [2026-11-18] Tooling: qgis-manage 0.16.2
+- **Achievement**: adopted 0.16.2; reproducible ZIP member ordering, AST-based `hooks list`, stable deploy dry-run, atomic docs swap, profile resolution and ordered `--jobs` compile progress.
+- **Verification**: `qgis-manage --version` 0.16.2, `validate --strict --repo`, `package --repo-check`, `validate --zip` and `make compile` PASS. The fresh ZIP SHA is `895e3ccb…` (0.16.2 sorts members); the published 3.12.1 asset is unchanged.
 
 ## [2026-11-01] Tooling: qgis-plugin-analyzer 1.19.2
 - **Achievement**: adopted 1.19.2; R4 (translated-text parents), R5 (`list(...)` wrappers) and R6 (tuple-loop pairing) are fixed. SecInterp's unmatched signal paths dropped 16 → **12** (six `PreviewSidePanel` + six `task.*`), now P1 lifetime candidates.
