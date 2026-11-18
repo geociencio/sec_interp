@@ -19,6 +19,11 @@ from qgis.PyQt.QtCore import QMetaType
 
 import sec_interp.exporters.qgis_io as scu_io
 from sec_interp.core.domain.section_frame import SectionFrame
+from sec_interp.exporters.section_3d_style import (
+    generate_geology_style,
+    generate_line_style,
+    generate_point_style,
+)
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -76,6 +81,7 @@ class Topography3DExporter(BaseExporter):
             feature.setAttribute("points", len(points))
             writer.addFeature(feature)
             del writer
+            generate_line_style(output_path, layer_name)
         except Exception:
             logger.exception(f"Failed to export 3D topography to {output_path}")
             return False
@@ -119,6 +125,7 @@ class Geology3DExporter(BaseExporter):
                 layer_name=layer_name,
             )
             written = 0
+            units: dict[str, str] = {}
             for segment in geology_data:
                 polygon = self._build_polygon(segment, frame, baseline_offset)
                 if polygon is None:
@@ -130,10 +137,14 @@ class Geology3DExporter(BaseExporter):
                 feature.setAttribute(
                     "unit_id", str(segment.attributes.get("id", segment.unit_name))
                 )
-                feature.setAttribute("color", str(segment.attributes.get("color", "#FF0000")))
+                color = str(segment.attributes.get("color", "#FF0000"))
+                feature.setAttribute("color", color)
+                units[str(segment.unit_name)] = color
                 writer.addFeature(feature)
                 written += 1
             del writer
+            if written:
+                generate_geology_style(output_path, units, layer_name)
             return written > 0
         except Exception:
             logger.exception(f"Failed to export 3D geology to {output_path}")
@@ -210,6 +221,7 @@ class Structure3DExporter(BaseExporter):
                 feature.setAttribute("type", str(measurement.attributes.get("type", "")))
                 writer.addFeature(feature)
             del writer
+            generate_point_style(output_path, layer_name)
         except Exception:
             logger.exception(f"Failed to export 3D structures to {output_path}")
             return False

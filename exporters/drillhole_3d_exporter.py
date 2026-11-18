@@ -20,6 +20,10 @@ from qgis.PyQt.QtCore import QMetaType
 
 import sec_interp.exporters.qgis_io as scu_io
 from sec_interp.core.domain import DrillholeProjection
+from sec_interp.exporters.drillhole_3d_style import (
+    generate_interval_style,
+    generate_trace_style,
+)
 from sec_interp.logger_config import get_logger
 
 from .base_exporter import BaseExporter
@@ -72,6 +76,7 @@ class DrillholeTrace3DExporter(BaseExporter):
                 self._process_hole_trace(writer, fields, hole_data, use_projected)
 
             del writer
+            generate_trace_style(output_path, layer_name)
         except Exception as e:
             logger.exception(f"Error exporting 3D traces to {output_path}: {e}")
             return False
@@ -145,6 +150,11 @@ class DrillholeTrace3DExporter(BaseExporter):
 class DrillholeInterval3DExporter(BaseExporter):
     """Exports 3D drillhole intervals to a Shapefile."""
 
+    def __init__(self, settings: dict[str, Any]) -> None:
+        """Initialize the exporter and its per-export unit colors."""
+        super().__init__(settings)
+        self._units: dict[str, str] = {}
+
     def get_supported_extensions(self) -> list[str]:
         """Get supported extensions."""
         return [".shp", ".gpkg", ".dxf"]
@@ -169,6 +179,7 @@ class DrillholeInterval3DExporter(BaseExporter):
             return False
 
         try:
+            self._units = {}
             fields = self._prepare_fields()
             writer = scu_io.create_vector_writer(
                 str(output_path),
@@ -182,6 +193,7 @@ class DrillholeInterval3DExporter(BaseExporter):
                 self._process_hole_intervals(writer, fields, hole_data, use_projected)
 
             del writer
+            generate_interval_style(output_path, self._units, layer_name)
         except Exception as e:
             logger.exception(f"Error exporting 3D intervals to {output_path}: {e}")
             return False
@@ -231,6 +243,7 @@ class DrillholeInterval3DExporter(BaseExporter):
             feat.setAttribute("from_depth", attrs.get("from", 0.0))
             feat.setAttribute("to_depth", attrs.get("to", 0.0))
             feat.setAttribute("unit", segment.unit_name)
+            self._units[segment.unit_name] = str(attrs.get("color", "#3498DB"))
             writer.addFeature(feat)
 
     def _prepare_fields(self) -> QgsFields:

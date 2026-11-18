@@ -29,7 +29,10 @@ from sec_interp.exporters.interpretation_3d.geometry import (
     calculate_section_geometry,
     collect_projected_features,
 )
-from sec_interp.exporters.interpretation_3d.style import generate_qml_style
+from sec_interp.exporters.interpretation_3d.style import (
+    DEFAULT_EXTRUSION_HEIGHT,
+    generate_qml_style,
+)
 from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -99,7 +102,10 @@ class Interpretation3DExporter(BaseExporter):
     ) -> None:
         """Handle style generation after successful export."""
         try:
-            self._generate_qml_style(output_path, interpretations, fields, crs)
+            extrusion_height = float(
+                self.settings.get("extrusion_height", DEFAULT_EXTRUSION_HEIGHT)
+            )
+            self._generate_qml_style(output_path, interpretations, fields, crs, extrusion_height)
         except Exception as exc:
             logger.warning(f"Failed to generate QML style: {exc}")
 
@@ -109,9 +115,10 @@ class Interpretation3DExporter(BaseExporter):
         interpretations: list[InterpretationPolygon],
         fields: list[QgsField],
         crs: QgsCoordinateReferenceSystem,
+        extrusion_height: float = DEFAULT_EXTRUSION_HEIGHT,
     ) -> None:
         """Generate a QML style file for the exported shapefile."""
-        generate_qml_style(shp_path, interpretations, fields, crs)
+        generate_qml_style(shp_path, interpretations, fields, crs, extrusion_height)
 
     def _prepare_fields(self, interpretations: list[Any]) -> tuple[list[QgsField], list[str]]:
         """Prepare fixed and custom attribute fields."""
