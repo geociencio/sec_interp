@@ -65,7 +65,7 @@
                 "MISSING_I18N": 0,
                 "total": 37
             },
-            "analyzed_at": "2026-11-19T01:45:32.045062+00:00"
+            "analyzed_at": "2026-11-19T04:26:14.476113+00:00"
         },
         "tests_local": {
             "date": "2026-11-19",
@@ -101,10 +101,10 @@
         "human_escalations": 0
     },
     "last_session": {
-        "date": "2026-11-02",
-        "topic": "release_tooling_blendergis",
+        "date": "2026-11-19",
+        "topic": "qgis3d_wp0_wp3",
         "tests_ok": 792,
-        "quality_score": 56.6,
+        "quality_score": 56.4,
         "task_completion_rate": null,
         "retries": 0,
         "stop_conditions_triggered": 0,
@@ -112,6 +112,17 @@
         "status": "SUCCESS"
     },
     "history": [
+        {
+            "date": "2026-11-02",
+            "tests_ok": 792,
+            "quality_score": 56.6,
+            "task_completion_rate": null,
+            "retries": 0,
+            "stop_conditions_triggered": 0,
+            "tasks": [],
+            "status": "SUCCESS",
+            "session": "release_tooling_blendergis"
+        },
         {
             "date": "2026-11-01",
             "tests_ok": 792,

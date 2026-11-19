@@ -1,3 +1,9 @@
+## [2026-11-18] Session: QGIS 3D WP0–WP3 & drillhole Z audit
+- **Achievement**: merged the first four QGIS 3D packages (SectionFrame, 3D layers, styles/extrusion, Settings toggle + manifest) in PRs #5–#7; 857 tests, mypy 107 files, CI green.
+- **Audit**: `drillhole_intervals_3d_real_secc1` has 195 complete intervals (195/195 match DillLith, continuous XYZ, monotonic Z), but starts at DEM elevations (329–564 m) rather than collar `Elevation (m)` (2110–2225 m); the collar Z field was likely empty. QGIS 3D display also needs a direct 3D renderer and a 20–30 m line width.
+- **Pending**: WP4 scene, WP5 VE, drillhole Z decision.
+- **Maintenance**: [session_2026-11-18_qgis3d_wp0_wp3.md](maintenance/session_2026-11-18_qgis3d_wp0_wp3.md).
+
 ## [2026-11-18] QGIS 3D WP3: bundle activation + manifest
 - **Achievement**: exposed “Export complete 3D section” in Settings → Advanced (`exp_section_3d`), persisted it and wired it into the export dialog; successful 3D exports now write `section_3d.json` with section CRS, origin, azimuth, length, vertical exaggeration and layer geometry.
 - **Verification**: 857 tests OK (2 skipped); ruff/flake8/mypy/docs green.

@@ -1,7 +1,7 @@
-# Next Steps (Updated 2026-11-06)
+# Next Steps (Updated 2026-11-18)
 
-**Session closed**: `release_tooling_blendergis` — see
-[`docs/maintenance/session_2026-11-01_release_tooling_blendergis.md`](../docs/maintenance/session_2026-11-01_release_tooling_blendergis.md).
+**Session closed**: `qgis3d_wp0_wp3` — see
+[`docs/maintenance/session_2026-11-18_qgis3d_wp0_wp3.md`](../docs/maintenance/session_2026-11-18_qgis3d_wp0_wp3.md).
 
 ## ✅ Current state
 
@@ -11,13 +11,10 @@
 - **Docs/design (2026-11-01)**: `uv_modernization_guide.md` rewritten against the
   real QGIS/uv constraints; `docs/research/blendergis_export_design.md` defines the
   `SectionFrame`, 3D layer contract and BlenderGIS bundle.
-- **QGIS 3D WP0–WP1 (2026-11-18)**: `SectionFrame` is implemented and tested;
-  interpretation 3D consumes it. WP1 adds 3D topography (`LineStringZ`), geology
-  (`PolygonZ` bands) and structures (`PointZ`), with a multi-layer GPKG bundle
-  and Shapefile fallback behind `exp_section_3d`. WP2 adds drillhole 3D QML,
-  interpretation extrusion and section-layer 3D styles. WP3 exposes
-  “Export complete 3D section” in Settings → Advanced and writes
-  `section_3d.json`. Branch `feature/qgis3d-scene`; WP4+ pending.
+- **QGIS 3D WP0–WP3 merged (2026-11-18)**: `SectionFrame`; 3D topography,
+  geology and structures; drillhole 3D QML, interpretation extrusion and
+  section-layer styles; “Export complete 3D section” + `section_3d.json`.
+  Merged in PRs #5, #6 and #7. **WP4 (scene) and WP5 (VE consistency) pending.**
 - **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero
@@ -28,7 +25,7 @@
   disconnects its 15 internal `changed.emit` links and the unit-reset button
   before reconnecting, without dropping external `changed` receivers.
   `UnitsEditorMixin.disconnect_unit_signals()` added.
-- **Tests**: **844 local OK** (2 real-Qt skipped); full `make docker-test`
+- **Tests**: **857 local OK** (2 real-Qt skipped); full `make docker-test`
   **exit 0** (43 + 295 + 40 + 373 + 78); real-Qt idempotency tests **2/2 OK**
   (one `changed` emission and one reset after two `connect_signals` calls).
 - **Analyzer**: `qgis-plugin-analyzer>=1.19.2` adopted. On this repo:
@@ -42,7 +39,7 @@
   status → open → preview → ready → results → export **PASS**; PNG 1872×900,
   130,248 B. Preview: 430 topo points, 9 geology segments, 9 structures,
   10 drillholes, 92 ms.
-- **Gates**: ruff check/format, direct flake8, mypy (102 files),
+- **Gates**: ruff check/format, direct flake8, mypy (107 files),
   `qgis-validate`, i18n (6), security (0 findings), Qt6 (0), CC PASS,
   `check_docs` (37), `forge metrics validate`, `git diff --check`.
 - **3.12.1 is live on the QGIS repository** (marked QGIS 4 Ready); 3.12.0 remains
@@ -69,10 +66,15 @@
 6. **Optional docs i18n** — native review of the machine-assisted translations;
    refresh `help/html` with `make docs` (`USER_GUIDE` fr 28 % / de 18 %).
 
-7. **BlenderGIS export P0** — add `SectionFrame`, 3D topography/geology/structures,
+7. **QGIS 3D WP4** — scene action with DEM, vertical scale and cross-section camera.
+8. **QGIS 3D WP5** — coherent VE between terrain and vectors.
+9. **Drillhole Z audit follow-up** — decide whether collar elevation or DEM is
+   authoritative; the exported intervals use DEM (start Z 329–564 m) while
+   `Elevation (m)` is 2110–2225 m. Apply a visible 3D line renderer (20–30 m).
+10. **BlenderGIS export P0** — add `SectionFrame`, 3D topography/geology/structures,
    SHP bundle + manifest, metric CRS, per-unit geology, and a Blender 4.x smoke test
    (`docs/research/blendergis_export_design.md`).
-8. **Close qgis-plugin-analyzer issue #1** — R4–R6 are fixed in 1.19.2; verify the
+11. **Close qgis-plugin-analyzer issue #1** — R4–R6 are fixed in 1.19.2; verify the
    remaining 12 paths and close/update the issue.
 
 ## 🧾 Remaining debt (documented, non-blocking)
