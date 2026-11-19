@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- **QGIS 3D — WP3 bundle + manifest**: added the “Export complete 3D section” toggle in Settings → Advanced, persisted as `exp_section_3d` and passed to the export pipeline; successful 3D exports write `section_3d.json` with CRS, origin, azimuth, length, vertical exaggeration and layer geometry.
 - **QGIS 3D — WP2 3D styles**: drillhole traces/intervals now generate `.qml` styles with `QgsLine3DSymbol` (intervals categorized by unit); interpretation 3D symbols receive an extrusion height (5 m default, configurable in exporter settings); topography, geology and structures get 3D QML sidecars.
 - **QGIS 3D — WP1 3D section layers**: added `Topography3DExporter` (`LineStringZ`), `Geology3DExporter` (`PolygonZ` bands with unit/color fields) and `Structure3DExporter` (`PointZ` with dip/strike). The new handler writes a multi-layer GeoPackage or separate Shapefiles behind the opt-in `exp_section_3d` flag.
 - **QGIS 3D — WP0 `SectionFrame`**: added a QGIS-free section frame (`origin`, `azimuth`, `CRS`, `length`, vertical-exaggeration metadata) and refactored the 3D interpretation exporter to use it. Added unit tests for east/north headings, length, Z passthrough and validation.

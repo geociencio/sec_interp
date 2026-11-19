@@ -1,14 +1,14 @@
 """Tests for the SettingsPage using the noble unittest library."""
 
-from tests.base_test import BaseTestCase
-from unittest.mock import MagicMock
+import sys
+
+from qgis.core import QgsSettings
 
 # Mock QGIS and PyQt before importing the page
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import QgsSettings
-import sys
 
 from sec_interp.gui.ui.pages.settings_page import SettingsPage
+from tests.base_test import BaseTestCase
 
 
 class TestSettingsPage(BaseTestCase):
@@ -26,6 +26,7 @@ class TestSettingsPage(BaseTestCase):
     def setUp(self):
         super().setUp()
         from qgis.core import QgsSettings as ImportedQgsSettings
+
         from tests.base_test import MockQgsSettings, mock_core
 
         print(
@@ -42,7 +43,6 @@ class TestSettingsPage(BaseTestCase):
 
     def test_initialization(self):
         """Test that the page initializes correctly without errors."""
-
         page = SettingsPage()
 
         # Verify initialization order
@@ -50,6 +50,7 @@ class TestSettingsPage(BaseTestCase):
 
         # Verify UI setup was called (attributes exist)
         self.assertTrue(hasattr(page, "chk_enable_3d"))
+        self.assertTrue(hasattr(page, "chk_section_3d"))
         self.assertTrue(hasattr(page, "group_box"))
 
     def test_load_settings(self):
@@ -67,7 +68,6 @@ class TestSettingsPage(BaseTestCase):
 
     def test_save_settings(self):
         """Test that changing settings saves to QgsSettings."""
-
         page = SettingsPage()
 
         # Simulate checkbox change
@@ -99,6 +99,7 @@ class TestSettingsPage(BaseTestCase):
         data = page.get_data()
         expected = {
             "enable_3d": True,
+            "exp_section_3d": False,
             "exp_topo": True,
             "exp_geol": True,
             "exp_struct": True,

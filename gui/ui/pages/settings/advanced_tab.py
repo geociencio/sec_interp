@@ -39,6 +39,12 @@ class AdvancedTab(QWidget):
         )
         layout.addWidget(self.chk_enable_3d)
 
+        self.chk_section_3d = QCheckBox(self.tr("Export complete 3D section"))
+        self.chk_section_3d.setToolTip(
+            self.tr("Exports 3D topography, geology and structures for the QGIS 3D Map View.")
+        )
+        layout.addWidget(self.chk_section_3d)
+
         layout.addWidget(QLabel(self.tr("<br><b>Drillhole 3D Export Options</b>")))
         self.chk_3d_traces = QCheckBox(self.tr("Export 3D Traces"))
         self.chk_3d_intervals = QCheckBox(self.tr("Export 3D Intervals"))
@@ -56,6 +62,9 @@ class AdvancedTab(QWidget):
         """Return advanced 3D settings."""
         return {
             "enable_3d": (self.chk_enable_3d.isChecked() if self.chk_enable_3d else False),
+            "exp_section_3d": (
+                self.chk_section_3d.isChecked() if hasattr(self, "chk_section_3d") else False
+            ),
             "drill_3d_traces": (
                 self.chk_3d_traces.isChecked() if hasattr(self, "chk_3d_traces") else True
             ),
@@ -74,6 +83,7 @@ class AdvancedTab(QWidget):
         """Reset advanced toggles to their defaults."""
         defaults = {
             "chk_enable_3d": True,
+            "chk_section_3d": False,
             "chk_3d_traces": True,
             "chk_3d_intervals": True,
             "chk_3d_original": True,
@@ -87,6 +97,7 @@ class AdvancedTab(QWidget):
     def connect_signals(self) -> None:
         """Connect advanced tab signals."""
         self.chk_enable_3d.stateChanged.connect(self.changed.emit)
+        self.chk_section_3d.stateChanged.connect(self.changed.emit)
         self.chk_3d_traces.stateChanged.connect(self.changed.emit)
         self.chk_3d_intervals.stateChanged.connect(self.changed.emit)
         self.chk_3d_original.stateChanged.connect(self.changed.emit)
@@ -96,6 +107,8 @@ class AdvancedTab(QWidget):
         """Disconnect all advanced tab signals to prevent memory leaks."""
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_enable_3d.stateChanged.disconnect(self.changed.emit)
+        with contextlib.suppress(TypeError, RuntimeError):
+            self.chk_section_3d.stateChanged.disconnect(self.changed.emit)
         with contextlib.suppress(TypeError, RuntimeError):
             self.chk_3d_traces.stateChanged.disconnect(self.changed.emit)
         with contextlib.suppress(TypeError, RuntimeError):

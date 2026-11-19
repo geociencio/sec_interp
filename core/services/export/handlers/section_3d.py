@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,11 @@ from sec_interp.logger_config import get_logger
 logger = get_logger(__name__)
 
 DATA_KEYS = ("profile_data", "geology_data", "structural_data")
+LAYER_GEOMETRY = {
+    "topography_3d": "LineStringZ",
+    "geology_3d": "PolygonZ",
+    "structures_3d": "PointZ",
+}
 
 
 def _payload_has_data(payload: dict[str, Any]) -> bool:
@@ -73,18 +79,19 @@ def _export_gpkg(
     profile_name: str,
     pattern: str | None,
     msg: list[str],
-) -> None:
+) -> list[str]:
     """Write all 3D layers into the profile GeoPackage."""
     path, _ = resolve_export_path(folder, "section_3d", profile_name, pattern, ".gpkg")
-    written = False
+    written: list[str] = []
     for _, layer_name, exporter, payload in tasks:
         if not _payload_has_data(payload):
             continue
         data = {**payload, "frame": frame, "crs": crs, "section_id": section_id}
         if exporter.export(path, data, layer_name=layer_name):
-            written = True
+            written.append(layer_name)
     if written:
         msg.append(f"  - {path.relative_to(folder)} (3D)")
+    return written
 
 
 def _write_layer(
@@ -122,12 +129,13 @@ def _export_separate(
     pattern: str | None,
     ext: str,
     msg: list[str],
-) -> None:
+) -> list[str]:
     """Write one file per 3D layer for Shapefile/DXF output."""
+    written: list[str] = []
     for stem, layer_name, exporter, payload in tasks:
         if not _payload_has_data(payload):
             continue
-        _write_layer(
+        if _write_layer(
             folder,
             stem,
             layer_name,
@@ -140,7 +148,39 @@ def _export_separate(
             pattern,
             ext,
             msg,
-        )
+        ):
+            written.append(layer_name)
+    return written
+
+
+def _write_manifest(
+    folder: Path,
+    profile_name: str,
+    frame: Any,
+    crs: Any,
+    layers: list[str],
+) -> None:
+    """Write the section 3D manifest describing the exported layers."""
+    if not layers:
+        return
+    crs_authid = crs.authid() if hasattr(crs, "authid") else frame.crs_authid
+    manifest = {
+        "schema": 1,
+        "section": {
+            "id": profile_name,
+            "crs": crs_authid,
+            "origin": [frame.origin_x, frame.origin_y],
+            "azimuth_deg": frame.azimuth_deg,
+            "length": frame.length,
+            "units": {"horizontal": "m", "vertical": "m"},
+        },
+        "vertical_exaggeration": frame.vertical_exaggeration,
+        "layers": [
+            {"name": name, "geometry": LAYER_GEOMETRY.get(name, "unknown")} for name in layers
+        ],
+    }
+    path = folder / "section_3d.json"
+    path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def export_section_3d(
@@ -174,7 +214,7 @@ def export_section_3d(
         tasks = _build_tasks(profile_data, geol_data, struct_data)
 
         if ext == ".gpkg":
-            _export_gpkg(
+            written = _export_gpkg(
                 folder,
                 tasks,
                 frame,
@@ -185,7 +225,7 @@ def export_section_3d(
                 msg,
             )
         else:
-            _export_separate(
+            written = _export_separate(
                 folder,
                 tasks,
                 frame,
@@ -196,6 +236,7 @@ def export_section_3d(
                 ext,
                 msg,
             )
+        _write_manifest(folder, profile_name, frame, crs, written)
     except DataMissingError:
         raise
     except Exception as exc:
