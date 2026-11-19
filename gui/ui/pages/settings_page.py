@@ -86,6 +86,7 @@ class SettingsPage(BasePage):
         self.btn_reset_export = self.default_tab.btn_reset_export
 
         self.chk_enable_3d = self.advanced_tab.chk_enable_3d
+        self.chk_section_3d = self.advanced_tab.chk_section_3d
         self.chk_3d_traces = self.advanced_tab.chk_3d_traces
         self.chk_3d_intervals = self.advanced_tab.chk_3d_intervals
         self.chk_3d_original = self.advanced_tab.chk_3d_original

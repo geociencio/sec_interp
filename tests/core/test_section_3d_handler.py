@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -73,6 +74,14 @@ class TestSection3DHandler(BaseTestCase):
         self.assertEqual(writer.addFeature.call_count, 3)
         self.assertEqual(len(msg), 1)
         self.assertIn("(3D)", msg[0])
+        manifest = json.loads(
+            (Path(self.output_dir) / "section_3d.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["section"]["crs"], "EPSG:32614")
+        self.assertEqual(
+            [layer["name"] for layer in manifest["layers"]],
+            ["topography_3d", "geology_3d", "structures_3d"],
+        )
 
     @patch("sec_interp.exporters.section_3d.scu_io.create_vector_writer")
     def test_shapefile_separate_layers(self, writer_factory: MagicMock) -> None:

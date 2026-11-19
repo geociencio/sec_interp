@@ -15,8 +15,9 @@
   interpretation 3D consumes it. WP1 adds 3D topography (`LineStringZ`), geology
   (`PolygonZ` bands) and structures (`PointZ`), with a multi-layer GPKG bundle
   and Shapefile fallback behind `exp_section_3d`. WP2 adds drillhole 3D QML,
-  interpretation extrusion and section-layer 3D styles. Branch
-  `feature/qgis3d-styles`; WP3+ pending.
+  interpretation extrusion and section-layer 3D styles. WP3 exposes
+  “Export complete 3D section” in Settings → Advanced and writes
+  `section_3d.json`. Branch `feature/qgis3d-scene`; WP4+ pending.
 - **v3.12.1 published on GitHub (2026-11-01)**: 844 local OK (2 skipped), Docker
   exit 0, `dist/sec_interp.3.12.1.zip` (342 files, 2.4 MB, SHA256
   `9b835bc76bd8a28f80c583a01bc89976d4838af2196a5beebc4ca969fc0bc8aa`), zero

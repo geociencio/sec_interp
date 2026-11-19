@@ -1,3 +1,7 @@
+## [2026-11-18] QGIS 3D WP3: bundle activation + manifest
+- **Achievement**: exposed “Export complete 3D section” in Settings → Advanced (`exp_section_3d`), persisted it and wired it into the export dialog; successful 3D exports now write `section_3d.json` with section CRS, origin, azimuth, length, vertical exaggeration and layer geometry.
+- **Verification**: 857 tests OK (2 skipped); ruff/flake8/mypy/docs green.
+
 ## [2026-11-18] QGIS 3D WP2: 3D styles
 - **Achievement**: drillhole traces/intervals generate 3D QML (`QgsLine3DSymbol`, intervals categorized by unit); interpretation symbols now use `setExtrusionHeight()` (5 m default); topography, geology and structures generate 3D QML sidecars.
 - **Verification**: 857 tests OK (2 skipped); ruff/flake8/mypy/docs green; QGIS 4.2 offscreen smoke generated the five 3D QML sidecars (topography, geology, structures, drillhole traces/intervals).

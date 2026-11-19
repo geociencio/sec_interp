@@ -20,6 +20,9 @@ def load_settings(settings: Any, default_tab: Any, advanced_tab: Any) -> None:
     """
     enabled_3d = settings.value("SecInterp/enable_3d", True, type=bool)
     advanced_tab.chk_enable_3d.setChecked(enabled_3d)
+    advanced_tab.chk_section_3d.setChecked(
+        settings.value("SecInterp/exp_section_3d", False, type=bool)
+    )
 
     default_tab.chk_exp_topo.setChecked(settings.value("SecInterp/exp_topo", True, type=bool))
     default_tab.chk_exp_geol.setChecked(settings.value("SecInterp/exp_geol", True, type=bool))
@@ -60,6 +63,7 @@ def save_settings(config_service: Any, default_tab: Any, advanced_tab: Any) -> N
 
     """
     config_service.set("enable_3d", advanced_tab.chk_enable_3d.isChecked())
+    config_service.set("exp_section_3d", advanced_tab.chk_section_3d.isChecked())
 
     config_service.set("exp_topo", default_tab.chk_exp_topo.isChecked())
     config_service.set("exp_geol", default_tab.chk_exp_geol.isChecked())

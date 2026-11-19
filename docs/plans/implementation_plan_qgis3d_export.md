@@ -1,7 +1,7 @@
 # QGIS 3D Section Export — Implementation Plan
 
 > **Date**: 2026-11-18
-> **Status**: WP0–WP2 implemented (2026-11-18); WP3+ pending
+> **Status**: WP0–WP3 implemented (2026-11-18); WP4+ pending
 > **Scope**: make SecInterp's 3D exports usable in QGIS's native 3D Map View.
 > **Related**: [interop/stereonet plan](implementation_plan_interop_stereonet_3d.md) ·
 > [BlenderGIS design](../research/blendergis_export_design.md)
@@ -445,12 +445,15 @@ should follow once the data contract is stable.
 - [x] **WP1 — 3D topography/geology/structures**: `Topography3DExporter`
   (`LineStringZ`), `Geology3DExporter` (`PolygonZ` bands) and
   `Structure3DExporter` (`PointZ`), with a shared GeoPackage bundle and
-  per-layer Shapefile fallback. Activation is gated by `exp_section_3d`
-  until the UI arrives in WP3/WP4.
+  per-layer Shapefile fallback. Activation is gated by `exp_section_3d`,
+  exposed in WP3.
 - [x] **WP2 — 3D styles and extrusion**: drillhole traces/intervals receive
   `QgsLine3DSymbol` QML, interpretation 3D symbols use `setExtrusionHeight()`,
   and topography/geology/structures get 3D QML sidecars.
-- [ ] WP3 — GeoPackage bundle + manifest.
+- [x] **WP3 — GeoPackage bundle + manifest**: `exp_section_3d` is exposed in
+  Settings → Advanced and wired into the export dialog; successful 3D exports
+  write `section_3d.json` with CRS, origin, azimuth, length, VE and layer
+  geometry.
 - [ ] WP4 — 3D scene action/camera.
 - [ ] WP5 — vertical-exaggeration consistency.
 
