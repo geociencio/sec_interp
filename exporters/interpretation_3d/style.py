@@ -19,12 +19,15 @@ from sec_interp.logger_config import get_logger
 
 logger = get_logger(__name__)
 
+DEFAULT_EXTRUSION_HEIGHT = 5.0
+
 
 def generate_qml_style(
     shp_path: Path | str,
     interpretations: list[InterpretationPolygon],
     fields: list[QgsField],
     crs: QgsCoordinateReferenceSystem,
+    extrusion_height: float = DEFAULT_EXTRUSION_HEIGHT,
 ) -> None:
     """Generate a QML style file for the exported shapefile."""
     try:
@@ -46,7 +49,7 @@ def generate_qml_style(
     setup_2d_renderer(layer, interpretations)
     if has_3d:
         try:
-            configure_3d_renderer(layer, interpretations)
+            configure_3d_renderer(layer, interpretations, extrusion_height)
         except Exception as exc:
             logger.warning(f"Failed to configure 3D renderer: {exc}")
 
@@ -85,7 +88,9 @@ def setup_2d_renderer(layer: QgsVectorLayer, interpretations: list[Interpretatio
 
 
 def configure_3d_renderer(
-    layer: QgsVectorLayer, interpretations: list[InterpretationPolygon]
+    layer: QgsVectorLayer,
+    interpretations: list[InterpretationPolygon],
+    extrusion_height: float = DEFAULT_EXTRUSION_HEIGHT,
 ) -> None:
     """Set up a rule-based 3D renderer for the layer."""
     from qgis._3d import (
@@ -107,6 +112,7 @@ def configure_3d_renderer(
         material.setAmbient(color.lighter(120))
 
         symbol_3d = QgsPolygon3DSymbol()
+        symbol_3d.setExtrusionHeight(extrusion_height)
         symbol_3d.setMaterialSettings(material)
 
         filter_expr = f"\"name\" = '{name}'"  # no-i18n

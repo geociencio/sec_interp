@@ -1,3 +1,7 @@
+## [2026-11-18] QGIS 3D WP2: 3D styles
+- **Achievement**: drillhole traces/intervals generate 3D QML (`QgsLine3DSymbol`, intervals categorized by unit); interpretation symbols now use `setExtrusionHeight()` (5 m default); topography, geology and structures generate 3D QML sidecars.
+- **Verification**: 857 tests OK (2 skipped); ruff/flake8/mypy/docs green; QGIS 4.2 offscreen smoke generated the five 3D QML sidecars (topography, geology, structures, drillhole traces/intervals).
+
 ## [2026-11-18] QGIS 3D WP1: 3D section layers
 - **Achievement**: added `Topography3DExporter` (`LineStringZ`), `Geology3DExporter` (`PolygonZ` bands) and `Structure3DExporter` (`PointZ`), plus a handler that writes a shared multi-layer GeoPackage or separate Shapefiles. The export is opt-in via `exp_section_3d` until the UI lands in WP3/WP4.
 - **Verification**: 857 tests OK (2 skipped); mypy 105 files, ruff/flake8/docs green.
